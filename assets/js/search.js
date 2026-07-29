@@ -6,6 +6,8 @@ const ARABIC_KAF  = /\u0643/g;   // ک عربی
 const PERSIAN_KAF = '\u06A9';    // ک فارسی
 const DIACRITICS  = /[\u064B-\u0652]/g; // اعراب
 const ZWNJ        = /\u200C/g;   // نیم‌فاصله
+const PERSIAN_DIGITS = /[\u06F0-\u06F9]/g; // ارقام فارسی
+const ARABIC_DIGITS  = /[\u0660-\u0669]/g; // ارقام عربی
 
 /**
  * یکسان‌سازی متن برای مقایسه. فارسی روی صفحه‌کلیدهای مختلف با
@@ -17,6 +19,8 @@ export function normalize(text) {
     .toLowerCase()
     .replace(ARABIC_YEH, PERSIAN_YEH)
     .replace(ARABIC_KAF, PERSIAN_KAF)
+    .replace(PERSIAN_DIGITS, (d) => String.fromCharCode(d.charCodeAt(0) - 0x06f0 + 0x30))
+    .replace(ARABIC_DIGITS, (d) => String.fromCharCode(d.charCodeAt(0) - 0x0660 + 0x30))
     .replace(DIACRITICS, '')
     .replace(ZWNJ, ' ')
     .replace(/\s+/g, ' ')

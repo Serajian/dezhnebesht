@@ -20,6 +20,12 @@ const ENTRIES = [
     fa: { title: 'کیف پول', short: 'نگهدارنده‌ی کلید خصوصی', body: '' },
     en: { title: 'Wallet', short: 'Holder of private keys', body: '' },
   },
+  {
+    id: 'sha-256',
+    tags: ['hashing'],
+    fa: { title: 'الگوریتم درهم‌سازی SHA-256', short: 'تابع درهم‌ساز رمزنگاری', body: '' },
+    en: { title: 'SHA-256', short: 'Cryptographic hash algorithm', body: '' },
+  },
 ];
 
 test('normalize یای عربی را به فارسی تبدیل می‌کند', () => {
@@ -43,9 +49,17 @@ test('normalize ورودی خالی و undefined را تحمل می‌کند', (
   assert.equal(normalize(null), '');
 });
 
+test('normalize رقم‌های فارسی را به رقم انگلیسی تبدیل می‌کند', () => {
+  assert.equal(normalize('\u06F2\u06F5\u06F6'), '256');
+});
+
+test('normalize رقم‌های عربی را به رقم انگلیسی تبدیل می‌کند', () => {
+  assert.equal(normalize('\u0662\u0665\u0666'), '256');
+});
+
 test('جستجوی خالی همه را برمی‌گرداند', () => {
-  assert.equal(filterEntries(ENTRIES, {}).length, 3);
-  assert.equal(filterEntries(ENTRIES, { query: '   ' }).length, 3);
+  assert.equal(filterEntries(ENTRIES, {}).length, 4);
+  assert.equal(filterEntries(ENTRIES, { query: '   ' }).length, 4);
 });
 
 test('جستجو در عنوان فارسی کار می‌کند', () => {
@@ -73,6 +87,11 @@ test('جستجو با یای عربی هم مدخل فارسی را پیدا م�
   assert.deepEqual(found.map((e) => e.id), ['wallet']);
 });
 
+test('جستجو با رقم‌های فارسی مدخل دارای رقم انگلیسی را پیدا می‌کند', () => {
+  const found = filterEntries(ENTRIES, { query: '\u06F2\u06F5\u06F6' });
+  assert.deepEqual(found.map((e) => e.id), ['sha-256']);
+});
+
 test('مدخل بدون بلاک en باعث خطا نمی‌شود', () => {
   assert.doesNotThrow(() => filterEntries(ENTRIES, { query: 'x' }));
 });
@@ -97,7 +116,7 @@ test('نتیجه‌ی بی‌تطابق آرایه‌ی خالی است', () => 
 
 test('ترتیب ورودی حفظ می‌شود', () => {
   const found = filterEntries(ENTRIES, { query: '' });
-  assert.deepEqual(found.map((e) => e.id), ['proof-of-work', 'nonce', 'wallet']);
+  assert.deepEqual(found.map((e) => e.id), ['proof-of-work', 'nonce', 'wallet', 'sha-256']);
 });
 
 test('آرایه‌ی ورودی تغییر داده نمی‌شود', () => {
