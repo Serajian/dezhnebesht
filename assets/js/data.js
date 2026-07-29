@@ -87,6 +87,21 @@ export function localized(entry, lang) {
   };
 }
 
+/**
+ * مدخلی که بلاک fa اصلاً ندارد، یا fa دارد ولی title ندارد، در هیچ
+ * زبانی قابل رندر نیست — localized() چنین مدخلی را با throw جواب
+ * می‌دهد چون block خودش undefined است. طبق قانون تاب‌آوری طرح
+ * («سایت با وجود خطا بالا می‌آید و مدخل‌های سالم کار می‌کنند —
+ * خطا نباید کل صفحه را از کار بیندازد») این مدخل باید پیش از
+ * رسیدن به هر view از entries کنار گذاشته شود؛ وگرنه throw آن کل
+ * renderIndex/renderSelfTest را با خودش پایین می‌کشد. مشکلات
+ * ملایم‌تر — related شکسته یا نبود en — رندر را نمی‌شکنند، پس
+ * عمداً باعث حذف نمی‌شوند.
+ */
+function canRender(entry) {
+  return Boolean(entry && entry.fa && entry.fa.title);
+}
+
 async function fetchJson(path) {
   const response = await fetch(path, { cache: 'no-store' });
   if (!response.ok) throw new Error(`خوانده نشد (HTTP ${response.status})`);
@@ -130,5 +145,5 @@ export async function loadAll(basePath = 'data') {
   }
 
   errors.push(...validate(categories, entries));
-  return { categories, entries, errors };
+  return { categories, entries: entries.filter(canRender), errors };
 }

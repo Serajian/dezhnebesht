@@ -131,3 +131,68 @@ test('loadAll وقتی categories.json آرایه نیست throw نمی‌کند
   assert.equal(result.errors[0].file, 'categories.json');
   assert.match(result.errors[0].message, /آرایه/);
 });
+
+function stubEntriesFetch(rawEntries) {
+  return async (path) => {
+    if (path.endsWith('categories.json')) {
+      return { ok: true, json: async () => CATEGORIES };
+    }
+    if (path.endsWith('basics.json')) {
+      return { ok: true, json: async () => rawEntries };
+    }
+    throw new Error(`fetch غیرمنتظره: ${path}`);
+  };
+}
+
+test('loadAll مدخل سالم را نگه می‌دارد و مدخل بدون بلاک fa را از entries حذف می‌کند ولی در errors گزارش می‌کند', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = stubEntriesFetch([
+    entry({ id: 'good' }),
+    entry({ id: 'bad', fa: undefined }),
+  ]);
+
+  let result;
+  try {
+    result = await loadAll('data');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+
+  assert.deepEqual(result.entries.map((e) => e.id), ['good']);
+  assert.ok(result.errors.some((e) => e.id === 'bad' && /fa/.test(e.message)));
+});
+
+test('loadAll مدخلی که fa دارد ولی title ندارد را هم از entries حذف می‌کند ولی در errors گزارش می‌کند', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = stubEntriesFetch([
+    entry({ id: 'good' }),
+    entry({ id: 'bad', fa: { title: '', short: 'خ', body: '<p>…</p>' } }),
+  ]);
+
+  let result;
+  try {
+    result = await loadAll('data');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+
+  assert.deepEqual(result.entries.map((e) => e.id), ['good']);
+  assert.ok(result.errors.some((e) => e.id === 'bad'));
+});
+
+test('loadAll به‌خاطر related شکسته مدخل را از entries حذف نمی‌کند، فقط گزارشش می‌کند', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = stubEntriesFetch([
+    entry({ id: 'hash', related: ['does-not-exist'] }),
+  ]);
+
+  let result;
+  try {
+    result = await loadAll('data');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+
+  assert.deepEqual(result.entries.map((e) => e.id), ['hash']);
+  assert.ok(result.errors.some((e) => e.id === 'hash' && /does-not-exist/.test(e.message)));
+});
