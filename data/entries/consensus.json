@@ -1,0 +1,29 @@
+[
+  {
+    "id": "proof-of-work",
+    "tags": ["mining", "consensus", "bitcoin"],
+    "related": ["hash", "nonce", "blockchain"],
+    "fa": {
+      "title": "اثبات کار",
+      "short": "اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است",
+      "body": "<p>اثبات کار سازوکاری است که مشخص می‌کند چه کسی حق دارد بلوک بعدی را به زنجیره اضافه کند. شبکه یک هدف عددی تعیین می‌کند و ماینرها باید بلوکی بسازند که هش آن از آن هدف کوچک‌تر باشد.</p><p>چون خروجی تابع هش قابل پیش‌بینی نیست، تنها راه، امتحان کردن است: عدد <span dir=\"ltr\">nonce</span> را عوض کن، دوباره هش بگیر، تکرار کن. این یعنی میلیاردها تلاش در ثانیه.</p><p>نکته‌ی اصلی در نامتقارن بودن است — پیدا کردن جواب بسیار پرهزینه است، ولی بررسی درستی آن برای بقیه‌ی شبکه فقط یک بار هش گرفتن است.</p>",
+      "example": "<p>شبکه‌ی بیت‌کوین سختی این هدف را هر ۲۰۱۶ بلوک تنظیم می‌کند تا فاصله‌ی بلوک‌ها حدود ۱۰ دقیقه بماند.</p>"
+    },
+    "en": {
+      "title": "Proof of Work",
+      "short": "Evidence that real computation was spent to produce a block",
+      "body": "<p>Proof of work decides who earns the right to append the next block. The network sets a numeric target, and miners must produce a block whose hash falls below it.</p><p>Because hash output is unpredictable, the only strategy is to try: change the nonce, hash again, repeat — billions of attempts per second.</p><p>The asymmetry is the point. Finding an answer is expensive; checking one costs the rest of the network a single hash.</p>",
+      "example": "<p>Bitcoin retargets that difficulty every 2016 blocks to keep block spacing near ten minutes.</p>"
+    }
+  },
+  {
+    "id": "nonce",
+    "tags": ["mining", "consensus"],
+    "related": ["proof-of-work", "hash"],
+    "fa": {
+      "title": "نانس",
+      "short": "عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود",
+      "body": "<p><span dir=\"ltr\">nonce</span> کوتاه‌شده‌ی <span dir=\"ltr\">number used once</span> است — فیلدی در هدر بلوک که هیچ معنای دیگری ندارد جز اینکه بشود آزادانه عوضش کرد.</p><p>ماینر بقیه‌ی هدر بلوک را ثابت نگه می‌دارد و فقط نانس را یکی‌یکی بالا می‌برد و هر بار هش می‌گیرد. چون تغییر کوچک ورودی خروجی را کاملاً عوض می‌کند، هر نانس یک شانس تازه است.</p>"
+    }
+  }
+]

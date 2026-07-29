@@ -1,0 +1,4 @@
+[
+  { "id": "basics",    "file": "basics.json",    "fa": "مفاهیم پایه", "en": "Fundamentals" },
+  { "id": "consensus", "file": "consensus.json", "fa": "اجماع",       "en": "Consensus" }
+]
