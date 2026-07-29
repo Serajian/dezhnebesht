@@ -4,9 +4,42 @@ const REQUIRED_FIELDS = ['title', 'short', 'body'];
  * اعتبارسنجی خالص. هیچ fetch و هیچ DOM.
  * @returns آرایه‌ی خطاها؛ خالی یعنی سالم.
  */
-export function validate(categories, entries) {
+export function validate(categories, entries, topics = []) {
   const errors = [];
   const seenIds = new Map();
+
+  // شناسه‌ی موضوع نام پوشه است، پس تکراری بودنش یعنی یکی از دو موضوع
+  // بی‌صدا دیده نمی‌شود.
+  const seenTopics = new Set();
+  for (const topic of topics) {
+    if (!topic?.id) {
+      errors.push({ file: 'topics.json', id: '(بدون شناسه)', message: 'موضوع فیلد id ندارد' });
+      continue;
+    }
+    if (seenTopics.has(topic.id)) {
+      errors.push({ file: 'topics.json', id: topic.id, message: 'شناسه‌ی موضوع تکراری است' });
+    }
+    seenTopics.add(topic.id);
+    if (!topic.fa) {
+      errors.push({ file: 'topics.json', id: topic.id, message: 'موضوع نام فارسی (fa) ندارد' });
+    }
+  }
+
+  // شناسه‌ی دسته فقط داخل موضوع خودش باید یکتا باشد — دو موضوع
+  // می‌توانند هر دو دسته‌ای به نام «مفاهیم پایه» داشته باشند.
+  const seenCategories = new Set();
+  for (const category of categories) {
+    if (!category?.id) continue;
+    const key = `${category.topic}/${category.id}`;
+    if (seenCategories.has(key)) {
+      errors.push({
+        file: `${category.topic}/categories.json`,
+        id: category.id,
+        message: 'شناسه‌ی دسته در این موضوع تکراری است',
+      });
+    }
+    seenCategories.add(key);
+  }
 
   for (const entry of entries) {
     if (entry === null || typeof entry !== 'object') {
@@ -117,33 +150,48 @@ async function fetchJson(path) {
  * هر شکستی به صورت یک خطا در آرایه‌ی errors برمی‌گردد تا سایت بالا بیاید.
  */
 export async function loadAll(basePath = 'data') {
-  let categories;
+  let topics;
   try {
-    categories = await fetchJson(`${basePath}/categories.json`);
-    if (!Array.isArray(categories)) throw new Error('محتوای فایل باید یک آرایه باشد');
+    topics = await fetchJson(`${basePath}/topics.json`);
+    if (!Array.isArray(topics)) throw new Error('محتوای فایل باید یک آرایه باشد');
   } catch (error) {
     return {
+      topics: [],
       categories: [],
       entries: [],
-      errors: [{ file: 'categories.json', id: '', message: error.message }],
+      errors: [{ file: 'topics.json', id: '', message: error.message }],
     };
   }
 
   const errors = [];
+  const categories = [];
   const entries = [];
 
-  for (const category of categories) {
+  for (const topic of topics) {
+    let topicCategories;
     try {
-      const raw = await fetchJson(`${basePath}/entries/${category.file}`);
-      if (!Array.isArray(raw)) throw new Error('محتوای فایل باید یک آرایه باشد');
-      for (const entry of raw) {
-        entries.push({ ...entry, category: category.id });
-      }
+      topicCategories = await fetchJson(`${basePath}/${topic.id}/categories.json`);
+      if (!Array.isArray(topicCategories)) throw new Error('محتوای فایل باید یک آرایه باشد');
     } catch (error) {
-      errors.push({ file: category.file, id: '', message: error.message });
+      errors.push({ file: `${topic.id}/categories.json`, id: '', message: error.message });
+      continue;
+    }
+
+    for (const category of topicCategories) {
+      // موضوع از نام پوشه می‌آید، دقیقاً همان‌طور که دسته از نام فایل.
+      categories.push({ ...category, topic: topic.id });
+      try {
+        const raw = await fetchJson(`${basePath}/${topic.id}/entries/${category.file}`);
+        if (!Array.isArray(raw)) throw new Error('محتوای فایل باید یک آرایه باشد');
+        for (const entry of raw) {
+          entries.push({ ...entry, category: category.id, topic: topic.id });
+        }
+      } catch (error) {
+        errors.push({ file: `${topic.id}/${category.file}`, id: '', message: error.message });
+      }
     }
   }
 
-  errors.push(...validate(categories, entries));
-  return { categories, entries: entries.filter(canRender), errors };
+  errors.push(...validate(categories, entries, topics));
+  return { topics, categories, entries: entries.filter(canRender), errors };
 }

@@ -274,3 +274,69 @@ main {
   border-radius: 2px;
   transform: rotate(45deg);
 }
+
+/* ── موضوع‌ها ─────────────────────────────────────────────── */
+
+.topicbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 2rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.chip:hover { border-color: var(--accent); color: var(--text); text-decoration: none; }
+.chip.active { border-color: var(--accent); color: var(--accent); }
+.chip .count { border: 0; padding: 0; opacity: 0.7; }
+
+.topic + .topic { margin-top: 2.75rem; }
+
+/* گره‌ی موضوع تو‌پر است تا از گره‌ی تو‌خالی دسته متمایز باشد —
+   یک دستگاه بصری، دو وزن. */
+.topic-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.topic-title::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  flex: none;
+  background: var(--accent);
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
+.topic-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.topic-title .count {
+  order: 3;
+  font-size: 0.8rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 0.5rem;
+}
+
+.topic-groups { display: grid; gap: 2.25rem; }
+
+@media (max-width: 640px) {
+  .topic-title { font-size: 1.05rem; }
+}

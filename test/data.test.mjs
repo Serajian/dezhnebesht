@@ -110,7 +110,7 @@ test('example اختیاری است و نبودش رشته‌ی خالی می‌
   assert.equal(localized(entry(), 'fa').example, '');
 });
 
-test('loadAll وقتی categories.json آرایه نیست throw نمی‌کند و آن را به خطا تبدیل می‌کند', async () => {
+test('loadAll وقتی topics.json آرایه نیست throw نمی‌کند و آن را به خطا تبدیل می‌کند', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => ({
     ok: true,
@@ -128,12 +128,17 @@ test('loadAll وقتی categories.json آرایه نیست throw نمی‌کند
 
   assert.deepEqual(result.entries, []);
   assert.equal(result.errors.length, 1);
-  assert.equal(result.errors[0].file, 'categories.json');
+  assert.equal(result.errors[0].file, 'topics.json');
   assert.match(result.errors[0].message, /آرایه/);
 });
 
+const TOPICS = [{ id: 'crypto', fa: 'کریپتو', en: 'Crypto' }];
+
 function stubEntriesFetch(rawEntries) {
   return async (path) => {
+    if (path.endsWith('topics.json')) {
+      return { ok: true, json: async () => TOPICS };
+    }
     if (path.endsWith('categories.json')) {
       return { ok: true, json: async () => CATEGORIES };
     }

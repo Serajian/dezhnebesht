@@ -45,26 +45,77 @@ function sortByTitle(entries, lang) {
   );
 }
 
-function renderTopical(entries, categories, lang) {
+function categoryGroup(category, inCategory, lang) {
+  return el(
+    'section',
+    { class: 'group' },
+    el(
+      'h2',
+      { class: 'group-title' },
+      el('span', {}, category[lang] ?? category.fa),
+      el('span', { class: 'count' }, String(inCategory.length)),
+    ),
+    el('div', { class: 'cards' }, sortByTitle(inCategory, lang).map((e) => entryCard(e, lang))),
+  );
+}
+
+/**
+ * موضوع ← دسته ← مدخل. تطبیق دسته روی «موضوع و شناسه» با هم انجام
+ * می‌شود، نه فقط شناسه: دو موضوع می‌توانند هر دو دسته‌ای به نام
+ * basics داشته باشند و مقایسه‌ی تک‌فیلدی مدخل‌هایشان را قاطی می‌کند.
+ */
+function renderTopical(entries, categories, topics, lang, { showTopics }) {
   const wrap = el('div', { class: 'groups' });
-  for (const category of categories) {
-    const inCategory = entries.filter((entry) => entry.category === category.id);
-    if (inCategory.length === 0) continue;
-    wrap.append(
-      el(
-        'section',
-        { class: 'group' },
+
+  for (const topic of topics) {
+    const inTopic = entries.filter((entry) => entry.topic === topic.id);
+    if (inTopic.length === 0) continue;
+
+    const topicCategories = categories.filter((category) => category.topic === topic.id);
+    const groups = [];
+    for (const category of topicCategories) {
+      const inCategory = inTopic.filter((entry) => entry.category === category.id);
+      if (inCategory.length > 0) groups.push(categoryGroup(category, inCategory, lang));
+    }
+    if (groups.length === 0) continue;
+
+    if (showTopics) {
+      wrap.append(
         el(
-          'h2',
-          { class: 'group-title' },
-          el('span', {}, category[lang] ?? category.fa),
-          el('span', { class: 'count' }, String(inCategory.length)),
+          'section',
+          { class: 'topic' },
+          el(
+            'h2',
+            { class: 'topic-title' },
+            el('span', {}, topic[lang] ?? topic.fa),
+            el('span', { class: 'count' }, String(inTopic.length)),
+          ),
+          el('div', { class: 'topic-groups' }, groups),
         ),
-        el('div', { class: 'cards' }, sortByTitle(inCategory, lang).map((e) => entryCard(e, lang))),
-      ),
-    );
+      );
+    } else {
+      wrap.append(...groups);
+    }
   }
   return wrap;
+}
+
+function renderTopicFilter(topics, current, counts, lang) {
+  // لینک‌اند نه دکمه — مسیریابی hash خودش کار را می‌کند و
+  // این‌طور render.js هیچ رویدادی نمی‌بندد.
+  return el(
+    'nav',
+    { class: 'topicbar' },
+    el('a', { class: current ? 'chip' : 'chip active', href: '#/' }, t('topic.all')),
+    topics.map((topic) =>
+      el(
+        'a',
+        { class: current === topic.id ? 'chip active' : 'chip', href: `#/topic/${encodeURIComponent(topic.id)}` },
+        el('span', {}, topic[lang] ?? topic.fa),
+        el('span', { class: 'count' }, String(counts.get(topic.id) ?? 0)),
+      ),
+    ),
+  );
 }
 
 function renderAlphabetical(entries, lang) {
@@ -75,8 +126,11 @@ function renderAlphabetical(entries, lang) {
   );
 }
 
-export function renderIndex(entries, categories, { lang, view, tag }) {
+export function renderIndex(entries, categories, { lang, view, tag, topics = [], topic = '', topicCounts = new Map() }) {
   const wrap = el('div', { class: 'index' });
+
+  // ردیف موضوع فقط وقتی معنی دارد که بیش از یک موضوع وجود داشته باشد.
+  if (topics.length > 1) wrap.append(renderTopicFilter(topics, topic, topicCounts, lang));
 
   if (tag) {
     wrap.append(
@@ -105,7 +159,12 @@ export function renderIndex(entries, categories, { lang, view, tag }) {
   wrap.append(
     view === 'alphabetical'
       ? renderAlphabetical(entries, lang)
-      : renderTopical(entries, categories, lang),
+      // وقتی یک موضوع انتخاب شده، سرتیتر موضوع تکراری است.
+      // با یک موضوع، سرتیتر موضوع سلسله‌مراتب بی‌فایده اضافه می‌کند.
+      // ساختار وقتی ظاهر می‌شود که واقعاً لازم شود.
+      : renderTopical(entries, categories, topics, lang, {
+          showTopics: !topic && topics.length > 1,
+        }),
   );
   return wrap;
 }
@@ -124,9 +183,12 @@ function renderTags(tags) {
   );
 }
 
-export function renderEntry(entry, { lang, categories, entriesById }) {
+export function renderEntry(entry, { lang, categories, entriesById, topics = [] }) {
   const content = localized(entry, lang);
-  const category = categories.find((item) => item.id === entry.category);
+  const category = categories.find(
+    (item) => item.id === entry.category && item.topic === entry.topic,
+  );
+  const topic = topics.length > 1 ? topics.find((item) => item.id === entry.topic) : null;
 
   const article = el('article', { class: 'entry' });
 
@@ -136,6 +198,8 @@ export function renderEntry(entry, { lang, categories, entriesById }) {
       { class: 'crumbs' },
       el('a', { href: '#/' }, t('nav.index')),
       el('span', { class: 'sep' }, '›'),
+      topic ? el('a', { href: `#/topic/${encodeURIComponent(topic.id)}` }, topic[lang] ?? topic.fa) : null,
+      topic ? el('span', { class: 'sep' }, '›') : null,
       category ? el('span', {}, category[lang] ?? category.fa) : null,
       category ? el('span', { class: 'sep' }, '›') : null,
       el('span', { class: 'here' }, content.title),
@@ -214,14 +278,14 @@ function reportSection(title, items) {
  * هر مدخل را در هر دو زبان واقعاً رندر می‌کند تا خطاهای رندری که
  * فقط روی یک زبان یا یک شکل داده رخ می‌دهند بیرون بیفتند.
  */
-export function renderSelfTest(entries, categories, errors, entriesById) {
+export function renderSelfTest(entries, categories, errors, entriesById, topics = []) {
   const renderFailures = [];
   const untranslated = [];
 
   for (const entry of entries) {
     for (const lang of LANGS) {
       try {
-        renderEntry(entry, { lang, categories, entriesById });
+        renderEntry(entry, { lang, categories, entriesById, topics });
       } catch (error) {
         renderFailures.push(`${entry.id} [${lang}] — ${error.message}`);
       }
@@ -229,10 +293,18 @@ export function renderSelfTest(entries, categories, errors, entriesById) {
     if (!entry.en) untranslated.push(entry.id);
   }
 
-  const counts = categories.map((category) => {
-    const total = entries.filter((entry) => entry.category === category.id).length;
-    return `${category[current()] ?? category.fa}: ${total}`;
-  });
+  const lang = current();
+  const counts = [];
+  for (const topic of topics) {
+    const inTopic = entries.filter((entry) => entry.topic === topic.id);
+    if (topics.length > 1) counts.push(`${topic[lang] ?? topic.fa}: ${inTopic.length}`);
+    for (const category of categories.filter((item) => item.topic === topic.id)) {
+      // تطبیق روی موضوع و دسته با هم — دو موضوع می‌توانند دسته‌ی هم‌نام داشته باشند.
+      const total = inTopic.filter((entry) => entry.category === category.id).length;
+      const label = category[lang] ?? category.fa;
+      counts.push(topics.length > 1 ? `\u00a0\u00a0${label}: ${total}` : `${label}: ${total}`);
+    }
+  }
   counts.push(`${t('selftest.total')}: ${entries.length}`);
 
   return el(

@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import { parseHash } from '../assets/js/router.js';
 
 test('هش خالی به فهرست می‌رود', () => {
-  assert.deepEqual(parseHash(''), { view: 'index', tag: '' });
-  assert.deepEqual(parseHash('#'), { view: 'index', tag: '' });
-  assert.deepEqual(parseHash('#/'), { view: 'index', tag: '' });
+  assert.deepEqual(parseHash(''), { view: 'index', topic: '', tag: '' });
+  assert.deepEqual(parseHash('#'), { view: 'index', topic: '', tag: '' });
+  assert.deepEqual(parseHash('#/'), { view: 'index', topic: '', tag: '' });
 });
 
 test('undefined به فهرست می‌رود', () => {
-  assert.deepEqual(parseHash(undefined), { view: 'index', tag: '' });
+  assert.deepEqual(parseHash(undefined), { view: 'index', topic: '', tag: '' });
 });
 
 test('مسیر مدخل تجزیه می‌شود', () => {
@@ -17,7 +17,7 @@ test('مسیر مدخل تجزیه می‌شود', () => {
 });
 
 test('مسیر هشتگ تجزیه می‌شود', () => {
-  assert.deepEqual(parseHash('#/tag/mining'), { view: 'index', tag: 'mining' });
+  assert.deepEqual(parseHash('#/tag/mining'), { view: 'index', topic: '', tag: 'mining' });
 });
 
 test('مسیر خودآزمایی تجزیه می‌شود', () => {
@@ -29,7 +29,7 @@ test('اسلش انتهایی اضافه نادیده گرفته می‌شود',
 });
 
 test('مقدار درصدکدشده رمزگشایی می‌شود', () => {
-  assert.deepEqual(parseHash('#/tag/proof%20of%20work'), { view: 'index', tag: 'proof of work' });
+  assert.deepEqual(parseHash('#/tag/proof%20of%20work'), { view: 'index', topic: '', tag: 'proof of work' });
 });
 
 test('درصدکد نامعتبر باعث پرتاب استثنا نمی‌شود', () => {
@@ -38,14 +38,22 @@ test('درصدکد نامعتبر باعث پرتاب استثنا نمی‌شو
 });
 
 test('t بدون شناسه به فهرست برمی‌گردد', () => {
-  assert.deepEqual(parseHash('#/t'), { view: 'index', tag: '' });
-  assert.deepEqual(parseHash('#/t/'), { view: 'index', tag: '' });
+  assert.deepEqual(parseHash('#/t'), { view: 'index', topic: '', tag: '' });
+  assert.deepEqual(parseHash('#/t/'), { view: 'index', topic: '', tag: '' });
 });
 
 test('tag بدون مقدار به فهرست برمی‌گردد', () => {
-  assert.deepEqual(parseHash('#/tag'), { view: 'index', tag: '' });
+  assert.deepEqual(parseHash('#/tag'), { view: 'index', topic: '', tag: '' });
 });
 
 test('مسیر ناشناخته به فهرست برمی‌گردد', () => {
-  assert.deepEqual(parseHash('#/چیز/عجیب'), { view: 'index', tag: '' });
+  assert.deepEqual(parseHash('#/چیز/عجیب'), { view: 'index', topic: '', tag: '' });
+});
+
+test('مسیر موضوع تجزیه می‌شود', () => {
+  assert.deepEqual(parseHash('#/topic/crypto'), { view: 'index', topic: 'crypto', tag: '' });
+});
+
+test('topic بدون مقدار به فهرست برمی‌گردد', () => {
+  assert.deepEqual(parseHash('#/topic'), { view: 'index', topic: '', tag: '' });
 });

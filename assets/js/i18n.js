@@ -6,7 +6,7 @@ export const LANGS = ['fa', 'en'];
 /** export شده فقط برای اینکه تست بتواند همسانی کلیدهای دو زبان را بررسی کند. */
 export const STRINGS = {
   fa: {
-    'app.title': 'دانشنامه کریپتو',
+    'app.title': 'دژنبشت',
     'lang.switch': 'English',
     'search.placeholder': 'جستجو در مدخل‌ها…',
     'search.empty': 'مدخلی یافت نشد',
@@ -22,6 +22,7 @@ export const STRINGS = {
     'entry.back': 'بازگشت به فهرست',
     'tag.filtered': 'فیلترشده با هشتگ',
     'tag.clear': 'برداشتن فیلتر',
+    'topic.all': 'همه',
     'errors.heading': 'خطای اعتبارسنجی داده',
     'selftest.title': 'خودآزمایی',
     'selftest.counts': 'شمار مدخل‌ها به تفکیک دسته',
@@ -32,7 +33,7 @@ export const STRINGS = {
     'selftest.total': 'مجموع',
   },
   en: {
-    'app.title': 'Crypto Glossary',
+    'app.title': 'Dezhnebesht',
     'lang.switch': 'فارسی',
     'search.placeholder': 'Search entries…',
     'search.empty': 'No entries found',
@@ -48,6 +49,7 @@ export const STRINGS = {
     'entry.back': 'Back to index',
     'tag.filtered': 'Filtered by tag',
     'tag.clear': 'Clear filter',
+    'topic.all': 'All',
     'errors.heading': 'Data validation errors',
     'selftest.title': 'Self-test',
     'selftest.counts': 'Entry count per category',

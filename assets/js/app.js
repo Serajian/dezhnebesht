@@ -17,11 +17,12 @@ const dom = {
 };
 
 const state = {
+  topics: [],
   categories: [],
   entries: [],
   entriesById: new Map(),
   errors: [],
-  route: { view: 'index', tag: '' },
+  route: { view: 'index', topic: '', tag: '' },
   query: '',
   indexView: readIndexView(),
 };
@@ -43,21 +44,37 @@ function render() {
   dom.viewToggle.hidden = !isIndex;
 
   if (isIndex) {
-    const visible = filterEntries(state.entries, { query: state.query, tag: state.route.tag });
+    const matched = filterEntries(state.entries, { query: state.query, tag: state.route.tag });
+    // فیلتر موضوع فقط برای مرور است؛ به محض اینکه چیزی تایپ شود
+    // جستجو از آن عبور می‌کند و همه‌ی موضوع‌ها را می‌گردد.
+    const searching = state.query.trim() !== '';
+    const activeTopic = searching ? '' : state.route.topic;
+    const visible = activeTopic
+      ? matched.filter((entry) => entry.topic === activeTopic)
+      : matched;
+
+    const topicCounts = new Map();
+    for (const entry of matched) {
+      topicCounts.set(entry.topic, (topicCounts.get(entry.topic) ?? 0) + 1);
+    }
+
     dom.main.append(view.renderIndex(visible, state.categories, {
       lang,
       view: state.indexView,
       tag: state.route.tag,
+      topics: state.topics,
+      topic: activeTopic,
+      topicCounts,
     }));
   } else if (state.route.view === 'entry') {
     const entry = state.entriesById.get(state.route.id);
     dom.main.append(
       entry
-        ? view.renderEntry(entry, { lang, categories: state.categories, entriesById: state.entriesById })
+        ? view.renderEntry(entry, { lang, categories: state.categories, entriesById: state.entriesById, topics: state.topics })
         : view.renderNotFound(state.route.id),
     );
   } else if (state.route.view === 'self-test') {
-    dom.main.append(view.renderSelfTest(state.entries, state.categories, state.errors, state.entriesById));
+    dom.main.append(view.renderSelfTest(state.entries, state.categories, state.errors, state.entriesById, state.topics));
   }
 }
 
@@ -129,7 +146,8 @@ document.addEventListener('keydown', (event) => {
 async function init() {
   i18n.applyToDocument();
 
-  const { categories, entries, errors } = await loadAll();
+  const { topics, categories, entries, errors } = await loadAll();
+  state.topics = topics;
   state.categories = categories;
   state.entries = entries;
   state.entriesById = new Map(entries.map((entry) => [entry.id, entry]));
