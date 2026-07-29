@@ -16,7 +16,15 @@ const TYPES = {
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
-  let pathname = decodeURIComponent(url.pathname);
+
+  let pathname;
+  try {
+    pathname = decodeURIComponent(url.pathname);
+  } catch {
+    res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('400 Bad Request');
+    return;
+  }
   if (pathname.endsWith('/')) pathname += 'index.html';
 
   const filePath = join(ROOT, normalize(pathname));
