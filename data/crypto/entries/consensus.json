@@ -23,7 +23,14 @@
     "fa": {
       "title": "نانس",
       "short": "عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود",
-      "body": "<p><span dir=\"ltr\">nonce</span> کوتاه‌شده‌ی <span dir=\"ltr\">number used once</span> است — فیلدی در هدر بلوک که هیچ معنای دیگری ندارد جز اینکه بشود آزادانه عوضش کرد.</p><p>ماینر بقیه‌ی هدر بلوک را ثابت نگه می‌دارد و فقط نانس را یکی‌یکی بالا می‌برد و هر بار هش می‌گیرد. چون تغییر کوچک ورودی خروجی را کاملاً عوض می‌کند، هر نانس یک شانس تازه است.</p>"
+      "body": "<p><span dir=\"ltr\">nonce</span> کوتاه‌شده‌ی <span dir=\"ltr\">number used once</span> است — فیلدی در هدر بلوک که هیچ معنای دیگری ندارد جز اینکه بشود آزادانه عوضش کرد.</p><p>ماینر بقیه‌ی هدر بلوک را ثابت نگه می‌دارد و فقط نانس را یکی‌یکی بالا می‌برد و هر بار هش می‌گیرد. چون تغییر کوچک ورودی خروجی را کاملاً عوض می‌کند، هر نانس یک شانس تازه است.</p>",
+      "example": "<p>نانس در هدر بلوک بیت‌کوین ۳۲ بیت است — حدود ۴ میلیارد حالت، که برای سخت‌افزار امروزی در کسری از ثانیه تمام می‌شود. ماینر بعد از آن فیلدهای دیگری مثل زمان یا ترتیب تراکنش‌ها را عوض می‌کند تا فضای جستجوی تازه‌ای بسازد.</p>"
+    },
+    "en": {
+      "title": "Nonce",
+      "short": "A single-use number the miner varies until the hash comes out right",
+      "body": "<p>Nonce is short for <em>number used once</em> — a field in the block header that carries no meaning of its own beyond being free to change.</p><p>The miner holds the rest of the header fixed and walks the nonce upward, hashing after every step. Because a small change to the input completely changes the output, each nonce is an independent fresh chance.</p>",
+      "example": "<p>Bitcoin's block-header nonce is 32 bits — about 4 billion values, which modern hardware exhausts in a fraction of a second. Miners then change another field, such as the timestamp or the transaction ordering, to open a fresh search space.</p>"
     }
   }
 ]
