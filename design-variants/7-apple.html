@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>دژنبشت — نسخهٔ هفتم: طراحی اپل</title>
+<style>
+
+/* ===================================================================
+   دژنبشت — نسخهٔ هفتم: «مادهٔ شیشه‌ای»
+   منبع طراحی: apple-design reference — بخش‌های ۱۲ (مواد و عمق)،
+   ۱۵ (تایپوگرافی)، ۱۶ (هشت اصل)، ۱ و ۱۴ (بازخورد و حرکت کاهش‌یافته).
+   یادداشت‌های کامل طراحی در انتهای فایل، داخل کامنت HTML.
+   =================================================================== */
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, h1, h2, h3, p, ul, li, figure, figcaption, fieldset { margin: 0; padding: 0; }
+ul { list-style: none; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; color: inherit; background: none; border: 0; }
+img, svg { display: block; max-width: 100%; }
+button { cursor: pointer; }
+
+/* ---------- Design tokens ---------- */
+:root {
+  color-scheme: light;
+
+  /* palette — light: warm paper canvas, Apple-blue accent */
+  --bg: #f5f5f2;
+  --bg-elevated: #ffffff;
+  --bg-press: rgba(0, 0, 0, 0.045);
+  --chrome-alpha: 0.72;
+  --chrome-bg: rgba(255, 255, 255, var(--chrome-alpha));
+  --chrome-edge: rgba(255, 255, 255, 0.9);
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #86868b;
+  --accent: #0071e3;
+  --accent-tint: rgba(0, 113, 227, 0.1);
+  --accent-ink: #ffffff;
+  --separator: rgba(60, 60, 67, 0.13);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --scrim: rgba(0, 0, 0, 0.28);
+
+  /* material tuning — overridden by reduced-transparency query */
+  --blur-amt: 22px;
+  --sat-amt: 180%;
+
+  /* motion — overridden by reduced-motion query */
+  --dur-fast: 110ms;
+  --dur-med: 240ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* type scale (rem, base = 16px) — see DESIGN NOTES for the full table */
+  --fs-display: clamp(1.75rem, 1.55rem + 1vw, 2.25rem);
+  --fs-title: 1.0625rem;
+  --fs-eyebrow: 0.8125rem;
+  --fs-body: 1.0625rem;
+  --fs-subhead: 0.875rem;
+  --fs-caption: 0.75rem;
+
+  --font-ui: "Vazirmatn", "IRANSans", "IRANYekan", -apple-system, BlinkMacSystemFont,
+             "Segoe UI", Tahoma, Roboto, Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0b0b0d;
+    --bg-elevated: #1c1c1e;
+    --bg-press: rgba(255, 255, 255, 0.06);
+    --chrome-bg: rgba(28, 28, 30, var(--chrome-alpha));
+    --chrome-edge: rgba(255, 255, 255, 0.08);
+    --text: #f5f5f7;
+    --text-secondary: #98989d;
+    --text-tertiary: #7c7c80;
+    --accent: #409cff;
+    --accent-tint: rgba(64, 156, 255, 0.16);
+    --accent-ink: #06101c;
+    --separator: rgba(84, 84, 88, 0.6);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-2: 0 12px 28px rgba(0, 0, 0, 0.5);
+    --scrim: rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* prefers-reduced-transparency: frost becomes near-solid, blur drops out */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --blur-amt: 0px;
+    --sat-amt: 100%;
+    --chrome-alpha: 0.97;
+  }
+}
+
+/* prefers-reduced-motion: no easing curves, no transform-driven feedback */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-med: 0ms;
+    --ease: linear;
+  }
+}
+
+/* ---------- Base ---------- */
+html { font-size: 100%; }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Persian tracking: deliberately `normal` (0) at every size — never negative,
+   never positive. Cursive joins can't tolerate an inserted gap. Hierarchy is
+   built from weight + size + leading instead. See DESIGN NOTES. */
+:lang(fa) { letter-spacing: normal; }
+
+/* Latin runs (dir="ltr" spans/labels) get the small-text tracking bump from
+   the reference's size-specific rule — everything in this document's Latin
+   text is small (hashtags, UI labels), so +0.01em is the only value used
+   live. A `.display-lat` utility below implements the large/negative half
+   of the rule for when English-mode entry titles need it. */
+[dir="ltr"] { letter-spacing: 0.01em; }
+.display-lat { letter-spacing: -0.02em; } /* unused in this fa-only mockup — reserved for English display headings */
+
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---------- Deck scaffolding (not part of the real site) ---------- */
+.deck-header {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 0.5rem;
+  color: var(--text-secondary);
+  font-size: var(--fs-subhead);
+}
+.deck-header strong { color: var(--text); font-weight: 600; }
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem 4rem;
+}
+.frame-label {
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  padding-inline: 0.25rem;
+}
+.frame-divider {
+  width: min(430px, 100%);
+  margin-block: 1.5rem;
+  padding-block: 1rem;
+  text-align: center;
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  border-block: 1px dashed var(--separator);
+}
+
+/* ---------- Screen frame (simulates the site's own viewport + scroll) ---------- */
+.frame {
+  width: min(430px, 100%);
+  height: min(760px, 82svh);
+  background: var(--bg);
+  border-radius: 20px;
+  border: 1px solid var(--separator);
+  box-shadow: var(--shadow-2);
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  scrollbar-width: thin;
+}
+
+/* ---------- Chrome: the translucent floating header (§12) ---------- */
+.chrome {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--chrome-bg);
+  backdrop-filter: blur(var(--blur-amt)) saturate(var(--sat-amt));
+  -webkit-backdrop-filter: blur(var(--blur-amt)) saturate(var(--sat-amt));
+  border-block-end: 1px solid var(--chrome-edge);
+}
+/* scroll-edge effect: a soft fading blur skirt below the hard chrome edge,
+   instead of a second hard divider (§12 "scroll edge effects, not hard dividers") */
+.chrome::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  height: 22px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+          mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+  pointer-events: none;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .chrome::after { display: none; } /* near-solid chrome needs no edge fade */
+}
+
+.chrome-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-inline: 1.125rem;
+}
+.chrome-row--title { padding-block: 0.875rem 0.5rem; justify-content: space-between; }
+.chrome-row--switch { padding-block: 0 0.625rem; }
+.chrome-row--search { padding-block: 0 0.875rem; }
+.chrome--entry .chrome-row { padding-block: 0.75rem; }
+
+.site-title {
+  font-size: var(--fs-title);
+  font-weight: 700;
+  letter-spacing: normal;
+}
+
+.lang-btn {
+  font-size: var(--fs-subhead);
+  font-weight: 600;
+  color: var(--accent);
+  padding: 0.375rem 0.625rem;
+  border-radius: 8px;
+  transition: transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.lang-btn:hover { background: var(--accent-tint); }
+.lang-btn:active { transform: scale(0.96); background: var(--accent-tint); }
+@media (prefers-reduced-motion: reduce) { .lang-btn:active { transform: none; } }
+
+/* ---------- Segmented control (موضوعی / الفبایی) ---------- */
+.segmented {
+  position: relative;
+  display: flex;
+  width: 100%;
+  padding: 3px;
+  background: var(--bg-press);
+  border-radius: 10px;
+  isolation: isolate;
+}
+.seg-thumb {
+  position: absolute;
+  inset-block: 3px;
+  inset-inline-start: 3px;
+  width: calc(50% - 3px);
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  box-shadow: var(--shadow-1);
+  transition: inset-inline-start var(--dur-med) var(--ease);
+  z-index: 0;
+}
+.segmented[data-active="alpha"] .seg-thumb {
+  inset-inline-start: calc(50% + 0px);
+}
+.seg-btn {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  text-align: center;
+  padding-block: 0.4375rem;
+  font-size: var(--fs-subhead);
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  transition: color var(--dur-fast) var(--ease);
+}
+.seg-btn.is-active { color: var(--text); }
+
+/* ---------- Search field ---------- */
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-press);
+  border-radius: 10px;
+  padding-inline: 0.625rem;
+  padding-block: 0.5rem;
+}
+.search-icon { width: 18px; height: 18px; color: var(--text-tertiary); flex: none; }
+.search-field input {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-subhead);
+  color: var(--text);
+}
+.search-field input::placeholder { color: var(--text-tertiary); }
+.search-field input:focus-visible { outline: none; }
+.search-field:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Content ---------- */
+.content { padding: 1.25rem 1.125rem 2.5rem; }
+
+/* ---------- Groups (index, topic view) ---------- */
+.group { margin-block-end: 1.75rem; }
+.group[hidden] { display: none; }
+.group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding-inline: 0.25rem;
+  margin-block-end: 0.625rem;
+}
+.group-head h2 {
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.count {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--bg-press);
+  padding: 0.0625rem 0.5rem;
+  border-radius: 999px;
+}
+
+.rows {
+  background: var(--bg-elevated);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  overflow: clip;
+}
+.rows > li[hidden] { display: none; }
+.rows > li + li { border-block-start: 1px solid var(--separator); }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.row:hover { background: var(--bg-press); }
+.row:active { background: var(--bg-press); transform: scale(0.99); }
+@media (prefers-reduced-motion: reduce) { .row:active { transform: none; } }
+
+.row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.125rem; }
+.row-title { font-size: var(--fs-title); font-weight: 600; line-height: 1.3; }
+.row-desc {
+  font-size: var(--fs-subhead);
+  line-height: 1.45;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row-badge {
+  flex: none;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-tint);
+  padding: 0.1875rem 0.5rem;
+  border-radius: 999px;
+}
+.row-chevron { flex: none; color: var(--text-tertiary); font-size: 1.125rem; line-height: 1; }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--fs-subhead);
+  padding-block: 2.5rem;
+}
+
+/* ---------- Entry view ---------- */
+.breadcrumb {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: var(--fs-subhead);
+  color: var(--text-secondary);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.breadcrumb a {
+  color: var(--text-secondary);
+  transition: color var(--dur-fast) var(--ease);
+  flex: none;
+}
+.breadcrumb a:hover { color: var(--accent); }
+.crumb-sep { color: var(--text-tertiary); flex: none; }
+.crumb-current { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+
+.content--entry { padding-block-start: 1.5rem; }
+
+.display-title {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: normal;
+  margin-block-end: 0.5rem;
+}
+.lede {
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-block-end: 1.125rem;
+}
+
+.hashtags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block-end: 1.75rem; }
+.tag {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-tint);
+  padding: 0.3125rem 0.75rem;
+  border-radius: 999px;
+  transition: transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.tag:hover { background: color-mix(in srgb, var(--accent-tint) 70%, var(--accent) 15%); }
+.tag:active { transform: scale(0.95); }
+@media (prefers-reduced-motion: reduce) { .tag:active { transform: none; } }
+
+.prose { display: flex; flex-direction: column; gap: 1rem; margin-block-end: 2rem; }
+.prose p {
+  font-size: var(--fs-body);
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.section-label {
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-block-end: 0.75rem;
+  padding-inline: 0.125rem;
+}
+
+.example {
+  background: var(--accent-tint);
+  border-radius: 14px;
+  padding: 1rem 1.125rem;
+  margin-block-end: 2rem;
+}
+.example .section-label { color: var(--accent); }
+.example p { font-size: var(--fs-body); line-height: 1.65; color: var(--text); }
+
+.diagram-section { margin-block-end: 2rem; }
+.diagram {
+  background: var(--bg-elevated);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  padding: 1.25rem 0.75rem 1rem;
+}
+.diagram svg { width: 100%; height: auto; }
+.diagram figcaption {
+  margin-block-start: 0.75rem;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.related-grid { display: flex; flex-direction: column; gap: 0.625rem; }
+.related-card {
+  display: block;
+  background: var(--bg-elevated);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  padding: 0.875rem 1rem;
+  border-inline-start: 3px solid transparent;
+  transition: transform var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.related-card:hover { border-inline-start-color: var(--accent); }
+.related-card:active { transform: scale(0.99); }
+@media (prefers-reduced-motion: reduce) { .related-card:active { transform: none; } }
+.related-title { display: block; font-size: var(--fs-title); font-weight: 600; margin-block-end: 0.1875rem; }
+.related-desc { display: block; font-size: var(--fs-subhead); line-height: 1.5; color: var(--text-secondary); }
+
+/* ---------- prefers-contrast fallback kept implicit: label colors already ≥ 4.5:1 ---------- */
+
+/* ---------- Small screens: verified no horizontal overflow at 375px ---------- */
+@media (max-width: 380px) {
+  .chrome-row, .content { padding-inline: 0.875rem; }
+}
+
+</style>
+</head>
+<body>
+
+<p class="deck-header">دژنبشت — نسخهٔ هفتم از هفت جهت‌گیری بصری موازی. منبع: <strong>apple-design reference</strong> (مواد شیشه‌ای، عمق، تایپوگرافی اپتیکال). هر قاب زیر، اسکرول داخلی مستقل خودش را دارد تا نوار شناور و لبهٔ محوشونده دقیقاً مثل سایت واقعی رفتار کند.</p>
+
+<div class="stage">
+
+  <p class="frame-label">نمای فهرست</p>
+
+  <!-- ============================================================
+       نمای ۱: فهرست
+       ============================================================ -->
+  <div class="frame" id="view-index">
+    <header class="chrome chrome--index">
+      <div class="chrome-row chrome-row--title">
+        <h1 class="site-title">دژنبشت</h1>
+        <button class="lang-btn" type="button"><span dir="ltr">English</span></button>
+      </div>
+      <div class="chrome-row chrome-row--switch">
+        <div class="segmented" role="tablist" aria-label="نمای فهرست" data-active="topic">
+          <span class="seg-thumb" aria-hidden="true"></span>
+          <button class="seg-btn is-active" type="button" role="tab" aria-selected="true" data-view="topic">موضوعی</button>
+          <button class="seg-btn" type="button" role="tab" aria-selected="false" data-view="alpha">الفبایی</button>
+        </div>
+      </div>
+      <div class="chrome-row chrome-row--search">
+        <div class="search-field">
+          <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true">
+            <circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="13.2" y1="13.2" x2="18" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <input type="search" id="search-input" placeholder="جستجو در همهٔ موضوع‌ها…" aria-label="جستجو در مدخل‌ها">
+        </div>
+      </div>
+    </header>
+
+    <main class="content content--index">
+
+      <div class="index-list" data-panel="topic">
+        <section class="group">
+          <div class="group-head">
+            <h2>مفاهیم پایه</h2>
+            <span class="count">۳</span>
+          </div>
+          <ul class="rows">
+            <li>
+              <a class="row" href="#/t/blockchain">
+                <span class="row-main">
+                  <span class="row-title">بلاکچین</span>
+                  <span class="row-desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true">‹</span>
+              </a>
+            </li>
+            <li>
+              <a class="row" href="#/t/hash">
+                <span class="row-main">
+                  <span class="row-title">هش</span>
+                  <span class="row-desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true">‹</span>
+              </a>
+            </li>
+            <li>
+              <a class="row" href="#/t/wallet">
+                <span class="row-main">
+                  <span class="row-title">کیف پول</span>
+                  <span class="row-desc">ابزاری که کلیدهای خصوصی را نگه می‌دارد، نه خود دارایی را</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true">‹</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <section class="group">
+          <div class="group-head">
+            <h2>اجماع</h2>
+            <span class="count">۲</span>
+          </div>
+          <ul class="rows">
+            <li>
+              <a class="row" href="#/t/proof-of-work">
+                <span class="row-main">
+                  <span class="row-title">اثبات کار</span>
+                  <span class="row-desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true">‹</span>
+              </a>
+            </li>
+            <li>
+              <a class="row" href="#/t/nonce">
+                <span class="row-main">
+                  <span class="row-title">نانس</span>
+                  <span class="row-desc">عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true">‹</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="index-list" data-panel="alpha" hidden>
+        <ul class="rows rows--flat">
+          <li>
+            <a class="row" href="#/t/proof-of-work">
+              <span class="row-main">
+                <span class="row-title">اثبات کار</span>
+                <span class="row-desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+              </span>
+              <span class="row-badge">اجماع</span>
+            </a>
+          </li>
+          <li>
+            <a class="row" href="#/t/blockchain">
+              <span class="row-main">
+                <span class="row-title">بلاکچین</span>
+                <span class="row-desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</span>
+              </span>
+              <span class="row-badge">مفاهیم پایه</span>
+            </a>
+          </li>
+          <li>
+            <a class="row" href="#/t/wallet">
+              <span class="row-main">
+                <span class="row-title">کیف پول</span>
+                <span class="row-desc">ابزاری که کلیدهای خصوصی را نگه می‌دارد، نه خود دارایی را</span>
+              </span>
+              <span class="row-badge">مفاهیم پایه</span>
+            </a>
+          </li>
+          <li>
+            <a class="row" href="#/t/nonce">
+              <span class="row-main">
+                <span class="row-title">نانس</span>
+                <span class="row-desc">عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود</span>
+              </span>
+              <span class="row-badge">اجماع</span>
+            </a>
+          </li>
+          <li>
+            <a class="row" href="#/t/hash">
+              <span class="row-main">
+                <span class="row-title">هش</span>
+                <span class="row-desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+              </span>
+              <span class="row-badge">مفاهیم پایه</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <p class="empty-state" id="empty-state" hidden>نتیجه‌ای یافت نشد.</p>
+
+    </main>
+  </div>
+
+  <div class="frame-divider">↓ نمای مدخل — بلاکچین ↓</div>
+
+  <!-- ============================================================
+       نمای ۲: مدخل «بلاکچین»
+       ============================================================ -->
+  <div class="frame" id="view-entry">
+    <header class="chrome chrome--entry">
+      <div class="chrome-row">
+        <nav class="breadcrumb" aria-label="مسیر ناوبری">
+          <a href="#/">فهرست</a>
+          <span class="crumb-sep" aria-hidden="true">‹</span>
+          <a href="#/c/basics">مفاهیم پایه</a>
+          <span class="crumb-sep" aria-hidden="true">‹</span>
+          <span class="crumb-current" aria-current="page">بلاکچین</span>
+        </nav>
+        <button class="lang-btn" type="button"><span dir="ltr">English</span></button>
+      </div>
+    </header>
+
+    <main class="content content--entry">
+      <h1 class="display-title">بلاکچین</h1>
+      <p class="lede">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</p>
+
+      <div class="hashtags" role="list" aria-label="هشتگ‌های مدخل">
+        <button type="button" class="tag" role="listitem"><span dir="ltr">#ledger</span></button>
+        <button type="button" class="tag" role="listitem"><span dir="ltr">#bitcoin</span></button>
+        <button type="button" class="tag" role="listitem"><span dir="ltr">#structure</span></button>
+      </div>
+
+      <div class="prose">
+        <p>بلاکچین یک دفتر کل است که رکوردها را در دسته‌هایی به نام «بلوک» می‌نویسد. هر بلوک هش بلوک قبلی را در خودش دارد، پس بلوک‌ها مثل حلقه‌های یک زنجیر به هم وصل می‌شوند.</p>
+        <p>همین ارجاع به عقب است که دفتر را تغییرناپذیر می‌کند: اگر کسی یک بلوک قدیمی را دستکاری کند، هش آن عوض می‌شود، در نتیجه ارجاع بلوک بعدی نامعتبر می‌شود و همین‌طور تا انتهای زنجیره. برای پنهان ماندن دستکاری باید همهٔ بلوک‌های بعدی هم دوباره ساخته شوند.</p>
+        <p>نسخه‌ای از این دفتر روی هر نود شبکه نگه‌داری می‌شود و نودها با یک الگوریتم <span dir="ltr">consensus</span> سر اینکه کدام نسخه معتبر است به توافق می‌رسند.</p>
+      </div>
+
+      <section class="example">
+        <h2 class="section-label">مثال</h2>
+        <p>در بیت‌کوین حدوداً هر ۱۰ دقیقه یک بلوک جدید ساخته می‌شود و تراکنش‌های آن بازه را در خود جا می‌دهد.</p>
+      </section>
+
+      <section class="diagram-section">
+        <h2 class="section-label">دیاگرام</h2>
+        <figure class="diagram">
+          <svg viewBox="0 0 600 190" role="img" aria-labelledby="diagram-title diagram-desc">
+            <title id="diagram-title">زنجیرهٔ سه بلوک</title>
+            <desc id="diagram-desc">سه بلوک به‌ترتیب زمانی از راست به چپ؛ هر بلوک هش بلوک پیش از خود را نگه می‌دارد و با یک پیکان به آن ارجاع می‌دهد.</desc>
+
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+              </marker>
+            </defs>
+
+            <!-- بلوک ۳ (جدیدترین) — سمت چپ -->
+            <g>
+              <rect x="20" y="45" width="150" height="100" rx="14" fill="var(--bg)" stroke="var(--separator)" stroke-width="1.5"/>
+              <text x="95" y="88" text-anchor="middle" font-size="16" font-weight="700" fill="var(--text)">بلوک ۳</text>
+              <text x="95" y="112" text-anchor="middle" font-size="12" fill="var(--text-secondary)">جدیدترین</text>
+            </g>
+
+            <!-- بلوک ۲ (میانی) -->
+            <g>
+              <rect x="225" y="45" width="150" height="100" rx="14" fill="var(--bg)" stroke="var(--separator)" stroke-width="1.5"/>
+              <text x="300" y="88" text-anchor="middle" font-size="16" font-weight="700" fill="var(--text)">بلوک ۲</text>
+              <text x="300" y="112" text-anchor="middle" font-size="12" fill="var(--text-secondary)">میانی</text>
+            </g>
+
+            <!-- بلوک ۱ (جنسیس) — سمت راست -->
+            <g>
+              <rect x="430" y="45" width="150" height="100" rx="14" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="1.5"/>
+              <text x="505" y="88" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent)">بلوک ۱</text>
+              <text x="505" y="112" text-anchor="middle" font-size="12" fill="var(--accent)">جنسیس</text>
+            </g>
+
+            <!-- پیکان‌های ارجاع: هر بلوک به هش بلوک قبلی (سمت راست خودش) اشاره می‌کند -->
+            <line x1="178" y1="95" x2="217" y2="95" stroke="var(--accent)" stroke-width="1.75" marker-end="url(#arrow)"/>
+            <text x="197" y="80" text-anchor="middle" font-size="11" fill="var(--text-tertiary)">هش</text>
+
+            <line x1="383" y1="95" x2="422" y2="95" stroke="var(--accent)" stroke-width="1.75" marker-end="url(#arrow)"/>
+            <text x="402" y="80" text-anchor="middle" font-size="11" fill="var(--text-tertiary)">هش</text>
+          </svg>
+          <figcaption>هر بلوک هش بلوک پیش از خود را نگه می‌دارد و به آن ارجاع می‌دهد — از جدیدترین (چپ) تا جنسیس (راست).</figcaption>
+        </figure>
+      </section>
+
+      <section class="related">
+        <h2 class="section-label">مدخل‌های مرتبط</h2>
+        <div class="related-grid">
+          <a class="related-card" href="#/t/hash">
+            <span class="related-title">هش</span>
+            <span class="related-desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+          </a>
+          <a class="related-card" href="#/t/proof-of-work">
+            <span class="related-title">اثبات کار</span>
+            <span class="related-desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var seg = document.querySelector(".segmented");
+  var segBtns = seg.querySelectorAll(".seg-btn");
+  var panels = {
+    topic: document.querySelector('[data-panel="topic"]'),
+    alpha: document.querySelector('[data-panel="alpha"]')
+  };
+  var searchInput = document.getElementById("search-input");
+  var emptyState = document.getElementById("empty-state");
+
+  function activePanel() {
+    return panels.topic.hidden ? panels.alpha : panels.topic;
+  }
+
+  function applyFilter() {
+    var q = searchInput.value.trim().toLocaleLowerCase();
+    var panel = activePanel();
+    var rows = panel.querySelectorAll(".row");
+    var matches = 0;
+
+    rows.forEach(function (row) {
+      var text = row.textContent.toLocaleLowerCase();
+      var show = q === "" || text.indexOf(q) !== -1;
+      row.parentElement.hidden = !show;
+      if (show) matches++;
+    });
+
+    panel.querySelectorAll(".group").forEach(function (group) {
+      var visible = group.querySelectorAll(".rows > li:not([hidden])");
+      group.hidden = q !== "" && visible.length === 0;
+    });
+
+    emptyState.hidden = q === "" || matches > 0;
+  }
+
+  segBtns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var view = btn.getAttribute("data-view");
+      seg.setAttribute("data-active", view);
+
+      segBtns.forEach(function (b) {
+        var active = b === btn;
+        b.classList.toggle("is-active", active);
+        b.setAttribute("aria-selected", String(active));
+      });
+
+      panels.topic.hidden = view !== "topic";
+      panels.alpha.hidden = view !== "alpha";
+      applyFilter();
+    });
+  });
+
+  searchInput.addEventListener("input", applyFilter);
+})();
+</script>
+
+<!--
+DESIGN NOTES
+
+جهت‌گیری:
+نمای «مادهٔ شیشه‌ای معلق» — تیتر، سوییچ نما و جستجو در یک نوار نیمه‌شفاف و
+چسبان می‌مانند که محتوا زیرش می‌لغزد و در لبه‌اش به‌جای یک خط سخت محو می‌شود.
+حسی آرام و متمرکز برای مطالعهٔ طولانی: چیزی همیشه در دسترس است (جستجو،
+مسیر ناوبری)، ولی هیچ‌چیز روی متن سنگینی نمی‌کند.
+
+پالت (روشن / تاریک خودکار با prefers-color-scheme):
+  --bg          #f5f5f2 / #0b0b0d   بومِ کاغذی صفحه
+  --bg-elevated #ffffff / #1c1c1e   سطح گروه‌بندی‌شده (جامد، نه شفاف — لایهٔ ساختاری سنگین‌تر)
+  --chrome-bg   rgba(255,255,255,.72) / rgba(28,28,30,.72) + blur(22px)  تنها لایهٔ شیشه‌ایِ صفحه
+  --text        #1d1d1f / #f5f5f7   متن اصلی
+  --text-secondary #6e6e73 / #98989d  متن فرعی، توضیح یک‌خطی
+  --accent      #0071e3 / #409cff   لینک، تأکید، هشتگ
+لایه‌بندی مواد طبق §۱۲: فقط نوار بالا شیشه‌ای است (blur+alpha)؛ کارت‌های
+گروه و مدخل‌های مرتبط سطح‌های جامد (bg-elevated) با سایهٔ نرم‌اند — هیچ سطح
+نیمه‌شفافی روی سطح نیمه‌شفاف دیگر نمی‌نشیند. لبهٔ پایین نوار به‌جای یک
+خط ۱px، یک محوشدگی نرم دارد (.chrome::after) که با prefers-reduced-transparency
+حذف می‌شود چون در آن حالت نوار خودش تقریباً جامد است.
+
+تصمیم دربارهٔ tracking فارسی:
+هیچ letter-spacing‌ای — نه منفی، نه مثبت — به متن فارسی در هیچ اندازه‌ای
+اعمال نشده (`:lang(fa){letter-spacing:normal}`). قانون خام منبع («تیتر
+بزرگ منفی، متن کوچک کمی مثبت») برای خط فارسی/عربی معنا ندارد چون حروف با
+اتصال‌های صفر-عرض به هم می‌پیوندند؛ هر فاصلهٔ اضافه، چه مثبت چه منفی، آن
+اتصال را می‌شکند و شکل کلمه را خراب می‌کند. به‌جایش سلسله‌مراتب طبق همان
+اصل §۱۵ («وزن+اندازه+فاصلهٔ خط با هم») ساخته شده: تیتر مدخل هم بزرگ‌تر است
+هم سنگین‌تر (700) هم فاصلهٔ خط تنگ‌تر (1.15)، بدون هیچ تغییری در tracking.
+تنها بخش‌های لاتین (span‌های dir="ltr" — هشتگ‌ها، «consensus»، برچسب
+«English») قانون خام را می‌گیرند: چون همه‌شان در این محتوا اندازهٔ کوچک‌اند،
++0.01em تک مقداری‌ست که زنده دیده می‌شود؛ نیمهٔ بزرگ/منفی قانون در کلاس
+`.display-lat` (letter-spacing:-0.02em) پیاده شده و برای تیتر مدخل در حالت
+انگلیسیِ سایت واقعی (که آنجا لاتین بزرگ می‌شود) آماده است، هرچند این ماکت
+تک‌زبانه چیزی برایش ندارد که نشانش دهد.
+
+تایپوگرافی — مقیاس (rem، پایه ۱۶px):
+  display   clamp(1.75rem,1.55rem+1vw,2.25rem)  leading 1.15  وزن 700  (تیتر مدخل)
+  title     1.0625rem (17px)                     leading 1.3   وزن 600  (تیتر ردیف/عنوان سایت)
+  body      1.0625rem (17px)                     leading 1.75  وزن 400  (پاراگراف اصلی)
+  subhead   0.875rem (14px)                       leading 1.45  وزن 400/600  (توضیح یک‌خطی، مسیر ناوبری)
+  eyebrow   0.8125rem (13px)                      leading 1.3   وزن 700  (سرتیتر بخش/دسته)
+  caption   0.75rem (12px)                        leading 1.3   وزن 600  (هشتگ، شمارنده)
+leading با اندازه معکوس می‌شود: تیتر بزرگ تنگ (1.15) تا پاراگراف بلند
+باز (1.75) — دومی برای خوانش طولانیِ فارسی عمداً سخاوتمندانه است.
+سلسله‌مراتب از ترکیب وزن+اندازه+leading ساخته شده، نه فقط اندازه.
+
+عنصر امضا:
+نوار شیشه‌ای چسبان با لبهٔ محوشونده — به‌جای یک خط سخت زیر هدر، محتوا و
+به‌خصوص تیتر بزرگ مدخل، همان‌طور که پایین می‌رود، در یک ناحیهٔ نرم زیر
+نوار محو می‌شود (§۱۲: «scroll edge effects, not hard dividers»).
+
+ریسکی که گرفتم:
+هر دو نما را به‌جای یک صفحهٔ بلند پشت‌سرهم، در دو «قاب» با اسکرول داخلی
+مستقل رندر کردم تا رفتار واقعیِ position:sticky و backdrop-filter — که
+اصل این جهت‌گیری است — دقیقاً همان‌طور دیده شود که در خودِ سایت (با
+اسکرول کل صفحه) اتفاق می‌افتد. ریسکش این بود که شبیه ماکت یک اپ موبایل
+به‌نظر برسد نه یک صفحهٔ وب؛ برای کم‌کردنش از قاب تلفن (لبهٔ گرد افراطی،
+notch، نوار وضعیت) پرهیز کردم — فقط یک مستطیل با گوشهٔ نرم و سایه، که در
+سایت واقعی معادلش کل بدنهٔ صفحه با اسکرول طبیعی مرورگر خواهد بود.
+
+فونت پیشنهادی برای میزبانی محلی:
+Vazirmatn — فونت متغیر (وزن ۱۰۰ تا ۹۰۰ در یک فایل)، به‌طور خاص برای رابط
+کاربری طراحی شده (نه فقط متن چاپی)، پوشش کامل فارسی/عربی به‌همراه لاتین
+هم‌وزن دارد، و مجوز آزاد (SIL OFL) دارد. همان نقشی که سن‌فرانسیسکو برای
+لاتین بازی می‌کند را اینجا بازی می‌کند: جدول‌های اپتیکال و متریک‌های
+هماهنگ در همهٔ وزن‌ها، به‌جای فallback ناهماهنگ سیستم‌عامل‌های مختلف.
+میزبانی محلی: assets/fonts/Vazirmatn[wght].woff2 + یک @font-face با
+font-display: swap.
+-->
+
+</body>
+</html>

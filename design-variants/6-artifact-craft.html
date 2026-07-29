@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دژنبشت — نمونهٔ طراحی</title>
+<style>
+
+/* ---------- Tokens ---------- */
+:root{
+  --bg: #eeebe2;
+  --surface: #f8f6ef;
+  --surface-hover: #f1eee2;
+  --surface-active: #e9e4d5;
+  --ink: #26221d;
+  --ink-soft: #5c5548;
+  --ink-faint: #8b8272;
+  --line: #d9d3c2;
+  --line-strong: #c7bfa9;
+  --accent: #33517d;
+  --accent-ink: #33517d;
+  --accent-soft-bg: #e2e8f0;
+  --accent-2: #8a5a1f;
+  --accent-2-bg: #f2e7d2;
+  --accent-2-ink: #6b4517;
+  --focus-ring: #33517d;
+  --shadow-1: 0 1px 2px rgba(38,34,29,.06), 0 1px 1px rgba(38,34,29,.04);
+  --shadow-2: 0 6px 20px -8px rgba(38,34,29,.22);
+
+  --font-sans: Tahoma, "Segoe UI", "Noto Sans Arabic", "Vazirmatn", system-ui, -apple-system, sans-serif;
+  --font-serif: "Noto Naskh Arabic", "Noto Serif Arabic", ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", Menlo, monospace;
+
+  --fs-tagline: 0.8125rem;
+  --fs-small: 0.875rem;
+  --fs-body: 1.0625rem;
+  --fs-entry-title: 1.125rem;
+  --fs-h2: 1.1875rem;
+  --fs-logo: 1.5rem;
+  --fs-h1: 2.125rem;
+
+  --gap-2xs: .375rem;
+  --gap-xs: .625rem;
+  --gap-sm: 1rem;
+  --gap-md: 1.5rem;
+  --gap-lg: 2.25rem;
+  --gap-xl: 3.5rem;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+
+  --transition: 160ms ease;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg: #17130f;
+    --surface: #221c15;
+    --surface-hover: #2a231a;
+    --surface-active: #332b20;
+    --ink: #ece5d6;
+    --ink-soft: #b6ac98;
+    --ink-faint: #7d7565;
+    --line: #3c342a;
+    --line-strong: #4c4231;
+    --accent: #8fb0e0;
+    --accent-ink: #9dbbea;
+    --accent-soft-bg: #26364c;
+    --accent-2: #d9a955;
+    --accent-2-bg: #3a2c17;
+    --accent-2-ink: #e7c07f;
+    --focus-ring: #9dbbea;
+    --shadow-1: 0 1px 2px rgba(0,0,0,.35), 0 1px 1px rgba(0,0,0,.25);
+    --shadow-2: 0 10px 28px -10px rgba(0,0,0,.55);
+  }
+}
+
+/* Explicit theme override hooks, in case a host page stamps data-theme on <html> */
+:root[data-theme="dark"]{
+  --bg: #17130f; --surface: #221c15; --surface-hover: #2a231a; --surface-active: #332b20;
+  --ink: #ece5d6; --ink-soft: #b6ac98; --ink-faint: #7d7565;
+  --line: #3c342a; --line-strong: #4c4231;
+  --accent: #8fb0e0; --accent-ink: #9dbbea; --accent-soft-bg: #26364c;
+  --accent-2: #d9a955; --accent-2-bg: #3a2c17; --accent-2-ink: #e7c07f;
+  --focus-ring: #9dbbea;
+}
+:root[data-theme="light"]{
+  --bg: #eeebe2; --surface: #f8f6ef; --surface-hover: #f1eee2; --surface-active: #e9e4d5;
+  --ink: #26221d; --ink-soft: #5c5548; --ink-faint: #8b8272;
+  --line: #d9d3c2; --line-strong: #c7bfa9;
+  --accent: #33517d; --accent-ink: #33517d; --accent-soft-bg: #e2e8f0;
+  --accent-2: #8a5a1f; --accent-2-bg: #f2e7d2; --accent-2-ink: #6b4517;
+  --focus-ring: #33517d;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.9;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, p, ul, figure{ margin: 0; }
+ul{ padding: 0; list-style: none; }
+a{ color: inherit; text-decoration: none; }
+button{ font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+img, svg{ display: block; max-width: 100%; }
+
+/* Guardrail: Persian is cursive — letter-spacing severs letter joins.
+   Keep tracking at zero for Farsi content; any deliberate tracking must be
+   scoped to Latin/monospace content explicitly (e.g. [dir="ltr"], .mono). */
+:lang(fa), [lang="fa"]{ letter-spacing: 0; }
+
+.visually-hidden{
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link{
+  position: absolute;
+  inset-inline-start: -999px;
+  top: 0;
+  background: var(--accent);
+  color: var(--bg);
+  padding: .75rem 1.25rem;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  z-index: 100;
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+.skip-link:focus{
+  inset-inline-start: 1rem;
+}
+
+:where(a, button, input, [tabindex]):focus-visible{
+  outline: 2.5px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 5px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  *, *::before, *::after{
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* ---------- Layout shell ---------- */
+.container{
+  width: min(100% - 2.5rem, 760px);
+  margin-inline: auto;
+}
+.view{ padding-block: var(--gap-xl); }
+
+/* ---------- Site header ---------- */
+.site-header{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  margin-block-end: var(--gap-lg);
+}
+.brand{ display: flex; flex-direction: column; gap: .3rem; }
+.brand h1{
+  font-family: var(--font-serif);
+  font-size: var(--fs-logo);
+  font-weight: 700;
+}
+.tagline{
+  font-size: var(--fs-tagline);
+  color: var(--ink-soft);
+}
+.header-controls{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.lang-switch{
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .5rem .9rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.lang-switch:hover{ background: var(--surface-hover); color: var(--ink); border-color: var(--line-strong); }
+.lang-switch:active{ background: var(--surface-active); }
+.lang-switch .lang-code{ font-family: var(--font-mono); }
+
+.view-switch{
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  gap: 2px;
+  background: var(--surface);
+}
+.switch-btn{
+  padding: .4rem .95rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  transition: background var(--transition), color var(--transition);
+}
+.switch-btn:hover{ color: var(--ink); }
+.switch-btn.is-active{
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+}
+.switch-btn.is-active:hover{ background: var(--accent); }
+.switch-btn:active{ transform: translateY(1px); }
+
+/* ---------- Search ---------- */
+.search-row{
+  position: relative;
+  margin-block-end: var(--gap-lg);
+}
+.search-icon{
+  position: absolute;
+  inset-inline-start: 1rem;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--ink-faint);
+  pointer-events: none;
+}
+.search-row input{
+  width: 100%;
+  font: inherit;
+  font-size: var(--fs-body);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  padding: .9rem 1.1rem;
+  padding-inline-start: 3rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.search-row input::placeholder{ color: var(--ink-faint); }
+.search-row input:hover{ border-color: var(--ink-faint); }
+.search-row input:focus-visible{
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3.5px var(--accent-soft-bg);
+}
+
+/* ---------- Entries ---------- */
+.entries-panel{
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+.category + .category{ border-block-start: 1px solid var(--line); }
+
+.category-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  padding: 1.1rem 1.4rem .6rem;
+}
+.category-header h2{
+  font-size: var(--fs-h2);
+  font-weight: 700;
+}
+.count-badge{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.9rem;
+  height: 1.9rem;
+  padding-inline: .3rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-2);
+  color: var(--accent-2-ink);
+  background: var(--accent-2-bg);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.entry-list{ padding-block-end: .5rem; }
+.entry{ border-block-start: 1px solid var(--line); }
+.entry:first-child{ border-block-start: 0; }
+.entry[hidden]{ display: none; }
+
+.entry-link{
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  padding: 1rem 1.4rem;
+  transition: background var(--transition);
+}
+.entry-link:hover{ background: var(--surface-hover); }
+.entry-link:active{ background: var(--surface-active); }
+
+.entry-title{
+  font-size: var(--fs-entry-title);
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: .55rem;
+  flex-wrap: wrap;
+}
+.entry-link:visited .entry-title{ color: var(--accent-2-ink); }
+.entry-desc{
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  max-width: 62ch;
+}
+.entry-category-tag{
+  font-size: .75rem;
+  font-weight: 400;
+  color: var(--ink-faint);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  padding: .1rem .6rem;
+}
+
+/* ---------- Empty state ---------- */
+.empty-state{
+  text-align: center;
+  padding: var(--gap-xl) var(--gap-md);
+  color: var(--ink-soft);
+}
+.empty-state[hidden]{ display: none; }
+.empty-icon{ margin-inline: auto; margin-block-end: var(--gap-sm); color: var(--ink-faint); }
+.empty-title{ font-weight: 700; color: var(--ink); margin-block-end: .3rem; }
+.empty-hint{ font-size: var(--fs-small); }
+
+/* ---------- View divider ---------- */
+.view-divider-wrap{
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: min(100% - 2.5rem, 760px);
+  margin-inline: auto;
+  padding-block: var(--gap-md);
+}
+.view-divider-wrap::before,
+.view-divider-wrap::after{
+  content: "";
+  flex: 1;
+  border-block-start: 1px dashed var(--line-strong);
+}
+.view-divider-label{
+  font-size: var(--fs-small);
+  color: var(--ink-faint);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+}
+
+/* ---------- Entry view ---------- */
+.entry-view{ padding-block-start: var(--gap-lg); }
+
+.breadcrumb{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  font-size: var(--fs-small);
+  color: var(--ink-faint);
+  margin-block-end: var(--gap-lg);
+}
+.breadcrumb a{
+  color: var(--ink-soft);
+  border-radius: 4px;
+  transition: color var(--transition);
+}
+.breadcrumb a:hover{ color: var(--accent); text-decoration: underline; text-underline-offset: .2em; }
+.breadcrumb [aria-current="page"]{ color: var(--ink); font-weight: 600; }
+.breadcrumb .sep{ color: var(--line-strong); }
+
+.entry-article{
+  max-width: 66ch;
+}
+.entry-article h1{
+  font-family: var(--font-serif);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  text-wrap: balance;
+  margin-block-end: .55rem;
+}
+.entry-lede{
+  font-size: 1.1875rem;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  margin-block-end: var(--gap-md);
+  max-width: 58ch;
+}
+
+.hashtags{
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-block-end: var(--gap-lg);
+}
+.hashtag{
+  font-family: var(--font-mono);
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--accent-2-ink);
+  background: var(--accent-2-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  padding: .3rem .75rem;
+  transition: border-color var(--transition), background var(--transition);
+}
+.hashtag:hover{ border-color: var(--accent-2); }
+.hashtag:active{ background: var(--accent-2-bg); transform: translateY(1px); }
+.hashtag:visited{ color: var(--accent-2-ink); }
+
+.entry-body p{
+  margin-block-end: 1.35rem;
+  color: var(--ink);
+}
+.entry-body p:last-child{ margin-block-end: 0; }
+
+section.example{
+  margin-block: var(--gap-lg);
+  padding: 1.1rem 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-inline-start: 3.5px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+[dir="rtl"] section.example{ border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+section.example h2{
+  font-size: var(--fs-small);
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin-block-end: .5rem;
+}
+section.example p{ margin: 0; color: var(--ink); }
+
+/* ---------- Diagram ---------- */
+.chain-diagram{
+  margin-block: var(--gap-lg);
+  padding: 1.4rem 1.1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+.chain-svg{ width: 100%; height: auto; }
+.chain-block-fill{ fill: var(--bg); }
+.chain-block-stroke{ stroke: var(--line-strong); }
+.chain-ring{ stroke: var(--line-strong); fill: none; }
+.chain-tick{ fill: var(--line-strong); }
+.chain-line{ stroke: var(--accent); }
+.chain-arrow{ fill: var(--accent); }
+.chain-node-fill{ fill: var(--surface); stroke: var(--accent); }
+.chain-node-text{ fill: var(--accent); font-family: var(--font-mono); font-size: 11px; font-weight: 700; }
+
+.chain-captions{
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-block-start: .85rem;
+  padding-inline: .5rem;
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  text-align: center;
+}
+.chain-captions span{ flex: 1; }
+.chain-captions small{ display: block; color: var(--ink-faint); font-size: .75rem; }
+
+/* ---------- Related ---------- */
+.related{ margin-block-start: var(--gap-xl); }
+.related h2{
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  margin-block-end: 1rem;
+}
+.related-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-sm);
+}
+@media (max-width: 30rem){
+  .related-grid{ grid-template-columns: 1fr; }
+}
+.related-card{
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  padding: 1rem 1.2rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+.related-card:hover{ border-color: var(--line-strong); box-shadow: var(--shadow-2); transform: translateY(-2px); }
+.related-card:active{ transform: translateY(0); box-shadow: var(--shadow-1); }
+.related-title{ font-weight: 700; color: var(--ink); }
+.related-card:visited .related-title{ color: var(--accent-2-ink); }
+.related-desc{ font-size: var(--fs-small); color: var(--ink-soft); }
+
+/* ---------- Footer scaffolding ---------- */
+.scaffold-note{
+  width: min(100% - 2.5rem, 760px);
+  margin-inline: auto;
+  padding-block: var(--gap-lg) var(--gap-xl);
+  font-size: var(--fs-tagline);
+  color: var(--ink-faint);
+  border-block-start: 1px solid var(--line);
+}
+
+@media (max-width: 26rem){
+  :root{ --fs-h1: 1.75rem; --fs-logo: 1.3rem; --fs-body: 1rem; }
+  .container, .view-divider-wrap, .scaffold-note{ width: min(100% - 1.75rem, 760px); }
+}
+
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">پرش به محتوای اصلی</a>
+
+<!-- ============================================================
+     نمای ۱ — فهرست
+     ============================================================ -->
+<section id="index-view" class="view index-view" aria-label="نمای فهرست">
+  <div class="container">
+
+    <header class="site-header">
+      <div class="brand">
+        <h1>دژنبشت</h1>
+        <p class="tagline">دانشنامهٔ شخصیِ رمزارز و بلاکچین</p>
+      </div>
+      <div class="header-controls">
+        <button type="button" class="lang-switch" aria-label="تغییر زبان به انگلیسی">
+          <span aria-hidden="true">🌐</span>
+          <span class="lang-code" dir="ltr">English</span>
+        </button>
+        <div class="view-switch" role="group" aria-label="ترتیب نمایش مدخل‌ها">
+          <button type="button" id="btn-topic" class="switch-btn is-active" aria-pressed="true">موضوعی</button>
+          <button type="button" id="btn-alpha" class="switch-btn" aria-pressed="false">الفبایی</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="search-row" role="search">
+        <label for="q" class="visually-hidden">جستجو در مدخل‌ها</label>
+        <span class="search-icon" aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 19 19" fill="none">
+            <circle cx="8.25" cy="8.25" r="6.25" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <input type="text" id="q" placeholder="جستجو در مدخل‌ها…" autocomplete="off">
+      </div>
+
+      <!-- نمای موضوعی: دسته‌بندی‌شده -->
+      <div id="entries-topic" class="entries-panel">
+        <section class="category">
+          <div class="category-header">
+            <h2>مفاهیم پایه</h2>
+            <span class="count-badge" aria-hidden="true">۳</span>
+            <span class="visually-hidden">۳ مدخل</span>
+          </div>
+          <ul class="entry-list">
+            <li class="entry">
+              <a class="entry-link" href="#entry-blockchain">
+                <span class="entry-title">بلاکچین</span>
+                <span class="entry-desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</span>
+              </a>
+            </li>
+            <li class="entry">
+              <a class="entry-link" href="#/t/hash">
+                <span class="entry-title">هش</span>
+                <span class="entry-desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+              </a>
+            </li>
+            <li class="entry">
+              <a class="entry-link" href="#/t/wallet">
+                <span class="entry-title">کیف پول</span>
+                <span class="entry-desc">ابزاری که کلیدهای خصوصی را نگه می‌دارد، نه خود دارایی را</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <section class="category">
+          <div class="category-header">
+            <h2>اجماع</h2>
+            <span class="count-badge" aria-hidden="true">۲</span>
+            <span class="visually-hidden">۲ مدخل</span>
+          </div>
+          <ul class="entry-list">
+            <li class="entry">
+              <a class="entry-link" href="#/t/proof-of-work">
+                <span class="entry-title">اثبات کار</span>
+                <span class="entry-desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+              </a>
+            </li>
+            <li class="entry">
+              <a class="entry-link" href="#/t/nonce">
+                <span class="entry-title">نانس</span>
+                <span class="entry-desc">عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- نمای الفبایی: مسطح، بدون دسته‌بندی -->
+      <div id="entries-alpha" class="entries-panel" hidden>
+        <ul class="entry-list">
+          <li class="entry">
+            <a class="entry-link" href="#/t/proof-of-work">
+              <span class="entry-title">اثبات کار <span class="entry-category-tag">اجماع</span></span>
+              <span class="entry-desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+            </a>
+          </li>
+          <li class="entry">
+            <a class="entry-link" href="#entry-blockchain">
+              <span class="entry-title">بلاکچین <span class="entry-category-tag">مفاهیم پایه</span></span>
+              <span class="entry-desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</span>
+            </a>
+          </li>
+          <li class="entry">
+            <a class="entry-link" href="#/t/wallet">
+              <span class="entry-title">کیف پول <span class="entry-category-tag">مفاهیم پایه</span></span>
+              <span class="entry-desc">ابزاری که کلیدهای خصوصی را نگه می‌دارد، نه خود دارایی را</span>
+            </a>
+          </li>
+          <li class="entry">
+            <a class="entry-link" href="#/t/nonce">
+              <span class="entry-title">نانس <span class="entry-category-tag">اجماع</span></span>
+              <span class="entry-desc">عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود</span>
+            </a>
+          </li>
+          <li class="entry">
+            <a class="entry-link" href="#/t/hash">
+              <span class="entry-title">هش <span class="entry-category-tag">مفاهیم پایه</span></span>
+              <span class="entry-desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div id="empty-state" class="empty-state" hidden>
+        <svg class="empty-icon" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <circle cx="17" cy="17" r="12" stroke="currentColor" stroke-width="2"/>
+          <path d="M26 26L34 34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 17H22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <p class="empty-title">مدخلی با این عنوان پیدا نشد</p>
+        <p class="empty-hint">املا را بررسی کنید یا در میان هشتگ‌ها بگردید.</p>
+      </div>
+    </main>
+  </div>
+</section>
+
+<div class="view-divider-wrap" aria-hidden="true">
+  <span class="view-divider-label">نمای ۲ — صفحهٔ مدخل «بلاکچین»</span>
+</div>
+
+<!-- ============================================================
+     نمای ۲ — مدخل «بلاکچین»
+     ============================================================ -->
+<section id="entry-blockchain" class="view entry-view" aria-label="نمای مدخل بلاکچین">
+  <div class="container">
+
+    <nav class="breadcrumb" aria-label="مسیر">
+      <a href="#index-view">فهرست</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="#index-view">مفاهیم پایه</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">بلاکچین</span>
+    </nav>
+
+    <article class="entry-article">
+      <h1>بلاکچین</h1>
+      <p class="entry-lede">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</p>
+
+      <ul class="hashtags" aria-label="هشتگ‌ها">
+        <li><a class="hashtag" dir="ltr" href="#/tag/ledger">#ledger</a></li>
+        <li><a class="hashtag" dir="ltr" href="#/tag/bitcoin">#bitcoin</a></li>
+        <li><a class="hashtag" dir="ltr" href="#/tag/structure">#structure</a></li>
+      </ul>
+
+      <div class="entry-body">
+        <p>بلاکچین یک دفتر کل است که رکوردها را در دسته‌هایی به نام «بلوک» می‌نویسد. هر بلوک هش بلوک قبلی را در خودش دارد، پس بلوک‌ها مثل حلقه‌های یک زنجیر به هم وصل می‌شوند.</p>
+        <p>همین ارجاع به عقب است که دفتر را تغییرناپذیر می‌کند: اگر کسی یک بلوک قدیمی را دستکاری کند، هش آن عوض می‌شود، در نتیجه ارجاع بلوک بعدی نامعتبر می‌شود و همین‌طور تا انتهای زنجیره. برای پنهان ماندن دستکاری باید همهٔ بلوک‌های بعدی هم دوباره ساخته شوند.</p>
+        <p>نسخه‌ای از این دفتر روی هر نود شبکه نگه‌داری می‌شود و نودها با یک الگوریتم <span dir="ltr">consensus</span> سر اینکه کدام نسخه معتبر است به توافق می‌رسند.</p>
+      </div>
+
+      <section class="example">
+        <h2>مثال</h2>
+        <p>در بیت‌کوین حدوداً هر ۱۰ دقیقه یک بلوک جدید ساخته می‌شود و تراکنش‌های آن بازه را در خود جا می‌دهد.</p>
+      </section>
+
+      <figure class="chain-diagram">
+        <svg class="chain-svg" viewBox="0 0 560 190" role="img" aria-labelledby="chain-title chain-desc">
+          <title id="chain-title">زنجیرهٔ سه بلوک</title>
+          <desc id="chain-desc">سه بلوک از راست به چپ به هم متصل‌اند؛ هر بلوک هش بلوک قبلی را در خود نگه می‌دارد.</desc>
+
+          <!-- پیوند C→B -->
+          <line class="chain-line" x1="207" y1="95" x2="163" y2="95" stroke-width="2"/>
+          <polygon class="chain-arrow" points="159,95 170,89 170,101"/>
+          <circle class="chain-node-fill" cx="185" cy="95" r="11" stroke-width="1.5"/>
+          <text class="chain-node-text" x="185" y="99" text-anchor="middle">#</text>
+
+          <!-- پیوند B→A -->
+          <line class="chain-line" x1="397" y1="95" x2="353" y2="95" stroke-width="2"/>
+          <polygon class="chain-arrow" points="349,95 360,89 360,101"/>
+          <circle class="chain-node-fill" cx="375" cy="95" r="11" stroke-width="1.5"/>
+          <text class="chain-node-text" x="375" y="99" text-anchor="middle">#</text>
+
+          <!-- بلوک C (تازه‌ترین) -->
+          <rect class="chain-block-fill chain-block-stroke" x="20" y="35" width="140" height="120" rx="14" stroke-width="1.5"/>
+          <circle class="chain-ring" cx="90" cy="76" r="19" stroke-width="1.25"/>
+          <rect class="chain-tick" x="60" y="112" width="60" height="3" rx="1.5" opacity=".75"/>
+          <rect class="chain-tick" x="68" y="122" width="44" height="3" rx="1.5" opacity=".45"/>
+
+          <!-- بلوک B -->
+          <rect class="chain-block-fill chain-block-stroke" x="210" y="35" width="140" height="120" rx="14" stroke-width="1.5"/>
+          <circle class="chain-ring" cx="280" cy="76" r="19" stroke-width="1.25"/>
+          <rect class="chain-tick" x="250" y="112" width="60" height="3" rx="1.5" opacity=".75"/>
+          <rect class="chain-tick" x="258" y="122" width="44" height="3" rx="1.5" opacity=".45"/>
+
+          <!-- بلوک A (نخستین) -->
+          <rect class="chain-block-fill chain-block-stroke" x="400" y="35" width="140" height="120" rx="14" stroke-width="1.5"/>
+          <circle class="chain-ring" cx="470" cy="76" r="19" stroke-width="1.25"/>
+          <rect class="chain-tick" x="440" y="112" width="60" height="3" rx="1.5" opacity=".75"/>
+          <rect class="chain-tick" x="448" y="122" width="44" height="3" rx="1.5" opacity=".45"/>
+        </svg>
+        <div class="chain-captions">
+          <span>بلوک ۱<small>نخستین</small></span>
+          <span>بلوک ۲</span>
+          <span>بلوک ۳<small>تازه‌ترین</small></span>
+        </div>
+      </figure>
+
+      <section class="related">
+        <h2>مدخل‌های مرتبط</h2>
+        <div class="related-grid">
+          <a class="related-card" href="#/t/hash">
+            <span class="related-title">هش</span>
+            <span class="related-desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+          </a>
+          <a class="related-card" href="#/t/proof-of-work">
+            <span class="related-title">اثبات کار</span>
+            <span class="related-desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+          </a>
+        </div>
+      </section>
+    </article>
+  </div>
+</section>
+
+<p class="scaffold-note">این فایل یک نمونهٔ طراحی مستقل برای دژنبشت است؛ هر دو نما برای مقایسه در یک صفحه پشت‌هم چیده شده‌اند.</p>
+
+<script>
+(function(){
+  var input = document.getElementById('q');
+  var panels = [document.getElementById('entries-topic'), document.getElementById('entries-alpha')];
+  var emptyState = document.getElementById('empty-state');
+  var topicBtn = document.getElementById('btn-topic');
+  var alphaBtn = document.getElementById('btn-alpha');
+
+  function filter(){
+    var q = input.value.trim().toLowerCase();
+    var activePanel = topicBtn.getAttribute('aria-pressed') === 'true' ? panels[0] : panels[1];
+    var activeVisibleCount = 0;
+
+    panels.forEach(function(panel){
+      var entries = panel.querySelectorAll('.entry');
+      for (var i = 0; i < entries.length; i++){
+        var entry = entries[i];
+        var match = !q || entry.textContent.toLowerCase().indexOf(q) !== -1;
+        entry.hidden = !match;
+        if (match && panel === activePanel) activeVisibleCount++;
+      }
+      var cats = panel.querySelectorAll('.category');
+      for (var c = 0; c < cats.length; c++){
+        var cat = cats[c];
+        var visible = cat.querySelectorAll('.entry:not([hidden])').length > 0;
+        cat.hidden = !visible;
+      }
+    });
+
+    emptyState.hidden = !(q && activeVisibleCount === 0);
+  }
+
+  input.addEventListener('input', filter);
+
+  function setView(mode){
+    var topic = mode === 'topic';
+    panels[0].hidden = !topic;
+    panels[1].hidden = topic;
+    topicBtn.setAttribute('aria-pressed', String(topic));
+    alphaBtn.setAttribute('aria-pressed', String(!topic));
+    topicBtn.classList.toggle('is-active', topic);
+    alphaBtn.classList.toggle('is-active', !topic);
+    filter();
+  }
+  topicBtn.addEventListener('click', function(){ setView('topic'); });
+  alphaBtn.addEventListener('click', function(){ setView('alpha'); });
+})();
+</script>
+
+</body>
+</html>
+<!--
+DESIGN NOTES
+
+جهت‌گیری:
+دفترِ آرشیو، نه صفحه‌فرود کریپتو. پالت کاغذی/جوهری، ردیف‌های خط‌دار مثل صفحهٔ دفتر کل،
+و مُهر عددیِ گرد برای شمارندهٔ دسته‌ها القا می‌کنند این یک بایگانیِ شخصی و قابل‌اعتماد است،
+نه یک محصول نئونیِ بلاکچین. برای دانشنامه‌ای که قرار است سال‌ها خوانده شود، آرامش بصری
+مهم‌تر از جلب توجه است.
+
+پالت (روشن):
+--bg #eeebe2 (کاغذِ زمینه) · --surface #f8f6ef (سطح کارت) · --ink #26221d (متن اصلی)
+--ink-soft #5c5548 (متن ثانویه) · --accent #33517d (آبیِ جوهرِ دفتر — لینک‌ها و تعامل)
+--accent-2 #8a5a1f (برنزی/اُخرا — هشتگ و مُهر شمارنده)
+
+پالت (تیره):
+--bg #17130f · --surface #221c15 · --ink #ece5d6 · --ink-soft #b6ac98
+--accent #8fb0e0 (همان آبی، روشن‌شده برای زمینهٔ تیره) · --accent-2 #d9a955
+
+هر دو تم از یک منطق رنگی می‌آیند (جوهر آبی + اُخرای برنزی روی زمینهٔ گرم خنثی)، تیره صرفاً
+معکوسِ روشن نیست: اشباع و درخشندگیِ هر توکن جداگانه برای پس‌زمینهٔ خودش تنظیم شده.
+
+تایپوگرافی:
+فونت سیستمی؛ عنوان سایت و H1 مدخل با پشتهٔ سریف (Noto Naskh/Serif Arabic → ui-serif → Georgia)
+برای وقارِ آرشیوی، بدنهٔ متن با پشتهٔ سنس سیستمی برای خوانایی طولانی (line-height: 1.9)،
+و هشتگ‌ها/برچسب‌های فنی با فونت مونو برای حس «کد/هش». عرض ستون متن ~۶۶ کاراکتر.
+
+عنصر امضا:
+دیاگرام زنجیرهٔ سه‌بلوکی: هر بلوک یک «صفحهٔ دفتر» کوچک با حلقهٔ مُهر و خط‌های نوشته‌شده در آن،
+و پیوندها گره‌ای دایره‌ای با نماد # دارند — استعارهٔ دفترکل را از متن به گرافیک می‌کشاند.
+
+ریسکی که گرفتم:
+جهت زنجیره را از راست (نخستین بلوک) به چپ (تازه‌ترین) چیدم تا با جهت خواندن فارسی هم‌سو باشد،
+نه چیدمان چپ‌به‌راستِ رایج در آموزش‌های بلاکچین. برای همین از فلش/جداکنندهٔ جهت‌دار حاضر
+(«›») هم صرف‌نظر کردم و به‌جایش «/» خنثی گذاشتم — چون در RTL معنایش وارونه می‌شد.
+
+فونت پیشنهادی برای میزبانی محلی:
+Vazirmatn (وزن‌های ۴۰۰/۶۰۰/۷۰۰) برای بدنه و رابط، و در صورت تمایل به سریف واقعیِ فارسی،
+Noto Naskh Arabic فقط برای وردمارک و H1 مدخل.
+-->

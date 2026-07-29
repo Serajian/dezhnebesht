@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#1c1712">
+<title>دژنبشت - دفتر شخصی</title>
+<style>
+  /* ---------- Reset ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  input { font: inherit; color: inherit; }
+  h1, h2, h3, p { margin: 0; }
+  img, svg { max-inline-size: 100%; }
+
+  /* ---------- Tokens ---------- */
+  :root {
+    --bg:        #1c1712;
+    --bg-raised: #241d16;
+    --ink:       #e8ddc7;
+    --ink-dim:   #a99a7c;
+    --accent:      #d99a4e;
+    --accent-soft: #8a6a3f;
+    --rule: rgba(232, 221, 199, 0.14);
+    --rule-strong: rgba(232, 221, 199, 0.22);
+
+    --font-sans: system-ui, -apple-system, "Segoe UI", Tahoma, "Noto Naskh Arabic", Arial, sans-serif;
+
+    --pad: clamp(1rem, 4vw, 2.25rem);
+    --measure: 46rem;
+
+    /* Shape system: two tiers only.
+       PILL  (999px): standalone interactive chips/buttons.
+       SOFT  (14px): everything else with a visible rounded rect. */
+    --radius-pill: 999px;
+    --radius-soft: 14px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .anim-in { animation: fade-up .6s cubic-bezier(.16,1,.3,1) both; }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- Base ---------- */
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(circle at 16% 18%, rgba(217,154,78,0.06), transparent 46%),
+      radial-gradient(circle at 86% 78%, rgba(217,154,78,0.045), transparent 52%);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .sr-only {
+    position: absolute;
+    inline-size: 1px; block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .skip-link {
+    position: absolute;
+    inset-inline-start: 1rem;
+    top: -3rem;
+    background: var(--accent);
+    color: #1c1712;
+    padding: .6rem 1rem;
+    border-radius: var(--radius-soft);
+    font-weight: 600;
+    transition: top .2s ease;
+    z-index: 10;
+  }
+  .skip-link:focus { top: 1rem; }
+
+  .container {
+    max-inline-size: var(--measure);
+    margin-inline: auto;
+    padding-inline: var(--pad);
+  }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding-block: clamp(2.25rem, 7vw, 3.5rem) 1.75rem;
+  }
+  .wordmark { font-size: clamp(1.4rem, 4vw, 1.75rem); font-weight: 700; letter-spacing: 0; }
+  .tagline { margin-block-start: .3rem; font-size: .85rem; color: var(--ink-dim); }
+
+  .header-controls { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+
+  .lang-switch,
+  .view-switch-btn {
+    font-size: .82rem;
+    padding: .5rem 1rem;
+    border-radius: var(--radius-pill);
+    transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .lang-switch {
+    border: 1px solid var(--rule-strong);
+    color: var(--ink-dim);
+  }
+  .lang-switch:hover { color: var(--ink); border-color: var(--accent-soft); }
+
+  .view-switch {
+    display: inline-flex;
+    gap: .2rem;
+    padding: .2rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-pill);
+  }
+  .view-switch-btn { color: var(--ink-dim); }
+  .view-switch-btn.is-active { background: rgba(217,154,78,0.16); color: var(--ink); }
+  .view-switch-btn:not(.is-active):hover { color: var(--ink); }
+
+  /* ---------- Search ---------- */
+  .search-form { position: relative; padding-block-end: 2.5rem; }
+  .search-icon {
+    position: absolute;
+    inset-inline-start: .1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-dim);
+    pointer-events: none;
+  }
+  #search-input {
+    inline-size: 100%;
+    background: transparent;
+    border: none;
+    border-block-end: 1.5px solid var(--rule-strong);
+    padding-block: .7rem;
+    padding-inline-start: 2rem;
+    font-size: 1rem;
+    transition: border-color .18s ease;
+  }
+  #search-input::placeholder { color: var(--ink-dim); opacity: .8; }
+  #search-input:focus { border-block-end-color: var(--accent); outline: none; }
+  #search-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+
+  /* ---------- Categories / term list ---------- */
+  .category { padding-block-end: 2.75rem; }
+  .category-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-end: .9rem;
+  }
+  .category-head h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-inline-start: 3px solid var(--accent);
+    padding-inline-start: .7rem;
+  }
+  .category-count {
+    flex-shrink: 0;
+    font-size: .78rem;
+    color: var(--ink-dim);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-pill);
+    padding: .15rem .65rem;
+  }
+
+  .term-list li:not(:last-child) { border-block-end: 1px solid var(--rule); }
+  .term-row {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    padding-block: .95rem;
+    padding-inline: .85rem;
+    margin-inline: -.85rem;
+    border-radius: var(--radius-soft);
+    transition: background-color .18s ease;
+    position: relative;
+  }
+  .term-row::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: -.1rem;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    inline-size: 5px; block-size: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    transition: transform .18s ease;
+  }
+  .term-row:hover, .term-row:focus-visible {
+    background: rgba(217,154,78,0.07);
+  }
+  .term-row:hover::before, .term-row:focus-visible::before {
+    transform: translateY(-50%) scale(1);
+  }
+  .term-title { font-size: 1.05rem; font-weight: 600; }
+  .term-desc { font-size: .88rem; color: var(--ink-dim); line-height: 1.6; }
+
+  /* ---------- View divider (signature) ---------- */
+  .view-divider {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-block: 1rem 0;
+    padding-block: 2.5rem;
+  }
+  .torn-edge {
+    display: block;
+    inline-size: 100%;
+    block-size: 26px;
+    color: var(--accent-soft);
+  }
+  .torn-edge path { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+  .view-divider-label {
+    position: absolute;
+    inset-inline-start: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    padding-inline: 1rem;
+    font-size: .82rem;
+    color: var(--ink-dim);
+  }
+
+  /* ---------- Entry view ---------- */
+  .view-entry { padding-block-end: 5rem; }
+
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+    font-size: .85rem;
+    color: var(--ink-dim);
+    padding-block: 1.5rem 0;
+  }
+  .breadcrumb a { transition: color .18s ease; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb [aria-current] { color: var(--ink); font-weight: 600; }
+  .crumb-sep { opacity: .6; }
+
+  .entry-head { padding-block: 1.5rem 2rem; }
+  .entry-title {
+    font-size: clamp(1.85rem, 5vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .entry-desc {
+    margin-block-start: .6rem;
+    font-size: 1.05rem;
+    color: var(--ink-dim);
+    line-height: 1.7;
+    max-inline-size: 38em;
+  }
+
+  .hashtag-list { display: flex; flex-wrap: wrap; gap: .55rem; margin-block-start: 1.15rem; }
+  .hashtag {
+    display: inline-block;
+    border: 1px solid var(--accent-soft);
+    color: var(--accent);
+    border-radius: var(--radius-pill);
+    padding: .3rem .85rem;
+    font-size: .85rem;
+    transition: background-color .18s ease, color .18s ease;
+  }
+  .hashtag:hover, .hashtag:focus-visible { background: rgba(217,154,78,0.14); color: var(--ink); }
+
+  .entry-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+    max-inline-size: 38em;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    padding-block-end: .5rem;
+  }
+
+  .panel {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-soft);
+    padding: clamp(1.1rem, 4vw, 1.85rem);
+    margin-block-start: 2.25rem;
+  }
+  .panel h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-inline-start: 3px solid var(--accent);
+    padding-inline-start: .7rem;
+    margin-block-end: .9rem;
+  }
+  .entry-example p { font-size: 1rem; line-height: 1.8; color: var(--ink); max-inline-size: 36em; }
+
+  .entry-diagram figcaption,
+  .diagram-caption {
+    margin-block-start: .9rem;
+    font-size: .82rem;
+    color: var(--ink-dim);
+  }
+
+  .related-entries { margin-block-start: 2.25rem; }
+  .related-entries h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-inline-start: 3px solid var(--accent);
+    padding-inline-start: .7rem;
+    margin-block-end: 1rem;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .related-card {
+    display: block;
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-soft);
+    padding: 1.15rem 1.25rem;
+    transition: transform .18s ease, border-color .18s ease;
+  }
+  .related-card:hover, .related-card:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--accent-soft);
+  }
+  .related-card h3 { font-size: 1rem; font-weight: 600; margin-block-end: .4rem; }
+  .related-card p { font-size: .86rem; color: var(--ink-dim); line-height: 1.6; }
+
+  /* ---------- Diagram SVGs ---------- */
+  .chain-diagram { color: var(--ink); }
+  .chain-diagram .block-back { fill: none; stroke: var(--accent-soft); opacity: .55; }
+  .chain-diagram .block-front { fill: var(--bg); stroke: currentColor; stroke-width: 1.6; }
+  .chain-diagram .block-label {
+    fill: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    text-anchor: middle;
+  }
+  .chain-diagram .link-line { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; }
+  .chain-diagram .link-label {
+    fill: var(--accent);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+  .diagram-narrow { display: none; }
+  @media (max-width: 560px) {
+    .diagram-wide { display: none; }
+    .diagram-narrow { display: block; }
+  }
+
+  /* ---------- Footer ---------- */
+  .site-footer {
+    padding-block: 3rem 4rem;
+    text-align: center;
+    font-size: .82rem;
+    color: var(--ink-dim);
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">پرش به محتوا</a>
+
+<!-- ============================================================
+     ۱. نمای فهرست  (Index View)
+============================================================= -->
+<div class="view view-index" id="index-view">
+
+  <header class="site-header container">
+    <div class="wordmark-group anim-in">
+      <h1 class="wordmark">دژنبشت</h1>
+      <p class="tagline">دانشنامهٔ شخصی</p>
+    </div>
+
+    <nav class="header-controls anim-in" aria-label="کنترل‌های صفحه" style="animation-delay:.08s">
+      <button type="button" class="lang-switch" aria-label="نمایش صفحه به انگلیسی">
+        <span dir="ltr" lang="en">English</span>
+      </button>
+
+      <div class="view-switch" role="group" aria-label="حالت نمایش فهرست">
+        <button type="button" class="view-switch-btn is-active" aria-pressed="true">موضوعی</button>
+        <button type="button" class="view-switch-btn" aria-pressed="false">الفبایی</button>
+      </div>
+    </nav>
+  </header>
+
+  <form class="search-form container anim-in" role="search" onsubmit="return false" style="animation-delay:.14s">
+    <label class="sr-only" for="search-input">جست‌وجو در مدخل‌ها</label>
+    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="10.5" cy="10.5" r="6.4" fill="none" stroke="currentColor" stroke-width="1.7"></circle>
+      <line x1="15.4" y1="15.4" x2="20" y2="20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></line>
+    </svg>
+    <input id="search-input" type="text" placeholder="جست‌وجوی مدخل…" autocomplete="off">
+  </form>
+
+  <main id="main" class="container">
+
+    <section class="category" aria-labelledby="cat-basics">
+      <div class="category-head">
+        <h2 id="cat-basics">مفاهیم پایه</h2>
+        <span class="category-count">۳ مدخل</span>
+      </div>
+      <ul class="term-list">
+        <li>
+          <a class="term-row" href="#entry-blockchain">
+            <span class="term-title">بلاکچین</span>
+            <span class="term-desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</span>
+          </a>
+        </li>
+        <li>
+          <a class="term-row" href="#/t/hash">
+            <span class="term-title">هش</span>
+            <span class="term-desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+          </a>
+        </li>
+        <li>
+          <a class="term-row" href="#/t/wallet">
+            <span class="term-title">کیف پول</span>
+            <span class="term-desc">ابزاری که کلیدهای خصوصی را نگه می‌دارد، نه خود دارایی را</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="category" aria-labelledby="cat-consensus">
+      <div class="category-head">
+        <h2 id="cat-consensus">اجماع</h2>
+        <span class="category-count">۲ مدخل</span>
+      </div>
+      <ul class="term-list">
+        <li>
+          <a class="term-row" href="#/t/proof-of-work">
+            <span class="term-title">اثبات کار</span>
+            <span class="term-desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+          </a>
+        </li>
+        <li>
+          <a class="term-row" href="#/t/nonce">
+            <span class="term-title">نانس</span>
+            <span class="term-desc">عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<!-- جداکنندهٔ واضح میان دو نما -->
+<div class="view-divider" role="separator" aria-hidden="false">
+  <svg class="torn-edge" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path d="M0,20 C25,5 75,35 100,20 C125,5 175,35 200,20 C225,5 275,35 300,20 C325,5 375,35 400,20 C425,5 475,35 500,20 C525,5 575,35 600,20 C625,5 675,35 700,20 C725,5 775,35 800,20 C825,5 875,35 900,20 C925,5 975,35 1000,20 C1025,5 1075,35 1100,20 C1125,5 1175,35 1200,20"></path>
+  </svg>
+  <span class="view-divider-label">نمای مدخل</span>
+</div>
+
+<!-- ============================================================
+     ۲. نمای مدخل: بلاکچین  (Entry View)
+============================================================= -->
+<div class="view view-entry" id="entry-blockchain">
+  <div class="entry-page container">
+
+    <nav class="breadcrumb" aria-label="مسیر مدخل">
+      <a href="#index-view">فهرست</a>
+      <span class="crumb-sep">›</span>
+      <span>مفاهیم پایه</span>
+      <span class="crumb-sep">›</span>
+      <span aria-current="page">بلاکچین</span>
+    </nav>
+
+    <header class="entry-head">
+      <h1 class="entry-title">بلاکچین</h1>
+      <p class="entry-desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</p>
+
+      <ul class="hashtag-list">
+        <li><a class="hashtag" href="#/tag/ledger"><span dir="ltr">ledger</span></a></li>
+        <li><a class="hashtag" href="#/tag/bitcoin"><span dir="ltr">bitcoin</span></a></li>
+        <li><a class="hashtag" href="#/tag/structure"><span dir="ltr">structure</span></a></li>
+      </ul>
+    </header>
+
+    <div class="entry-body">
+      <p>بلاکچین یک دفتر کل است که رکوردها را در دسته‌هایی به نام «بلوک» می‌نویسد. هر بلوک هش بلوک قبلی را در خودش دارد، پس بلوک‌ها مثل حلقه‌های یک زنجیر به هم وصل می‌شوند.</p>
+
+      <p>همین ارجاع به عقب است که دفتر را تغییرناپذیر می‌کند: اگر کسی یک بلوک قدیمی را دستکاری کند، هش آن عوض می‌شود، در نتیجه ارجاع بلوک بعدی نامعتبر می‌شود و همین‌طور تا انتهای زنجیره. برای پنهان ماندن دستکاری باید همهٔ بلوک‌های بعدی هم دوباره ساخته شوند.</p>
+
+      <p>نسخه‌ای از این دفتر روی هر نود شبکه نگه‌داری می‌شود و نودها با یک الگوریتم <span dir="ltr">consensus</span> سر اینکه کدام نسخه معتبر است به توافق می‌رسند.</p>
+    </div>
+
+    <section class="entry-example panel">
+      <h2>مثال</h2>
+      <p>در بیت‌کوین حدوداً هر ۱۰ دقیقه یک بلوک جدید ساخته می‌شود و تراکنش‌های آن بازه را در خود جا می‌دهد.</p>
+    </section>
+
+    <section class="entry-diagram panel" aria-labelledby="diagram-heading">
+      <h2 id="diagram-heading">نمودار زنجیره</h2>
+
+      <svg class="chain-diagram diagram-wide" viewBox="0 0 640 200" role="img" aria-labelledby="diagram-title-wide">
+        <title id="diagram-title-wide">زنجیرهٔ سه بلوک؛ هر بلوک هش بلوک قبلی را در خود نگه می‌دارد</title>
+        <defs>
+          <marker id="arrow-wide" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="block-front" style="fill:var(--accent); stroke:none;"></path>
+          </marker>
+        </defs>
+
+        <path class="link-line" d="M390,100 Q425,88 460,100" marker-end="url(#arrow-wide)"></path>
+        <text class="link-label" x="425" y="78">هش</text>
+
+        <path class="link-line" d="M180,100 Q215,88 250,100" marker-end="url(#arrow-wide)"></path>
+        <text class="link-label" x="215" y="78">هش</text>
+
+        <g>
+          <rect class="block-back" x="464" y="59" width="140" height="90" rx="14" transform="rotate(2 534 104)"></rect>
+          <rect class="block-front" x="460" y="55" width="140" height="90" rx="14" transform="rotate(-1.2 530 100)"></rect>
+          <text class="block-label" x="530" y="106" font-size="16" direction="rtl">بلوک ۱</text>
+        </g>
+        <g>
+          <rect class="block-back" x="254" y="59" width="140" height="90" rx="14" transform="rotate(-1.6 324 104)"></rect>
+          <rect class="block-front" x="250" y="55" width="140" height="90" rx="14" transform="rotate(1 320 100)"></rect>
+          <text class="block-label" x="320" y="106" font-size="16" direction="rtl">بلوک ۲</text>
+        </g>
+        <g>
+          <rect class="block-back" x="44" y="59" width="140" height="90" rx="14" transform="rotate(1.4 114 104)"></rect>
+          <rect class="block-front" x="40" y="55" width="140" height="90" rx="14" transform="rotate(-1 110 100)"></rect>
+          <text class="block-label" x="110" y="106" font-size="16" direction="rtl">بلوک ۳</text>
+        </g>
+      </svg>
+
+      <svg class="chain-diagram diagram-narrow" viewBox="0 0 300 480" role="img" aria-labelledby="diagram-title-narrow">
+        <title id="diagram-title-narrow">زنجیرهٔ سه بلوک؛ هر بلوک هش بلوک قبلی را در خود نگه می‌دارد</title>
+        <defs>
+          <marker id="arrow-narrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent); stroke:none;"></path>
+          </marker>
+        </defs>
+
+        <path class="link-line" d="M150,190 Q168,155 150,120" marker-end="url(#arrow-narrow)"></path>
+        <text class="link-label" x="182" y="158">هش</text>
+
+        <path class="link-line" d="M150,360 Q168,325 150,290" marker-end="url(#arrow-narrow)"></path>
+        <text class="link-label" x="182" y="328">هش</text>
+
+        <g>
+          <rect class="block-back" x="34" y="24" width="240" height="96" rx="16" transform="rotate(1.4 154 72)"></rect>
+          <rect class="block-front" x="30" y="20" width="240" height="96" rx="16" transform="rotate(-1 150 68)"></rect>
+          <text class="block-label" x="150" y="76" font-size="18" direction="rtl">بلوک ۱</text>
+        </g>
+        <g>
+          <rect class="block-back" x="34" y="194" width="240" height="96" rx="16" transform="rotate(-1.4 154 242)"></rect>
+          <rect class="block-front" x="30" y="190" width="240" height="96" rx="16" transform="rotate(1 150 238)"></rect>
+          <text class="block-label" x="150" y="246" font-size="18" direction="rtl">بلوک ۲</text>
+        </g>
+        <g>
+          <rect class="block-back" x="34" y="364" width="240" height="96" rx="16" transform="rotate(1.2 154 412)"></rect>
+          <rect class="block-front" x="30" y="360" width="240" height="96" rx="16" transform="rotate(-1 150 408)"></rect>
+          <text class="block-label" x="150" y="416" font-size="18" direction="rtl">بلوک ۳</text>
+        </g>
+      </svg>
+
+      <p class="diagram-caption">هر بلوک با یک ارجاع هش به بلوک پیش از خودش، به زنجیره متصل می‌شود.</p>
+    </section>
+
+    <section class="related-entries" aria-labelledby="related-heading">
+      <h2 id="related-heading">مدخل‌های مرتبط</h2>
+      <div class="related-grid">
+        <a class="related-card" href="#/t/hash">
+          <h3>هش</h3>
+          <p>اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</p>
+        </a>
+        <a class="related-card" href="#/t/proof-of-work">
+          <h3>اثبات کار</h3>
+          <p>اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</p>
+        </a>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>دژنبشت، نسخهٔ نمایشی طراحی</p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var searchInput = document.getElementById("search-input");
+  var rows = Array.prototype.slice.call(document.querySelectorAll(".term-row"));
+
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      var query = searchInput.value.trim();
+      rows.forEach(function (row) {
+        var li = row.closest("li");
+        if (!li) return;
+        var matches = !query || row.textContent.indexOf(query) !== -1;
+        li.style.display = matches ? "" : "none";
+      });
+    });
+  }
+
+  var viewButtons = Array.prototype.slice.call(document.querySelectorAll(".view-switch-btn"));
+  viewButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      viewButtons.forEach(function (b) {
+        b.classList.remove("is-active");
+        b.setAttribute("aria-pressed", "false");
+      });
+      btn.classList.add("is-active");
+      btn.setAttribute("aria-pressed", "true");
+    });
+  });
+})();
+</script>
+
+<!--
+DESIGN NOTES
+
+جهت‌گیری:
+دفتری برای مطالعهٔ شبانه؛ رنگ‌مایهٔ گرم و کم‌نور مثل نور یک چراغ‌مطالعه روی کاغذ، نه صفحه‌نمایش یک ابزار توسعه.
+این حس برای دانشنامهٔ شخصی درست است چون خواننده و نویسنده یک نفرند؛ او این صفحات را برای خودش، در سکوت، می‌نویسد.
+
+پالت:
+--bg #1c1712 (زمینهٔ جوهری گرم، نه مشکی خالص) ·
+--bg-raised #241d16 (پنل‌های مکمل: مثال، نمودار، مرتبط) ·
+--ink #e8ddc7 (رنگ کاغذ زیر نور چراغ، برای متن اصلی) ·
+--ink-dim #a99a7c (توضیح‌های فرعی و breadcrumb) ·
+--accent #d99a4e (نور چراغ؛ تنها رنگ تأکید، روی لینک‌ها و هشتگ‌ها و نشانگر بخش‌ها) ·
+--accent-soft #8a6a3f (خطوط ظریف و نسخهٔ کم‌رنگ‌تر جوهر)
+
+تایپوگرافی:
+فونت سیستمی؛ بدون tracking روی متن فارسی چون فارسی پیوسته است و فاصله‌گذاری حروف را می‌شکند.
+سطرفاصلهٔ بدنه ۱٫۹ برای مطالعهٔ طولانی و حس دست‌نویسِ خط‌به‌خط. عنوان مدخل ۲ تا ۲٫۳rem،
+عنوان‌های فرعی (h2) با یک خط عمودی نازک در ابتدای سطر، مثل خط حاشیهٔ یادداشت‌برداری.
+ستون متن حدود ۳۸ کاراکتر بر مبنای em برای راحتی خواندن.
+
+عنصر امضا:
+خط موجی دست‌کشیده (torn-edge) که دو نما را از هم جدا می‌کند، و نمودار زنجیره که به‌جای جعبه‌های
+شرکتی، دو بار طرح هر بلوک را می‌کشد؛ یکی محو در پشت، یکی روی آن؛ انگار کسی با خودکار همان
+لحظه که می‌فهمید، آن را روی کاغذ کشیده است.
+
+ریسکی که گرفتم:
+تک‌تم تاریک، بدون سوییچ روشن/تاریک، و بدون فونت متفاوت برای زبان‌ها. به‌جای تنوع تایپوگرافی
+یا حالت دوگانه، همه‌چیز را روی یک فضای واحد و صمیمی متمرکز کردم؛ چون این یک صفحهٔ بازدید عمومی
+نیست، دفتر شخصی یک نفر است که تصادفاً عمومی شده.
+
+فونت پیشنهادی برای میزبانی محلی:
+Vazirmatn (نسخهٔ Variable). دلیل: پوشش کامل حروف فارسی با کرنینگ درست‌شده، وزن‌های متعدد برای
+سلسله‌مراتب عنوان/بدنه بدون نیاز به فونت دوم، و طراحی geometric-humanist که با فونت سیستمی macOS/iOS
+(SF) در بخش‌های لاتین هم‌خوان است. در حال حاضر پشته فقط از فونت‌های سیستمی استفاده می‌کند.
+-->
+</body>
+</html>

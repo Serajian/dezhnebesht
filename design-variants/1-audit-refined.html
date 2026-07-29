@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دژنبشت — بایگانی مفاهیم</title>
+<meta name="description" content="دانشنامهٔ شخصی دژنبشت — نمای فهرست و نمای مدخل، نسخهٔ طراحی بایگانی.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23f6efe2' stroke='%23a63a2c' stroke-width='2'/%3E%3Cpath d='M16 8v16M8 16h16' stroke='%23a63a2c' stroke-width='1.4'/%3E%3Ccircle cx='16' cy='16' r='3.2' fill='%23a63a2c'/%3E%3C/svg%3E">
+<style>
+
+  /* ───────────────────────── ریشه‌ها ───────────────────────── */
+
+  :root{
+    --paper:      #f6efe2;   /* زمینهٔ اصلی — کاغذ گرم، نه سفید خالص */
+    --paper-deep: #ece0c9;   /* سطح دوم — ردیف‌ها و کارت‌ها هنگام هاور */
+    --paper-line: #e4d6b8;   /* خط‌های موئی و جداکننده‌ها */
+    --ink:        #2a2013;   /* متن اصلی — قهوه‌ای تیرهٔ گرم، نه مشکی خالص */
+    --ink-soft:   #6b5c45;   /* متن فرعی، برچسب‌ها، فراداده */
+    --ink-faint:  #a6987c;   /* کم‌رنگ‌ترین لایهٔ متن — راهنما، پرانتزی */
+    --seal:       #a3382a;   /* تک‌رنگ تأکید — قرمز مُهر/شنگرف */
+    --seal-deep:  #7c2a1f;   /* حالت فشرده/هاور تأکید */
+    --focus:      #1c5f8a;   /* حلقهٔ فوکوس — آبی متمایز از تأکید محتوایی، برای شناسایی سریع */
+    --radius-tight: 3px;
+    --radius-frame: 2px;
+    --measure: 62ch;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+
+  /* حفاظ: فارسی خط‌کشیده (letter-spacing) نمی‌خواهد — چسبیدگی حروف را می‌شکند.
+     این فقط یک حفاظ کم‌اولویت است؛ هر انتخابگر Latin که آگاهانه tracking می‌خواهد
+     (eyebrow، هشتگ‌ها، کلید زبان…) بعداً در فایل با کلاس اختصاصی خودش آن را ست می‌کند
+     و به‌خاطر specificity بالاتر روی این حفاظ غالب می‌شود. */
+  :lang(fa){ letter-spacing:0; }
+
+  html{
+    background:var(--paper);
+  }
+
+  body{
+    background-color:var(--paper);
+    background-image:
+      radial-gradient(ellipse 60% 40% at 12% 0%, rgba(163,56,42,0.05), transparent 60%),
+      radial-gradient(ellipse 55% 35% at 100% 8%, rgba(42,32,19,0.05), transparent 60%);
+    background-repeat:no-repeat;
+    color:var(--ink);
+    font-family:"Vazirmatn","IRANSansWeb","Segoe UI",Tahoma,system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    line-height:1.9;
+    -webkit-text-size-adjust:100%;
+    text-rendering:optimizeLegibility;
+  }
+
+  .latin, .eyebrow, .tag, .lang-switch span, .entry-num, .crumb-latin{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .visually-hidden{
+    position:absolute;
+    inline-size:1px; block-size:1px;
+    overflow:hidden;
+    clip-path:inset(50%);
+    white-space:nowrap;
+  }
+
+  .skip-link{
+    position:absolute;
+    inset-block-start:-3rem;
+    inset-inline-start:0.75rem;
+    background:var(--ink);
+    color:var(--paper);
+    padding:0.55rem 1rem;
+    border-radius:var(--radius-frame);
+    z-index:10;
+    transition:inset-block-start 0.15s ease;
+  }
+  .skip-link:focus{ inset-block-start:0.75rem; }
+
+  :focus-visible{
+    outline:2px solid var(--focus);
+    outline-offset:3px;
+    border-radius:2px;
+  }
+
+  /* ───────────────────────── سربرگ ───────────────────────── */
+
+  .site-head{
+    border-block-end:1px solid var(--paper-line);
+    background:var(--paper);
+  }
+
+  .head-inner{
+    max-width:calc(var(--measure) + 8rem);
+    margin-inline:auto;
+    padding:1.1rem 1.5rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1.25rem;
+    flex-wrap:wrap;
+  }
+
+  .wordmark{
+    display:flex;
+    align-items:center;
+    gap:0.65rem;
+  }
+
+  .wordmark svg{ flex:none; display:block; }
+
+  .wordmark-title{
+    margin:0;
+    font-size:1.2rem;
+    font-weight:800;
+    color:var(--ink);
+  }
+
+  .wordmark-sub{
+    margin:0;
+    font-size:0.78rem;
+    font-weight:500;
+    color:var(--ink-soft);
+  }
+
+  .head-controls{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    flex-wrap:wrap;
+  }
+
+  .lang-switch{
+    font:inherit;
+    background:none;
+    border:none;
+    border-block-end:1px solid transparent;
+    color:var(--ink-soft);
+    padding:0.2rem 0.05rem;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:0.4rem;
+  }
+  .lang-switch span{ font-size:0.85rem; letter-spacing:0.03em; }
+  .lang-switch:hover{ color:var(--seal); border-block-end-color:var(--seal); }
+
+  .view-switch{
+    display:inline-flex;
+    border:1px solid var(--ink);
+    border-radius:var(--radius-frame);
+    overflow:hidden;
+  }
+
+  .view-btn{
+    font:inherit;
+    font-size:0.85rem;
+    font-weight:500;
+    background:var(--paper);
+    color:var(--ink);
+    border:none;
+    padding:0.42rem 0.9rem;
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .view-btn + .view-btn{ border-inline-start:1px solid var(--ink); }
+  .view-btn.active{ background:var(--ink); color:var(--paper); }
+  .view-btn:not(.active):hover{ background:var(--paper-deep); }
+  .view-btn:active{ transform:scale(0.98); }
+
+  /* ───────────────────────── محتوای اصلی ───────────────────────── */
+
+  main{
+    max-width:calc(var(--measure) + 8rem);
+    margin-inline:auto;
+    padding:2rem 1.5rem 5rem;
+  }
+
+  /* نوار جستجو — به شکل «برگهٔ درخواست» بایگانی: خط‌زیر، نه جعبه */
+  .search-slip{
+    position:relative;
+    max-width:26rem;
+    margin:0 0 2.5rem;
+  }
+  .search-slip svg{
+    position:absolute;
+    inset-inline-start:0.1rem;
+    inset-block-start:50%;
+    transform:translateY(-50%);
+    pointer-events:none;
+  }
+  .search-slip input{
+    width:100%;
+    font:inherit;
+    font-size:0.98rem;
+    color:var(--ink);
+    background:transparent;
+    border:none;
+    border-block-end:1.5px solid var(--ink-faint);
+    padding:0.5rem 0.2rem 0.5rem 2rem;
+    padding-inline-start:2rem;
+    padding-inline-end:0.2rem;
+    transition:border-color 0.15s ease;
+  }
+  .search-slip input::placeholder{ color:var(--ink-faint); }
+  .search-slip input:hover{ border-block-end-color:var(--ink-soft); }
+  .search-slip input:focus{ border-block-end-color:var(--seal); outline:none; }
+  .search-slip input:focus-visible{
+    outline:2px solid var(--focus);
+    outline-offset:4px;
+    border-radius:2px;
+  }
+
+  /* ───────────────────────── گروه‌های دفتری (لجر) ───────────────────────── */
+
+  .ledger-group + .ledger-group{ margin-top:2.75rem; }
+
+  .ledger-group__head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:1rem;
+    border-block-end:1.5px solid var(--ink);
+    padding-block-end:0.5rem;
+    margin-block-end:0.25rem;
+  }
+
+  .ledger-group__title{
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:0.15rem;
+  }
+
+  .eyebrow{
+    font-size:0.68rem;
+    font-weight:600;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--seal);
+  }
+
+  .ledger-group__fa{
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--ink);
+  }
+
+  .ledger-group__count{
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+
+  .ledger-rows{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+
+  .ledger-row{
+    border-block-end:1px solid var(--paper-line);
+  }
+  .ledger-row:last-child{ border-block-end:none; }
+
+  .ledger-row a{
+    display:flex;
+    align-items:flex-start;
+    gap:1rem;
+    padding:0.95rem 0.35rem;
+    transition:background 0.15s ease, padding-inline-start 0.15s ease;
+    border-radius:var(--radius-tight);
+  }
+  .ledger-row a:hover,
+  .ledger-row a:focus-visible{
+    background:var(--paper-deep);
+    padding-inline-start:0.65rem;
+  }
+  .ledger-row a:active{ transform:scale(0.997); }
+
+  .ledger-row__num{
+    flex:none;
+    font-size:0.85rem;
+    color:var(--ink-faint);
+    padding-block-start:0.15rem;
+    min-width:1.6em;
+  }
+
+  .ledger-row__body{ flex:1; min-width:0; }
+
+  .ledger-row__title{
+    display:block;
+    font-weight:700;
+    font-size:1.02rem;
+    color:var(--ink);
+  }
+
+  .ledger-row__desc{
+    display:block;
+    margin-block-start:0.2rem;
+    font-size:0.9rem;
+    color:var(--ink-soft);
+    line-height:1.7;
+  }
+
+  .ledger-row__arrow{
+    flex:none;
+    color:var(--seal);
+    opacity:0;
+    transform:translateX(0);
+    transition:opacity 0.15s ease;
+    padding-block-start:0.3rem;
+  }
+  html[dir="rtl"] .ledger-row__arrow svg{ transform:scaleX(-1); }
+  .ledger-row a:hover .ledger-row__arrow,
+  .ledger-row a:focus-visible .ledger-row__arrow{ opacity:1; }
+
+  /* ───────────────────────── جداکنندهٔ بازبینی بین دو نما ───────────────────────── */
+
+  .variant-divider{
+    margin:5rem 0;
+    padding:1.1rem 1.5rem;
+    text-align:center;
+    background:var(--ink);
+    color:var(--paper-deep);
+    border-radius:var(--radius-frame);
+  }
+  .variant-divider p{
+    margin:0;
+    font-size:0.78rem;
+    font-weight:600;
+  }
+  /* tracking فقط روی خط لاتین — هرگز روی انتخابگری که به خط فارسی هم می‌رسد */
+  .variant-divider .latin{ letter-spacing:0.08em; }
+  .variant-divider .fa{ font-size:0.92rem; font-weight:500; margin-block-start:0.35rem; color:var(--paper); }
+
+  /* ───────────────────────── نمای مدخل ───────────────────────── */
+
+  .crumbs{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:0.45rem;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    margin-block-end:2rem;
+  }
+  .crumbs a:hover{ color:var(--seal); text-decoration:underline; text-underline-offset:3px; }
+  .crumbs .sep{ color:var(--ink-faint); }
+  .crumbs .here{ color:var(--ink); font-weight:600; }
+
+  .entry-head{ margin-block-end:2.25rem; }
+
+  .entry-num{
+    margin:0 0 0.6rem;
+    font-size:0.85rem;
+    color:var(--seal);
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+  }
+  .entry-num::after{
+    content:"";
+    flex:1;
+    max-width:3rem;
+    height:1px;
+    background:var(--paper-line);
+  }
+
+  .entry-head h1{
+    margin:0 0 0.6rem;
+    font-size:clamp(1.8rem, 1.4rem + 1.6vw, 2.5rem);
+    font-weight:800;
+    line-height:1.3;
+    color:var(--ink);
+  }
+
+  .entry-lead{
+    margin:0 0 1.1rem;
+    font-size:1.05rem;
+    color:var(--ink-soft);
+    line-height:1.75;
+    max-width:var(--measure);
+  }
+
+  .entry-tags{
+    list-style:none;
+    display:flex;
+    flex-wrap:wrap;
+    gap:0 1.1rem;
+    margin:0;
+    padding:0;
+  }
+  .entry-tags a{
+    font-size:0.85rem;
+    letter-spacing:0.02em;
+    color:var(--seal);
+    padding-block:0.15rem;
+    border-block-end:1px solid transparent;
+  }
+  .entry-tags a:hover,
+  .entry-tags a:focus-visible{ border-block-end-color:var(--seal); }
+
+  .prose{ max-width:var(--measure); margin-block-end:2.25rem; }
+  .prose p{ margin:0 0 1.15rem; font-size:1.02rem; }
+  .prose p:last-child{ margin-block-end:0; }
+
+  section[aria-labelledby]{ max-width:var(--measure); margin-block-end:2.5rem; }
+
+  .example-block h2,
+  .related-block h2{
+    display:flex;
+    flex-direction:column;
+    gap:0.15rem;
+    margin:0 0 0.85rem;
+    font-size:1.02rem;
+    font-weight:700;
+    color:var(--ink);
+  }
+
+  .example-block{
+    border-inline-start:2px solid var(--seal);
+    padding-inline-start:1.1rem;
+  }
+  .example-block p{ margin:0; color:var(--ink-soft); font-size:0.98rem; }
+
+  /* ───────────────────────── دیاگرام ───────────────────────── */
+
+  figure.diagram{
+    margin:0 0 2.5rem;
+    max-width:calc(var(--measure) + 4rem);
+    padding:1.5rem 1rem 1.1rem;
+    border:1px solid var(--paper-line);
+    border-radius:0;
+    background:var(--paper-deep);
+  }
+  figure.diagram svg{
+    display:block;
+    width:100%;
+    height:auto;
+  }
+  figure.diagram figcaption{
+    margin-block-start:0.9rem;
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+
+  /* ───────────────────────── مدخل‌های مرتبط ───────────────────────── */
+
+  .related-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius-tight);
+    overflow:hidden;
+  }
+  .related-card{
+    display:block;
+    padding:1.1rem 1.2rem;
+    background:var(--paper);
+    transition:background 0.15s ease;
+  }
+  .related-card + .related-card{ border-inline-start:1px solid var(--paper-line); }
+  .related-card:hover,
+  .related-card:focus-visible{ background:var(--paper-deep); }
+  .related-card:active{ transform:scale(0.997); }
+  .related-card__title{
+    margin:0 0 0.3rem;
+    font-weight:700;
+    font-size:1rem;
+    color:var(--ink);
+  }
+  .related-card__title::after{
+    content:"←";
+    display:inline-block;
+    margin-inline-start:0.4rem;
+    color:var(--seal);
+    transform:scaleX(-1);
+  }
+  html[dir="rtl"] .related-card__title::after{ content:"→"; transform:none; }
+  .related-card__desc{
+    margin:0;
+    font-size:0.88rem;
+    color:var(--ink-soft);
+    line-height:1.65;
+  }
+
+  @media (max-width:520px){
+    .related-grid{ grid-template-columns:1fr; }
+    .related-card + .related-card{
+      border-inline-start:none;
+      border-block-start:1px solid var(--paper-line);
+    }
+  }
+
+  /* ───────────────────────── واکنش‌گرایی ───────────────────────── */
+
+  @media (max-width:640px){
+    .head-inner{ padding:1rem; }
+    main{ padding:1.5rem 1rem 3.5rem; }
+    .wordmark-title{ font-size:1.05rem; }
+    .entry-head h1{ font-size:1.6rem; }
+    .ledger-group__head{ flex-direction:column; align-items:flex-start; gap:0.25rem; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">پرش به محتوا</a>
+
+<header class="site-head">
+  <div class="head-inner">
+    <div class="wordmark">
+      <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" style="color:var(--seal)" stroke-width="1.4"/>
+        <path d="M16 6 L18.5 12.5 L25.5 13 L20 17.5 L21.8 24.5 L16 20.5 L10.2 24.5 L12 17.5 L6.5 13 L13.5 12.5 Z"
+              fill="none" stroke="currentColor" style="color:var(--seal)" stroke-width="1.1"/>
+      </svg>
+      <div>
+        <p class="wordmark-title">دژنبشت</p>
+        <p class="wordmark-sub">بایگانی مفاهیم شخصی</p>
+      </div>
+    </div>
+    <nav class="head-controls" aria-label="کنترل‌های نمایش">
+      <button class="lang-switch" type="button" id="langBtn" aria-describedby="langNote">
+        <span dir="ltr">English</span>
+      </button>
+      <span id="langNote" class="visually-hidden">این پیش‌نمایش طراحی فقط محتوای فارسی دارد</span>
+      <div class="view-switch" role="group" aria-label="سوییچ نما">
+        <button type="button" class="view-btn active" data-view="topic" aria-pressed="true">موضوعی</button>
+        <button type="button" class="view-btn" data-view="alpha" aria-pressed="false">الفبایی</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ═══════════════════════ نمای ۱: فهرست ═══════════════════════ -->
+
+  <section class="view index-view" aria-labelledby="index-heading">
+    <h1 id="index-heading" class="visually-hidden">فهرست مدخل‌ها</h1>
+
+    <div class="search-slip">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="6.5" cy="6.5" r="4.5" fill="none" stroke="var(--ink-faint)" stroke-width="1.3"/>
+        <line x1="9.8" y1="9.8" x2="14" y2="14" stroke="var(--ink-faint)" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <label for="searchInput" class="visually-hidden">جستجوی مدخل</label>
+      <input type="search" id="searchInput" placeholder="جستجوی مدخل…" autocomplete="off">
+    </div>
+
+    <div class="ledger-groups" id="ledgerGroups">
+
+      <div class="ledger-group" data-group="مفاهیم پایه">
+        <div class="ledger-group__head">
+          <h2 class="ledger-group__title">
+            <span class="eyebrow" dir="ltr">PRIMITIVES</span>
+            <span class="ledger-group__fa">مفاهیم پایه</span>
+          </h2>
+          <span class="ledger-group__count">۳ مدخل</span>
+        </div>
+        <ol class="ledger-rows">
+          <li class="ledger-row">
+            <a href="#/t/blockchain" data-term="بلاکچین">
+              <span class="ledger-row__num" aria-hidden="true">۰۱</span>
+              <span class="ledger-row__body">
+                <span class="ledger-row__title">بلاکچین</span>
+                <span class="ledger-row__desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</span>
+              </span>
+              <span class="ledger-row__arrow" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </li>
+          <li class="ledger-row">
+            <a href="#/t/hash" data-term="هش">
+              <span class="ledger-row__num" aria-hidden="true">۰۲</span>
+              <span class="ledger-row__body">
+                <span class="ledger-row__title">هش</span>
+                <span class="ledger-row__desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+              </span>
+              <span class="ledger-row__arrow" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </li>
+          <li class="ledger-row">
+            <a href="#/t/wallet" data-term="کیف پول">
+              <span class="ledger-row__num" aria-hidden="true">۰۳</span>
+              <span class="ledger-row__body">
+                <span class="ledger-row__title">کیف پول</span>
+                <span class="ledger-row__desc">ابزاری که کلیدهای خصوصی را نگه می‌دارد، نه خود دارایی را</span>
+              </span>
+              <span class="ledger-row__arrow" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </li>
+        </ol>
+      </div>
+
+      <div class="ledger-group" data-group="اجماع">
+        <div class="ledger-group__head">
+          <h2 class="ledger-group__title">
+            <span class="eyebrow" dir="ltr">CONSENSUS</span>
+            <span class="ledger-group__fa">اجماع</span>
+          </h2>
+          <span class="ledger-group__count">۲ مدخل</span>
+        </div>
+        <ol class="ledger-rows">
+          <li class="ledger-row">
+            <a href="#/t/proof-of-work" data-term="اثبات کار">
+              <span class="ledger-row__num" aria-hidden="true">۰۴</span>
+              <span class="ledger-row__body">
+                <span class="ledger-row__title">اثبات کار</span>
+                <span class="ledger-row__desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+              </span>
+              <span class="ledger-row__arrow" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </li>
+          <li class="ledger-row">
+            <a href="#/t/nonce" data-term="نانس">
+              <span class="ledger-row__num" aria-hidden="true">۰۵</span>
+              <span class="ledger-row__body">
+                <span class="ledger-row__title">نانس</span>
+                <span class="ledger-row__desc">عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود</span>
+              </span>
+              <span class="ledger-row__arrow" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </li>
+        </ol>
+      </div>
+
+    </div>
+    <p class="empty visually-hidden" id="emptyNote" role="status" aria-live="polite"></p>
+  </section>
+
+  <div class="variant-divider" role="separator" aria-hidden="true">
+    <p class="latin" lang="en" dir="ltr">PREVIEW BREAK — ENTRY VIEW BELOW</p>
+    <p class="fa" lang="fa">پایان نمای فهرست · آغاز نمای مدخل «بلاکچین»</p>
+  </div>
+
+  <!-- ═══════════════════════ نمای ۲: مدخل «بلاکچین» ═══════════════════════ -->
+
+  <section class="view entry-view" aria-labelledby="entry-heading">
+
+    <nav class="crumbs" aria-label="مسیر دسترسی">
+      <a href="#/">فهرست</a>
+      <span class="sep" aria-hidden="true">›</span>
+      <a href="#/t/blockchain?cat=primitives">مفاهیم پایه</a>
+      <span class="sep" aria-hidden="true">›</span>
+      <span class="here" aria-current="page">بلاکچین</span>
+    </nav>
+
+    <header class="entry-head">
+      <p class="entry-num" aria-hidden="true">۰۱ / بایگانی مفاهیم پایه</p>
+      <h1 id="entry-heading">بلاکچین</h1>
+      <p class="entry-lead">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</p>
+      <ul class="entry-tags">
+        <li><a href="#/tag/ledger" class="latin" dir="ltr">#ledger</a></li>
+        <li><a href="#/tag/bitcoin" class="latin" dir="ltr">#bitcoin</a></li>
+        <li><a href="#/tag/structure" class="latin" dir="ltr">#structure</a></li>
+      </ul>
+    </header>
+
+    <div class="prose">
+      <p>بلاکچین یک دفتر کل است که رکوردها را در دسته‌هایی به نام «بلوک» می‌نویسد. هر بلوک هش بلوک قبلی را در خودش دارد، پس بلوک‌ها مثل حلقه‌های یک زنجیر به هم وصل می‌شوند.</p>
+      <p>همین ارجاع به عقب است که دفتر را تغییرناپذیر می‌کند: اگر کسی یک بلوک قدیمی را دستکاری کند، هش آن عوض می‌شود، در نتیجه ارجاع بلوک بعدی نامعتبر می‌شود و همین‌طور تا انتهای زنجیره. برای پنهان ماندن دستکاری باید همهٔ بلوک‌های بعدی هم دوباره ساخته شوند.</p>
+      <p>نسخه‌ای از این دفتر روی هر نود شبکه نگه‌داری می‌شود و نودها با یک الگوریتم <span dir="ltr">consensus</span> سر اینکه کدام نسخه معتبر است به توافق می‌رسند.</p>
+    </div>
+
+    <section class="example-block" aria-labelledby="example-heading">
+      <h2 id="example-heading">
+        <span class="eyebrow" dir="ltr">EXAMPLE</span>
+        <span>مثال</span>
+      </h2>
+      <p>در بیت‌کوین حدوداً هر ۱۰ دقیقه یک بلوک جدید ساخته می‌شود و تراکنش‌های آن بازه را در خود جا می‌دهد.</p>
+    </section>
+
+    <figure class="diagram" aria-labelledby="diagram-caption">
+      <svg viewBox="0 0 560 210" role="img" aria-labelledby="diagram-title diagram-caption">
+        <title id="diagram-title">دیاگرام زنجیرهٔ سه بلوک</title>
+
+        <!-- بلوک ۳ — سمت پایان (چپ)، تازه‌ترین -->
+        <g>
+          <rect x="30" y="55" width="130" height="100" rx="2" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/>
+          <text x="95" y="95" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)" font-family="ui-monospace, monospace">#3</text>
+          <text x="95" y="120" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)" font-family="ui-monospace, monospace">hash: 7f2a…</text>
+          <text x="95" y="182" text-anchor="middle" font-size="12" fill="var(--ink)">بلوک ۳</text>
+        </g>
+
+        <!-- بلوک ۲ — میانی -->
+        <g>
+          <rect x="215" y="55" width="130" height="100" rx="2" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.4"/>
+          <text x="280" y="95" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)" font-family="ui-monospace, monospace">#2</text>
+          <text x="280" y="120" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)" font-family="ui-monospace, monospace">hash: c91e…</text>
+          <text x="280" y="182" text-anchor="middle" font-size="12" fill="var(--ink)">بلوک ۲</text>
+        </g>
+
+        <!-- بلوک ۱ — سمت آغاز (راست)، بلوک پیدایش -->
+        <g>
+          <rect x="400" y="55" width="130" height="100" rx="2" fill="var(--paper-deep)" stroke="var(--seal)" stroke-width="1.6"/>
+          <text x="465" y="95" text-anchor="middle" font-size="15" font-weight="700" fill="var(--seal)" font-family="ui-monospace, monospace">#1</text>
+          <text x="465" y="120" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)" font-family="ui-monospace, monospace">hash: 0a4d…</text>
+          <text x="465" y="182" text-anchor="middle" font-size="12" fill="var(--ink)">بلوک پیدایش</text>
+        </g>
+
+        <!-- پیکان ارجاع بلوک ۲ به بلوک ۱ (به‌سمت راست) -->
+        <line x1="345" y1="100" x2="392" y2="100" stroke="var(--ink)" stroke-width="1.4"/>
+        <path d="M392 100 L382 95 L382 105 Z" fill="var(--ink)"/>
+        <text x="368" y="85" text-anchor="middle" font-size="10" fill="var(--ink-soft)" font-family="ui-monospace, monospace">hash</text>
+
+        <!-- پیکان ارجاع بلوک ۳ به بلوک ۲ (به‌سمت راست) -->
+        <line x1="160" y1="100" x2="207" y2="100" stroke="var(--ink)" stroke-width="1.4"/>
+        <path d="M207 100 L197 95 L197 105 Z" fill="var(--ink)"/>
+        <text x="183" y="85" text-anchor="middle" font-size="10" fill="var(--ink-soft)" font-family="ui-monospace, monospace">hash</text>
+      </svg>
+      <figcaption id="diagram-caption">زنجیرهٔ سه بلوک — هر بلوک هش بلوک پیشین را در خود دارد؛ خواندن از بلوک پیدایش (راست) به سمت تازه‌ترین بلوک (چپ)</figcaption>
+    </figure>
+
+    <section class="related-block" aria-labelledby="related-heading">
+      <h2 id="related-heading">
+        <span class="eyebrow" dir="ltr">RELATED</span>
+        <span>مدخل‌های مرتبط</span>
+      </h2>
+      <div class="related-grid">
+        <a class="related-card" href="#/t/hash">
+          <p class="related-card__title">هش</p>
+          <p class="related-card__desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</p>
+        </a>
+        <a class="related-card" href="#/t/proof-of-work">
+          <p class="related-card__title">اثبات کار</p>
+          <p class="related-card__desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</p>
+        </a>
+      </div>
+    </section>
+
+  </section>
+
+</main>
+
+<script>
+  (function(){
+    "use strict";
+
+    // سوییچ نما (موضوعی/الفبایی) — فقط حالت فعال دکمه را جابه‌جا می‌کند،
+    // چون این فایل یک پیش‌نمایش طراحی است، نه اپ کامل با مسیریابی.
+    var viewBtns = document.querySelectorAll(".view-btn");
+    viewBtns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        viewBtns.forEach(function(b){
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+      });
+    });
+
+    // کلید زبان — بدون محتوای انگلیسی در این پیش‌نمایش؛ فقط بازخورد کوتاه می‌دهد
+    var langBtn = document.getElementById("langBtn");
+    if (langBtn){
+      langBtn.addEventListener("click", function(){
+        langBtn.style.color = "var(--seal-deep)";
+        setTimeout(function(){ langBtn.style.color = ""; }, 260);
+      });
+    }
+
+    // جستجوی زندهٔ سمت‌کاربر روی همان فهرست موجود در صفحه — بدون درخواست شبکه
+    var input = document.getElementById("searchInput");
+    var rows = document.querySelectorAll(".ledger-row");
+    var groups = document.querySelectorAll(".ledger-group");
+    var emptyNote = document.getElementById("emptyNote");
+
+    if (input){
+      input.addEventListener("input", function(){
+        var q = input.value.trim().toLowerCase();
+        var anyVisible = false;
+
+        groups.forEach(function(group){
+          var groupHasVisible = false;
+          group.querySelectorAll(".ledger-row").forEach(function(row){
+            var term = (row.querySelector("a").dataset.term || "").toLowerCase();
+            var desc = (row.querySelector(".ledger-row__desc").textContent || "").toLowerCase();
+            var match = q === "" || term.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
+            row.style.display = match ? "" : "none";
+            if (match){ groupHasVisible = true; anyVisible = true; }
+          });
+          group.style.display = groupHasVisible ? "" : "none";
+        });
+
+        emptyNote.textContent = anyVisible ? "" : "مدخلی با این عبارت پیدا نشد.";
+      });
+    }
+  })();
+</script>
+
+<!--
+DESIGN NOTES
+جهت‌گیری: دژنبشت یعنی «دژِ نبشته‌ها» — بایگانی‌ای که یک نسخه از اوستا در آن نگه‌داری می‌شد.
+این نسخه آن استعاره را جدی می‌گیرد: نه یک ابزار توسعه‌دهنده با تم تیره، بلکه یک دفتر بایگانی
+روی کاغذ — کاغذ گرم، جوهر تیره، مهر شنگرفی. حس درست برای دانشنامه‌ای شخصی که قرار است
+سال‌ها خوانده شود، نه محصولی که قرار است دمو شود.
+
+پالت:
+  #f6efe2 paper       — زمینهٔ اصلی، کاغذ گرم به‌جای سفید خالص یا تیرهٔ توسعه‌دهنده
+  #ece0c9 paper-deep   — سطح دوم، هاور ردیف‌ها و کارت‌ها
+  #e4d6b8 paper-line   — خط‌های موئی و جداکننده‌ها
+  #2a2013 ink          — متن اصلی، قهوه‌ای تیرهٔ گرم به‌جای مشکی خالص
+  #6b5c45 ink-soft      — متن فرعی و فراداده
+  #a3382a seal          — تنها رنگ تأکید، قرمز مُهر؛ در همه‌جا همین یک رنگ برای پیوند/فعال/برجسته
+  (#1c5f8a  focus        — فقط حلقهٔ فوکوس کیبورد، عمداً جدا از سیستم رنگ محتوا تا با آن قاطی نشود)
+
+تایپوگرافی: پشتهٔ فونت سیستمی («Vazirmatn»، «IRANSansWeb» در صورت نصب محلی، وگرنه Tahoma/Segoe UI/
+system-ui). هیچ letter-spacing‌ای روی متن فارسی اعمال نشده — چسبیدگی حروف فارسی/عربی با
+letter-spacing واقعاً می‌شکند و مرورگر آن را جبران نمی‌کند، برخلاف چیزی که در طراحی‌های
+انگلیسی‌محور معمولاً بی‌فکر کپی می‌شود. تمایز و tracking فقط روی عناصر لاتین (eyebrowها،
+هشتگ‌ها، برچسب EXAMPLE/RELATED) اعمال می‌شود، جایی که واقعاً درست کار می‌کند. سلسله‌مراتب از
+راه اندازه و وزن ساخته می‌شود (۷۰۰/۸۰۰ برای عنوان‌ها، ۵۰۰/۴۰۰ برای متن)، نه از راه tracking.
+عرض ستون متن ۶۲ کاراکتر، line-height سخاوتمندانه (۱.۹ برای بدنه، ۱.۷۵ برای پاراگراف مقدمه).
+
+عنصر امضا: «صفحات کاتالوگ حکاکی‌شده» — هر مدخل به‌جای جعبهٔ کارت، یک شمارهٔ ردیفی فارسی
+(۰۱، ۰۲…) می‌گیرد که هم تزیین است هم اطلاعات واقعی (جای مدخل در کاتالوگ)، و هر سربرگ بخش
+یک برچسب لاتین کوچکِ tracked (PRIMITIVES، CONSENSUS، EXAMPLE، RELATED) کنار عنوان فارسی
+دارد — مثل برچسب دوزبانهٔ اشیای موزه.
+
+ریسکی که گرفتم: دیاگرام زنجیره را به‌جای چپ‌به‌راست معمولِ نمودارهای فنی، هم‌راستا با جهت
+خواندن راست‌به‌چپ چیدم — بلوک پیدایش (بلوک ۱) در سمت آغاز (راست) و تازه‌ترین بلوک در انتها
+(چپ)، با پیکان‌های ارجاع رو به راست. مختصات SVG را دستی برای RTL چیدم چون SVG با dir="rtl"
+خودش آینه نمی‌شود؛ ریسکش این است که خلاف عادت نمودارهای فنی (که همیشه چپ‌به‌راست‌اند) است،
+اما برای مخاطب فارسی‌خوان، خواندنش طبیعی‌تر از یک نمودار آینه‌نشده است.
+
+فونت پیشنهادی برای میزبانی محلی: Vazirmatn (وزن‌های ۴۰۰/۵۰۰/۶۰۰/۷۰۰/۸۰۰، فرمت woff2،
+لایسنس OFL) — طراحی‌شده برای فارسی با وزن‌های متعدد و ارقام فارسی/لاتین هماهنگ؛ چون این
+نسخه شدیداً به کنتراست وزنی برای سلسله‌مراتب متکی است (به‌جای letter-spacing)، وجود وزن ۸۰۰
+واقعی به‌جای «بولد شدهٔ مصنوعی مرورگر» تفاوت محسوسی در عنوان‌های بزرگ می‌دهد.
+
+── AUDIT — آنچه در طراحی فعلی اشکال داشت ──────────────────────────
+
+۱. پالت تیرهٔ #0d1117 + تأکید فیروزه‌ای #2dd4bf (style.css:2,7)
+   → همان پالت «ابزار توسعه‌دهندهٔ تیره» که تقریباً هر قالب Tailwind/shadcn و حتی تم تیرهٔ
+     خودِ GitHub دارد؛ چیزی از هویت یک دانشنامهٔ شخصی نمی‌گوید، فقط می‌گوید «یک AI این را ساخته».
+   → جایگزین: پالت کاغذ/جوهرِ بایگانی با تک‌رنگ شنگرف #a3382a که مستقیم به نام و مفهوم پروژه
+     («دژ نوشته‌ها») وصل است.
+
+۲. زمینهٔ نقطه‌چین تکرارشونده (body { background-image: radial-gradient(...) 22px 22px }, style.css:18-20)
+   → بافت شبکهٔ نقطه‌ای، تصویر زمینهٔ پیش‌فرضِ تقریباً هر لندینگ‌پیج و بوم Figma است؛ نویز
+     بصری بدون معنا اضافه می‌کند و ربطی به محتوای متنیِ صفحه ندارد.
+   → جایگزین: یک وینیت بسیار ملایم و بدون تکرار در گوشه‌ها، به‌جای الگوی کاشی‌شده.
+
+۳. کارت‌ها = border + border-inline-start رنگی + پس‌زمینهٔ surface + radius یکسان،
+   دقیقاً همین ترکیب روی سه مؤلفهٔ کاملاً متفاوت تکرار شده: .card (style.css:119-132),
+   .notice (167-175), .example (203-206)
+   → الگوی کلاسیک «کارت ژنریک» است؛ چون همه‌جا عیناً تکرار شده، مدخل فهرست، پیام هشدار،
+     و بخش مثال از نظر بصری از هم قابل تشخیص نیستند، فقط رنگ نوار کنارشان فرق می‌کند.
+   → جایگزین: ردیف‌های دفتری با خط موئی جداکننده (بدون جعبه) برای فهرست، و بلوک‌های تایپوگرافیک
+     بی‌قاب برای مثال — هر کدام با زبان بصری مخصوص خودش.
+
+۴. نشانگرهای لوزی‌شکل چرخانده‌شده برای اتصال دسته‌ها به‌شکل زنجیر
+   (.group::before/::after با transform: rotate(45deg), style.css:250-276،
+   و همان الگو در .topic-title::before, style.css:314-322)
+   → یک مربعِ چرخانده‌شده به‌جای آیکن معنادار، میان‌بر رایج طراحی‌های تولیدشده با AI برای
+     «یک تزیین به لیست بده» است؛ خودِ لوزی هیچ ارتباط مفهومی با «دسته» ندارد.
+   → جایگزین: شمارهٔ ردیفی فارسی واقعی (۰۱، ۰۲…) که هم تزیین است هم دادهٔ واقعی — جای مدخل
+     در کاتالوگ کلی سایت.
+
+۵. یک radius یکسان (var(--radius): 10px) روی تقریباً هر عنصر تعاملی و ظرف — دکمه‌ها (54)،
+   کارت‌ها (124)، ورودی جستجو (83)، چیپ‌ها (292)، جعبهٔ دیاگرام (212)، سگمنت‌های ویوتاگل (335)
+   → عدم سلسله‌مراتب در radius یعنی هر مؤلفه، از دکمهٔ کوچک تا قاب بزرگ دیاگرام، همان وزن
+     بصری را دارد؛ چشم راهی برای تشخیص «این کوچک/تعاملی است» از «این قاب بزرگ ساختاری است»
+     پیدا نمی‌کند.
+   → جایگزین: radius متمایز برای اندازه‌های متفاوت — ۲px روی کنترل‌های کوچک، صفر روی قاب
+     ساختاری دیاگرام، خط‌زیر (بدون radius) روی ورودی جستجو.
+
+۶. برچسب‌های حبه‌ای (border-radius: 999px) برای سه نوع فراداده‌ی کاملاً متفاوت: شمارندهٔ
+   تعداد .count (113)، هشتگ .tags .tag (181)، و چیپ موضوع .chip (292)
+   → سه مفهوم متفاوت (شمارش، هشتگ، فیلتر) با یک مؤلفهٔ بصری یکسان («حبهٔ ژنریک SaaS»)
+     نمایش داده می‌شوند و از هم قابل تفکیک نیستند.
+   → جایگزین: هشتگ‌ها کلمهٔ لاتین ساده با آندرلاین در هاور (مثل برچسب موزه)، شمارنده یک عبارت
+     فارسی معمولی («۳ مدخل») به‌جای شکل حبه‌ای.
+
+۷. فونت اعلام‌شده «Vazirmatn», «IRANSans» در ابتدای پشته (style.css:22) بدون هیچ @font-face
+   در کل ریپو — یعنی فونت هویتیِ اعلام‌شده هرگز واقعاً بار نمی‌شود و فونت واقعی رندرشده هرچیزی
+   است که Tahoma/system-ui به‌صورت پیش‌فرض بدهد؛ یک انتخاب ناخواسته، نه تصمیم طراحی.
+   → در این نسخه، فال‌بک سیستمی آگاهانه انتخاب و در پایان فایل مستند شده (Vazirmatn برای
+     میزبانی محلی در آینده)، و ثابت شده که هیچ tracking‌ای روی رشته‌های فارسی اعمال نمی‌شود —
+     مسئله‌ای که طراحی فعلی هرگز آگاهانه به آن فکر نکرده، چون هیچ‌جای CSS آن letter-spacing
+     تنظیم نشده است.
+-->
+
+</body>
+</html>

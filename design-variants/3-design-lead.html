@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>دژنبشت — نمونهٔ طراحی ۳ (سیستم طبقه‌بندی دقیق)</title>
+<style>
+  :root{
+    /* ---- palette ---- */
+    --paper:   #eef0ee; /* زمینهٔ خاکستری سرد و خنثی — عمداً نه کرم */
+    --panel:   #ffffff; /* سطح مسطح کارت‌ها و ورودی‌ها */
+    --ink:     #14161a; /* متن اصلی، تقریباً مشکیِ سرد */
+    --ink-soft:#565b61; /* متن ثانویه */
+    --blue:    #1e3aa8; /* کد رنگی دستهٔ «مفاهیم پایه» */
+    --red:     #b8331c; /* کد رنگی دستهٔ «اجماع» */
+    --line:    rgba(20,22,26,.16);
+
+    /* ---- type ---- */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Estedad", "Vazirmatn", "IRANSansWeb", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, "Estedad Mono", monospace;
+
+    --fs-tab:      .75rem;
+    --fs-meta:     .8125rem;
+    --fs-body:     1.0625rem;
+    --fs-row-title:1.1875rem;
+    --fs-cat-label:1rem;
+    --fs-h1:       clamp(2.3rem, 1.6rem + 3vw, 3.4rem);
+    --fs-oneliner: 1.1875rem;
+
+    /* ---- spacing scale ---- */
+    --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.5rem;
+    --sp-6:2rem;   --sp-7:2.75rem; --sp-8:3.75rem; --sp-9:5rem;
+
+    --measure: 38rem;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-sans);
+    font-size:16px;
+    line-height:1.5;
+  }
+  img,svg{ max-width:100%; }
+  ul{ list-style:none; margin:0; padding:0; }
+  a{ color:inherit; }
+  h1,h2{ font-family:inherit; }
+
+  .page{
+    max-width:760px;
+    margin-inline:auto;
+    padding-inline:clamp(1rem,4vw,2rem);
+    padding-block-end:var(--sp-9);
+  }
+
+  :focus-visible{ outline:3px solid var(--ink); outline-offset:2px; }
+
+  /* English/Latin fragments inside Persian flow must not reverse */
+  [dir="ltr"]{ unicode-bidi:isolate; }
+
+  /* ============ header ============ */
+  .site-head{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:var(--sp-4);
+    padding-block:var(--sp-6) var(--sp-4);
+    border-block-end:3px solid var(--ink);
+  }
+  .brand-title{
+    font-size:clamp(1.9rem,1.5rem+2vw,2.5rem);
+    font-weight:900;
+    line-height:1;
+    margin:0;
+  }
+  .brand-sub{
+    font-size:var(--fs-meta);
+    color:var(--ink-soft);
+    margin:.4rem 0 0;
+  }
+  .head-controls{
+    display:flex;
+    align-items:center;
+    gap:var(--sp-3);
+    flex-wrap:wrap;
+  }
+  .lang-key{
+    display:inline-flex;
+    align-items:center;
+    padding-inline:var(--sp-4);
+    padding-block:var(--sp-2);
+    border:1.5px solid var(--ink);
+    background:var(--panel);
+    font-family:var(--font-mono);
+    font-size:.8125rem;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink);
+    text-decoration:none;
+    cursor:pointer;
+    transition:background-color .15s ease,color .15s ease;
+  }
+  .lang-key:hover{ background:var(--ink); color:var(--panel); }
+
+  .view-switch{ display:inline-flex; border:1.5px solid var(--ink); background:var(--panel); }
+  .vs-input{
+    position:absolute;
+    inline-size:1px; block-size:1px;
+    overflow:hidden;
+    clip-path:inset(50%);
+    white-space:nowrap;
+  }
+  .vs-label{
+    display:inline-flex;
+    align-items:center;
+    padding-inline:var(--sp-4);
+    padding-block:var(--sp-2);
+    font-size:var(--fs-meta);
+    font-weight:700;
+    color:var(--ink);
+    cursor:pointer;
+    user-select:none;
+    transition:background-color .15s ease,color .15s ease;
+  }
+  .vs-label + .vs-input + .vs-label{ border-inline-start:1.5px solid var(--ink); }
+  .vs-input:checked + .vs-label{ background:var(--ink); color:var(--panel); }
+  .vs-input:not(:checked) + .vs-label:hover{ background:rgba(20,22,26,.08); }
+  .vs-input:focus-visible + .vs-label{ outline:3px solid var(--ink); outline-offset:-3px; }
+
+  .view-eyebrow{
+    font-size:var(--fs-meta);
+    font-weight:700;
+    color:var(--ink-soft);
+    margin:var(--sp-6) 0 var(--sp-2);
+  }
+
+  /* ============ search ============ */
+  .search-wrap{ margin-block:var(--sp-2) var(--sp-7); }
+  .search-label{
+    display:block;
+    font-size:var(--fs-meta);
+    font-weight:700;
+    color:var(--ink-soft);
+    margin-block-end:var(--sp-2);
+  }
+  .search-field{
+    display:flex;
+    align-items:center;
+    gap:var(--sp-3);
+    background:var(--panel);
+    border:1.5px solid var(--ink);
+    padding-inline:var(--sp-4);
+    padding-block:var(--sp-3);
+  }
+  .search-field svg{ inline-size:1.15rem; block-size:1.15rem; flex-shrink:0; color:var(--ink-soft); }
+  .search-field:focus-within{ outline:3px solid var(--ink); outline-offset:2px; }
+  .search-input{
+    flex:1; min-width:0;
+    border:0; background:transparent;
+    font:inherit; font-size:var(--fs-body); color:var(--ink);
+    outline:none;
+  }
+  .search-input::placeholder{ color:var(--ink-soft); }
+
+  /* ============ category / index list ============ */
+  .category{ margin-block-end:var(--sp-8); }
+  .category-head{
+    display:flex;
+    flex-wrap:wrap;
+    row-gap:.4rem;
+    align-items:center;
+    gap:var(--sp-3);
+    padding-block-end:var(--sp-3);
+    margin-block-end:var(--sp-4);
+    border-block-end:2px solid var(--ink);
+  }
+  .cat-swatch{
+    inline-size:.85rem; block-size:.85rem;
+    flex-shrink:0;
+    background:var(--cat-color, var(--ink));
+  }
+  .category-head h2{
+    font-size:var(--fs-cat-label);
+    font-weight:800;
+    margin:0;
+  }
+  .cat-count{
+    margin-inline-start:auto;
+    font-family:var(--font-mono);
+    font-size:var(--fs-meta);
+    color:var(--ink-soft);
+  }
+
+  .entry-list{ display:flex; flex-direction:column; gap:var(--sp-3); }
+  .entry-row{
+    display:block;
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    padding-inline:var(--sp-5);
+    padding-block:var(--sp-4);
+    text-decoration:none;
+    color:inherit;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .entry-row:hover{ border-color:var(--ink); transform:translateY(-2px); }
+  .entry-title{
+    display:block;
+    font-size:var(--fs-row-title);
+    font-weight:700;
+    margin-block-end:.3em;
+  }
+  .entry-desc{
+    display:block;
+    font-size:var(--fs-meta);
+    color:var(--ink-soft);
+    line-height:1.55;
+  }
+
+  .cat-foundational{ --cat-color:var(--blue); }
+  .cat-consensus{ --cat-color:var(--red); }
+
+  /* ============ view divider ============ */
+  .view-divider{
+    display:flex;
+    align-items:center;
+    gap:var(--sp-4);
+    margin-block:var(--sp-9);
+  }
+  .view-divider::before,
+  .view-divider::after{ content:""; flex:1; block-size:2px; background:var(--ink); }
+  .view-divider-label{
+    font-size:var(--fs-meta);
+    font-weight:800;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+
+  /* ============ entry view ============ */
+  .breadcrumb{
+    display:flex;
+    flex-wrap:wrap;
+    gap:var(--sp-2);
+    font-size:var(--fs-meta);
+    color:var(--ink-soft);
+    margin:0 0 var(--sp-5);
+  }
+  .breadcrumb a{ color:var(--ink-soft); text-decoration:underline; text-underline-offset:.2em; }
+  .breadcrumb a:hover{ color:var(--ink); }
+  .breadcrumb [aria-current]{ color:var(--ink); font-weight:700; }
+
+  .entry-head h1{
+    font-size:var(--fs-h1);
+    font-weight:900;
+    line-height:1.05;
+    margin:0 0 var(--sp-3);
+  }
+  .entry-oneliner{
+    font-size:var(--fs-oneliner);
+    color:var(--ink-soft);
+    line-height:1.5;
+    max-width:var(--measure);
+    margin:0 0 var(--sp-5);
+  }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:var(--sp-2); margin-block-end:var(--sp-7); }
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    background:var(--ink);
+    color:var(--panel);
+    font-family:var(--font-mono);
+    font-size:.75rem;
+    letter-spacing:.04em;
+    padding-inline:var(--sp-3);
+    padding-block:.45em;
+    border:0;
+    cursor:pointer;
+    transition:background-color .15s ease, color .15s ease, box-shadow .15s ease;
+  }
+  .chip:hover{ background:var(--panel); color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink); }
+
+  .entry-body{ max-width:var(--measure); font-size:var(--fs-body); line-height:1.75; color:var(--ink); }
+  .entry-body p{ margin:0 0 var(--sp-5); }
+
+  .example-block{
+    max-width:var(--measure);
+    margin-block:var(--sp-8);
+    padding:var(--sp-5);
+    background:var(--panel);
+    border-inline-start:6px solid var(--ink);
+  }
+  .example-block h2{ margin:0 0 var(--sp-3); font-size:var(--fs-cat-label); font-weight:800; }
+  .example-block p{ margin:0; font-size:var(--fs-body); line-height:1.7; }
+
+  .diagram-block{ margin-block:var(--sp-8); }
+  .diagram-block h2{ font-size:var(--fs-cat-label); font-weight:800; margin:0 0 var(--sp-4); }
+  .diagram-frame{
+    background:var(--panel);
+    border:1.5px solid var(--ink);
+    padding:var(--sp-5);
+  }
+  .diagram-frame svg{ display:block; inline-size:100%; block-size:auto; }
+
+  .related-block{ margin-block:var(--sp-8) var(--sp-9); }
+  .related-block h2{ font-size:var(--fs-cat-label); font-weight:800; margin:0 0 var(--sp-4); }
+  .related-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:var(--sp-4);
+  }
+  .related-card{
+    display:flex;
+    flex-direction:column;
+    gap:.35rem;
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-inline-start:6px solid var(--cat-color, var(--ink));
+    padding-inline:var(--sp-5);
+    padding-block:var(--sp-4);
+    text-decoration:none;
+    color:inherit;
+    transition:transform .15s ease;
+  }
+  .related-card:hover{ transform:translateY(-2px); }
+  .related-eyebrow{ font-size:.75rem; font-weight:700; color:var(--cat-color, var(--ink-soft)); }
+  .related-title{ font-size:var(--fs-row-title); font-weight:700; }
+  .related-desc{ font-size:var(--fs-meta); color:var(--ink-soft); line-height:1.55; }
+
+  .colophon{
+    margin-block-start:var(--sp-9);
+    padding-block:var(--sp-5);
+    border-block-start:2px solid var(--ink);
+    font-size:var(--fs-meta);
+    color:var(--ink-soft);
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:var(--sp-3);
+  }
+  .colophon .en{
+    font-family:var(--font-mono);
+    font-size:.75rem;
+    letter-spacing:.04em;
+  }
+
+  @media (min-width:640px){
+    .entry-head h1{ margin-block-end:var(--sp-4); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{
+      transition-duration:.001ms !important;
+      animation-duration:.001ms !important;
+      scroll-behavior:auto !important;
+    }
+    .entry-row:hover,
+    .related-card:hover{ transform:none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ======================================================
+       نمای ۱ — فهرست
+       ====================================================== -->
+  <section aria-label="نمای فهرست">
+
+    <header class="site-head">
+      <div class="brand">
+        <p class="brand-title">دژنبشت</p>
+        <p class="brand-sub">دانشنامهٔ شخصی</p>
+      </div>
+      <div class="head-controls">
+        <a class="lang-key" href="#" lang="en" dir="ltr">English</a>
+        <div class="view-switch" role="group" aria-label="سوییچ نما">
+          <input class="vs-input" type="radio" name="viewmode" id="vm-topic" checked>
+          <label class="vs-label" for="vm-topic">موضوعی</label>
+          <input class="vs-input" type="radio" name="viewmode" id="vm-alpha">
+          <label class="vs-label" for="vm-alpha">الفبایی</label>
+        </div>
+      </div>
+    </header>
+
+    <p class="view-eyebrow">نمای ۱ — فهرست</p>
+
+    <div class="search-wrap">
+      <label class="search-label" for="q">جستجوی مدخل‌ها</label>
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="20" y1="20" x2="15.4" y2="15.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <input id="q" class="search-input" type="search" placeholder="جستجو در مدخل‌ها…">
+      </div>
+    </div>
+
+    <main>
+      <section class="category cat-foundational">
+        <header class="category-head">
+          <span class="cat-swatch" aria-hidden="true"></span>
+          <h2>مفاهیم پایه</h2>
+          <span class="cat-count">۳ مدخل</span>
+        </header>
+        <ul class="entry-list">
+          <li>
+            <a class="entry-row" href="#/t/blockchain">
+              <span class="entry-title">بلاکچین</span>
+              <span class="entry-desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</span>
+            </a>
+          </li>
+          <li>
+            <a class="entry-row" href="#/t/hash">
+              <span class="entry-title">هش</span>
+              <span class="entry-desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+            </a>
+          </li>
+          <li>
+            <a class="entry-row" href="#/t/wallet">
+              <span class="entry-title">کیف پول</span>
+              <span class="entry-desc">ابزاری که کلیدهای خصوصی را نگه می‌دارد، نه خود دارایی را</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="category cat-consensus">
+        <header class="category-head">
+          <span class="cat-swatch" aria-hidden="true"></span>
+          <h2>اجماع</h2>
+          <span class="cat-count">۲ مدخل</span>
+        </header>
+        <ul class="entry-list">
+          <li>
+            <a class="entry-row" href="#/t/pow">
+              <span class="entry-title">اثبات کار</span>
+              <span class="entry-desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+            </a>
+          </li>
+          <li>
+            <a class="entry-row" href="#/t/nonce">
+              <span class="entry-title">نانس</span>
+              <span class="entry-desc">عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </section>
+
+  <!-- ======================================================
+       جداکنندهٔ نماها
+       ====================================================== -->
+  <div class="view-divider">
+    <span class="view-divider-label">نمای ۲ — مدخل «بلاکچین»</span>
+  </div>
+
+  <!-- ======================================================
+       نمای ۲ — مدخل
+       ====================================================== -->
+  <article aria-label="نمای مدخل">
+
+    <nav class="breadcrumb" aria-label="مسیر">
+      <a href="#/">فهرست</a>
+      <span aria-hidden="true">›</span>
+      <a href="#/c/foundations">مفاهیم پایه</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">بلاکچین</span>
+    </nav>
+
+    <header class="entry-head">
+      <h1>بلاکچین</h1>
+      <p class="entry-oneliner">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</p>
+      <div class="chip-row">
+        <button class="chip" type="button" dir="ltr">ledger</button>
+        <button class="chip" type="button" dir="ltr">bitcoin</button>
+        <button class="chip" type="button" dir="ltr">structure</button>
+      </div>
+    </header>
+
+    <div class="entry-body">
+      <p>بلاکچین یک دفتر کل است که رکوردها را در دسته‌هایی به نام «بلوک» می‌نویسد. هر بلوک هش بلوک قبلی را در خودش دارد، پس بلوک‌ها مثل حلقه‌های یک زنجیر به هم وصل می‌شوند.</p>
+      <p>همین ارجاع به عقب است که دفتر را تغییرناپذیر می‌کند: اگر کسی یک بلوک قدیمی را دستکاری کند، هش آن عوض می‌شود، در نتیجه ارجاع بلوک بعدی نامعتبر می‌شود و همین‌طور تا انتهای زنجیره. برای پنهان ماندن دستکاری باید همهٔ بلوک‌های بعدی هم دوباره ساخته شوند.</p>
+      <p>نسخه‌ای از این دفتر روی هر نود شبکه نگه‌داری می‌شود و نودها با یک الگوریتم <span dir="ltr">consensus</span> سر اینکه کدام نسخه معتبر است به توافق می‌رسند.</p>
+    </div>
+
+    <section class="example-block">
+      <h2>مثال</h2>
+      <p>در بیت‌کوین حدوداً هر ۱۰ دقیقه یک بلوک جدید ساخته می‌شود و تراکنش‌های آن بازه را در خود جا می‌دهد.</p>
+    </section>
+
+    <section class="diagram-block">
+      <h2>زنجیرهٔ بلوک‌ها</h2>
+      <div class="diagram-frame">
+        <svg viewBox="0 0 780 220" role="img" aria-labelledby="chainTitle">
+          <title id="chainTitle">نمودار زنجیرهٔ سه بلوک: هر بلوک هش بلوک پیشین را در خود نگه می‌دارد</title>
+
+          <defs>
+            <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink)"/>
+            </marker>
+          </defs>
+
+          <!-- بلوک ۱ (آغازین) — سمت راست -->
+          <rect x="560" y="45" width="180" height="130" style="fill:var(--panel);stroke:var(--ink);stroke-width:2"/>
+          <text x="650" y="78" text-anchor="middle" style="font:700 20px var(--font-sans);fill:var(--ink)">بلوک ۱</text>
+          <text x="650" y="98" text-anchor="middle" style="font:400 12px var(--font-sans);fill:var(--ink-soft)">(بلوک آغازین)</text>
+          <rect x="575" y="122" width="150" height="34" style="fill:var(--ink)"/>
+          <text x="650" y="144" text-anchor="middle" dir="ltr" style="font:600 12px var(--font-mono);letter-spacing:.02em;fill:var(--panel);direction:ltr;unicode-bidi:bidi-override">#0a4d9e21</text>
+
+          <!-- پیکان ۱ -->
+          <line x1="560" y1="110" x2="484" y2="110" style="stroke:var(--ink);stroke-width:2.5" marker-end="url(#arrowhead)"/>
+          <text x="522" y="100" text-anchor="middle" style="font:700 12px var(--font-sans);fill:var(--ink-soft)">هش</text>
+
+          <!-- بلوک ۲ (میانی) -->
+          <rect x="300" y="45" width="180" height="130" style="fill:var(--panel);stroke:var(--ink);stroke-width:2"/>
+          <text x="390" y="85" text-anchor="middle" style="font:700 20px var(--font-sans);fill:var(--ink)">بلوک ۲</text>
+          <rect x="315" y="122" width="150" height="34" style="fill:var(--ink)"/>
+          <text x="390" y="144" text-anchor="middle" dir="ltr" style="font:600 12px var(--font-mono);letter-spacing:.02em;fill:var(--panel);direction:ltr;unicode-bidi:bidi-override">#c91ef73a</text>
+
+          <!-- پیکان ۲ -->
+          <line x1="300" y1="110" x2="224" y2="110" style="stroke:var(--ink);stroke-width:2.5" marker-end="url(#arrowhead)"/>
+          <text x="262" y="100" text-anchor="middle" style="font:700 12px var(--font-sans);fill:var(--ink-soft)">هش</text>
+
+          <!-- بلوک ۳ (جدیدترین) — سمت چپ -->
+          <rect x="40" y="45" width="180" height="130" style="fill:var(--panel);stroke:var(--ink);stroke-width:2"/>
+          <text x="130" y="85" text-anchor="middle" style="font:700 20px var(--font-sans);fill:var(--ink)">بلوک ۳</text>
+          <rect x="55" y="122" width="150" height="34" style="fill:var(--ink)"/>
+          <text x="130" y="144" text-anchor="middle" dir="ltr" style="font:600 12px var(--font-mono);letter-spacing:.02em;fill:var(--panel);direction:ltr;unicode-bidi:bidi-override">#7f2ac190</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="related-block">
+      <h2>مدخل‌های مرتبط</h2>
+      <div class="related-grid">
+        <a class="related-card cat-foundational" href="#/t/hash">
+          <span class="related-eyebrow">مفاهیم پایه</span>
+          <span class="related-title">هش</span>
+          <span class="related-desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+        </a>
+        <a class="related-card cat-consensus" href="#/t/pow">
+          <span class="related-eyebrow">اجماع</span>
+          <span class="related-title">اثبات کار</span>
+          <span class="related-desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+        </a>
+      </div>
+    </section>
+  </article>
+
+  <footer class="colophon">
+    <span>دژنبشت — دانشنامهٔ شخصی</span>
+    <span class="en" dir="ltr">no build · no tracking · one file</span>
+  </footer>
+
+</div>
+
+<!--
+DESIGN NOTES
+
+جهت‌گیری:
+دژنبشت این‌جا مثل یک سیستم طبقه‌بندی دقیق عمل می‌کند، نه یک بایگانی عتیقه.
+هر دسته یک رنگ ثابت دارد (مثل برچسب‌های رنگی کتابخانه یا خطوط مترو)، هشتگ‌ها
+عمداً خنثی و مشکی می‌مانند تا با رنگ دسته‌بندی قاطی نشوند، و همه‌چیز روی گوشه‌های
+تیز و خطوط ضخیم می‌نشیند. این حس به دقت مفاهیمی مثل هش/بلاک/اجماع نزدیک‌تر است
+تا به حسِ تاریخیِ خودِ نام «دژنبشت».
+
+پالت:
+  #eef0ee  --paper     زمینهٔ خاکستری سرد و خنثی (عمداً نه کِرم)
+  #ffffff  --panel     سطح مسطح کارت‌ها، ورودی جستجو، بدنهٔ دیاگرام
+  #14161a  --ink       متن اصلی، تقریباً مشکیِ سرد
+  #565b61  --ink-soft  متن ثانویه/توضیح‌ها
+  #1e3aa8  --blue      کد رنگیِ دستهٔ «مفاهیم پایه»
+  #b8331c  --red       کد رنگیِ دستهٔ «اجماع»
+
+تایپوگرافی:
+فقط فونت سیستمی، پس شخصیت تایپوگرافیک از مقیاس/وزن/ریتم می‌آید نه از جفت‌کردنِ
+دو فونت. عنوان مدخل با clamp تا ۳٫۴rem و وزن ۹۰۰ با line-height سفتِ ۱٫۰۵؛ متن
+بدنه ۱۷px با line-height ۱٫۷۵ برای خوانش طولانی. تصمیم مهم: روی هیچ متن فارسی‌ای
+letter-spacing گذاشته نشده — فاصله‌گذاری حروف چسبان فارسی/عربی را از هم می‌گسلد
+و ظاهر اتصال حروف را خراب می‌کند. tracking فقط روی عناصر لاتین/مونو به‌کار رفته:
+هشتگ‌ها، دکمهٔ English، ارقام هش در دیاگرام.
+
+عنصر امضا:
+برچسب‌های رنگیِ تخت با گوشهٔ تیز. هر دسته یک مربع رنگِ ثابت (آبی/قرمز) دارد که
+هم کنار عنوان دسته در فهرست تکرار می‌شود، هم به‌صورت نوار کنارِ کارت‌های «مدخل
+مرتبط». هشتگ‌ها در برابرش مشکی و خنثی‌اند — تفاوت واقعی داده («دسته» در برابر
+«هشتگ» که در معماری پروژه دو چیز جدا هستند) با رنگ دیده می‌شود، نه فقط توضیح
+داده می‌شود.
+
+ریسکی که گرفتم:
+گوشه‌های کاملاً تیز (radius: صفر) در همه‌جا، بدون هیچ سایهٔ نرمی. ریسک این است
+که به یک فرم اداریِ خشک نزدیک شود. توجیهش این است که موضوع (هش، بلاک، اجماع)
+دقیق و قطعی است نه احساسی؛ شبکهٔ رنگیِ تخت به‌جای بافت کاغذِ قدیمی همین قطعیت
+را منتقل می‌کند، و رنگ‌های آبی/قرمز به‌عنوان کدِ عملکردیِ دسته (نه صرفاً تزیین)
+همین منطق را تقویت می‌کنند.
+
+فونت پیشنهادی برای میزبانی محلی:
+Estedad — فونت فارسیِ متغیرِ متن‌باز با تناسبات هندسی، طیف وزنیِ گسترده (۱۰۰
+تا ۹۰۰) و ارقام جدولیِ خوب؛ اگر داخل ریپو میزبانی شود، وزن‌های سنگین (۸۰۰-۹۰۰)
+عنوان‌ها را قاطع‌تر و ارقامِ مونو را در چیپ‌های هش یکدست‌تر نشان می‌دهد.
+-->
+</body>
+</html>

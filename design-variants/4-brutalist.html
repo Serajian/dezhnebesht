@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دژنبشت — سند صنعتی</title>
+<style>
+
+/* ============================================================
+   TOKENS — Swiss Industrial Print. One substrate. One accent.
+   ============================================================ */
+:root{
+  color-scheme: light;
+  --paper:       #F2F0EA;
+  --paper-panel: #E8E4D9;
+  --paper-panel-2:#DED8C7;
+  --ink:         #0B0B0A;
+  --ink-soft:    #4A4944;
+  --red:         #B31217;
+  --line:        #0B0B0A;
+
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Consolas", "Courier New", monospace;
+  --sans-fa: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+
+  --u: 8px;
+  --measure: 38rem;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+html{ overflow-x:hidden; }
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans-fa);
+  line-height:1.5;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,p,dl,dd,dt,figure{ margin:0; }
+ul{ list-style:none; margin:0; padding:0; }
+img,svg{ max-width:100%; display:block; }
+button{ font:inherit; color:inherit; background:none; border:0; }
+a{ color:inherit; }
+button, a{ cursor:pointer; }
+
+/* Never letter-space joined Persian script. This rule exists so nobody
+   accidentally adds tracking to a Persian run later. Latin/mono fragments
+   opt into spacing explicitly via .mono / [dir="ltr"]. */
+:lang(fa){ letter-spacing:0; }
+
+/* Latin / numeric chrome fragments: isolated direction + tracking lives here only. */
+.mono{
+  font-family:var(--mono);
+  direction:ltr;
+  unicode-bidi:isolate;
+  letter-spacing:0.03em;
+}
+
+:focus-visible{
+  outline:3px solid var(--red);
+  outline-offset:2px;
+}
+
+/* ============================================================
+   LAYOUT PRIMITIVES
+   ============================================================ */
+.bleed{ width:100%; }
+.container{
+  max-width:1180px;
+  margin-inline:auto;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+.rule{
+  border:0;
+  border-block-end:2px solid var(--line);
+  width:100%;
+}
+.rule--hair{ border-block-end-width:1px; }
+
+/* ============================================================
+   NOISE / GRAIN OVERLAY — static texture, no motion, no network
+   ============================================================ */
+.grain{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:0.05;
+  mix-blend-mode:multiply;
+  filter:url(#dzh-grain);
+  z-index:999;
+}
+
+/* ============================================================
+   DOC-CONTROL STRIP
+   ============================================================ */
+.doc-strip{
+  background:var(--ink);
+  color:var(--paper);
+}
+.doc-strip .container{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:0.5rem 1.5rem;
+  padding-block:0.5rem;
+  font-size:0.68rem;
+}
+.status-dot{
+  display:inline-block;
+  inline-size:7px;
+  block-size:7px;
+  background:var(--red);
+  border-radius:50%;
+  margin-inline-end:0.5em;
+  vertical-align:middle;
+  animation: dzh-pulse 2.2s ease-in-out infinite;
+}
+@keyframes dzh-pulse{
+  0%,100%{ opacity:1; }
+  50%{ opacity:0.25; }
+}
+@media (prefers-reduced-motion: reduce){
+  .status-dot{ animation:none; opacity:1; }
+}
+
+/* ============================================================
+   HALFTONE HERO TEXTURE — chrome only, never behind body copy
+   ============================================================ */
+.hero{
+  background-image: radial-gradient(var(--ink) 1px, transparent 1.4px);
+  background-size: 14px 14px;
+  background-position: -6px -6px;
+  background-color: var(--paper);
+  position:relative;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:var(--paper);
+  opacity:0.86;
+}
+.hero > *{ position:relative; }
+
+/* ============================================================
+   SITE HEADER
+   ============================================================ */
+.site-head{ padding-block:clamp(2rem, 6vw, 3.5rem) 1.75rem; }
+.site-head__top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  gap:1rem 2rem;
+}
+.site-title{
+  font-weight:800;
+  font-size:clamp(2.6rem, 11vw, 6.2rem);
+  line-height:0.92;
+  letter-spacing:0;
+}
+.site-tag{
+  margin-block-start:0.6rem;
+  font-size:0.72rem;
+  color:var(--ink-soft);
+  display:flex;
+  align-items:center;
+  gap:0.6em;
+}
+.site-tag .mono{ letter-spacing:0.08em; }
+
+.head-controls{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:0.6rem;
+  padding-block-start:0.4rem;
+}
+.lang-key{
+  border:2px solid var(--ink);
+  padding:0.35em 0.9em;
+  font-size:0.72rem;
+  font-weight:700;
+  background:var(--paper);
+}
+.lang-key:hover{ background:var(--ink); color:var(--paper); }
+
+.view-switch{
+  display:flex;
+  border:2px solid var(--ink);
+}
+.view-switch button{
+  padding:0.4em 0.9em;
+  font-size:0.72rem;
+  font-weight:700;
+  border-inline-start:2px solid var(--ink);
+}
+.view-switch button:first-child{ border-inline-start:0; }
+.view-switch button[aria-pressed="true"]{ background:var(--ink); color:var(--paper); }
+.view-switch button[aria-pressed="false"]{ background:var(--paper); color:var(--ink); }
+
+/* ============================================================
+   SEARCH — datasheet field with notched label
+   ============================================================ */
+.search-field{
+  position:relative;
+  margin-block-start:2rem;
+  border:2px solid var(--ink);
+  background:var(--paper);
+  display:flex;
+  align-items:center;
+  gap:0.75rem;
+  padding:0.85rem 1rem;
+}
+.search-field__label{
+  position:absolute;
+  inset-block-start:-0.65em;
+  inset-inline-start:0.9rem;
+  background:var(--paper);
+  padding-inline:0.5em;
+  font-size:0.68rem;
+  font-weight:700;
+  color:var(--red);
+}
+.search-field svg{ inline-size:18px; block-size:18px; flex:none; color:var(--ink); }
+.search-field input{
+  flex:1;
+  border:0;
+  outline:0;
+  background:transparent;
+  font:inherit;
+  font-family:var(--sans-fa);
+  font-size:1rem;
+  color:var(--ink);
+  min-width:0;
+}
+.search-field input::placeholder{ color:var(--ink-soft); }
+.search-field input:focus-visible{ outline:none; }
+.search-field:focus-within{ border-color:var(--red); }
+
+/* ============================================================
+   CATEGORIES
+   ============================================================ */
+.categories{ padding-block:2.5rem; display:grid; gap:2.5rem; }
+.category__head{
+  display:flex;
+  align-items:baseline;
+  gap:1rem;
+  padding-block-end:0.6rem;
+  border-block-end:3px solid var(--ink);
+}
+.category__count{
+  font-family:var(--mono);
+  direction:ltr;
+  font-size:clamp(2rem, 6vw, 2.8rem);
+  font-weight:700;
+  color:var(--red);
+  line-height:1;
+}
+.category__name{
+  font-weight:800;
+  font-size:clamp(1.15rem, 3vw, 1.5rem);
+}
+.category__meta{
+  margin-inline-start:auto;
+  font-family:var(--mono);
+  direction:ltr;
+  font-size:0.68rem;
+  color:var(--ink-soft);
+  align-self:center;
+}
+
+.entry-list{ display:grid; }
+.entry-row{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0.2rem;
+  padding-block:1.1rem;
+  border-block-end:1px solid var(--ink);
+  text-decoration:none;
+  transition:background-color .12s linear;
+}
+.entry-row:hover{ background:var(--paper-panel); }
+.entry-row__top{
+  display:flex;
+  align-items:baseline;
+  gap:0.9rem;
+  flex-wrap:wrap;
+}
+.entry-row__id{
+  font-family:var(--mono);
+  direction:ltr;
+  font-size:0.68rem;
+  color:var(--ink-soft);
+  flex:none;
+}
+.entry-row__title{
+  font-weight:700;
+  font-size:1.15rem;
+}
+.entry-row__desc{
+  color:var(--ink-soft);
+  font-size:0.92rem;
+  max-width:46rem;
+}
+
+/* ============================================================
+   VIEW DIVIDER — barcode break between INDEX and ENTRY views
+   ============================================================ */
+.view-divider{
+  background:
+    repeating-linear-gradient(
+      to left,
+      var(--ink) 0 2px,
+      transparent 2px 5px,
+      var(--ink) 5px 6px,
+      transparent 6px 13px,
+      var(--ink) 13px 16px,
+      transparent 16px 20px
+    );
+  block-size:52px;
+  position:relative;
+}
+.view-divider__label{
+  position:absolute;
+  inset-block-start:50%;
+  inset-inline-start:50%;
+  transform:translate(-50%,-50%);
+  background:var(--paper);
+  border:2px solid var(--ink);
+  padding:0.4em 1.1em;
+  font-family:var(--mono);
+  direction:ltr;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.08em;
+  white-space:nowrap;
+}
+
+/* ============================================================
+   BREADCRUMB
+   ============================================================ */
+.breadcrumb{
+  padding-block:1.1rem;
+  font-family:var(--mono);
+  direction:ltr;
+  unicode-bidi:plaintext;
+  font-size:0.72rem;
+  color:var(--ink-soft);
+  display:flex;
+  gap:0.5em;
+  flex-wrap:wrap;
+}
+.breadcrumb a{ color:var(--ink); text-decoration:underline; text-underline-offset:0.2em; }
+.breadcrumb a:hover{ color:var(--red); }
+.breadcrumb [aria-current]{ color:var(--red); font-weight:700; }
+
+/* ============================================================
+   ENTRY HEADER
+   ============================================================ */
+.entry-head{ padding-block:0.5rem 2rem; }
+.entry-title{
+  font-weight:800;
+  font-size:clamp(3rem, 13vw, 7rem);
+  line-height:0.9;
+}
+.entry-desc{
+  margin-block-start:1rem;
+  font-size:clamp(1rem, 2.4vw, 1.25rem);
+  color:var(--ink-soft);
+  max-width:var(--measure);
+}
+.hashtags{
+  margin-block-start:1.4rem;
+  display:flex;
+  gap:0.6rem;
+  flex-wrap:wrap;
+}
+.hashtag{
+  font-family:var(--mono);
+  direction:ltr;
+  font-size:0.78rem;
+  font-weight:700;
+  border:2px solid var(--ink);
+  padding:0.3em 0.75em;
+  letter-spacing:0.04em;
+}
+.hashtag:hover{ background:var(--ink); color:var(--paper); }
+.hashtag:focus-visible{ outline-offset:3px; }
+
+/* ============================================================
+   BODY COPY — the one zone that must survive long reading.
+   No grain, no halftone, no tracking. Weight + rule only.
+   ============================================================ */
+.entry-body{
+  padding-block:1rem 2rem;
+  display:grid;
+  gap:1.6rem;
+  max-width:calc(var(--measure) + 4rem);
+}
+.para-block{
+  display:grid;
+  grid-template-columns:3rem 1fr;
+  gap:1rem;
+  align-items:start;
+}
+.para-block__label{
+  font-family:var(--mono);
+  direction:ltr;
+  font-size:0.72rem;
+  color:var(--red);
+  padding-block-start:0.35em;
+}
+.para-block p{
+  font-size:1.05rem;
+  line-height:1.95;
+  color:var(--ink);
+  max-width:var(--measure);
+}
+@media (max-width:560px){
+  .para-block{ grid-template-columns:1fr; gap:0.35rem; }
+  .para-block__label{ padding-block-start:0; }
+}
+
+/* ============================================================
+   EXAMPLE — datasheet readout box
+   ============================================================ */
+.example{
+  max-width:calc(var(--measure) + 4rem);
+  border:2px solid var(--ink);
+  margin-block-start:0.5rem;
+}
+.example__bar{
+  background:var(--ink);
+  color:var(--paper);
+  padding:0.5em 1em;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-family:var(--mono);
+  direction:ltr;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.06em;
+}
+.example p{
+  padding:1.1em 1.2em 1.3em;
+  font-size:1rem;
+  line-height:1.9;
+}
+
+/* ============================================================
+   DIAGRAM — blueprint figure
+   ============================================================ */
+.figure{
+  margin-block-start:2.5rem;
+  max-width:calc(var(--measure) + 4rem);
+}
+.figure__frame{
+  border:1px dashed var(--ink);
+  padding:1rem;
+  overflow-x:auto;
+}
+.figure__frame svg{ min-width:520px; width:100%; height:auto; }
+.figure figcaption{
+  margin-block-start:0.7rem;
+  font-size:0.85rem;
+  color:var(--ink-soft);
+}
+.figure figcaption .mono{ color:var(--red); letter-spacing:0.02em; }
+
+/* ============================================================
+   RELATED ENTRIES
+   ============================================================ */
+.related{ margin-block-start:2.8rem; padding-block-end:3rem; }
+.related__head{
+  display:flex;
+  align-items:baseline;
+  gap:0.8rem;
+  padding-block-end:0.6rem;
+  border-block-end:3px solid var(--ink);
+  margin-block-end:1.2rem;
+}
+.related__head h2{ font-weight:800; font-size:1.3rem; }
+.related__head .mono{ font-size:0.68rem; color:var(--ink-soft); }
+.related-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  gap:1px;
+  background:var(--ink);
+  border:1px solid var(--ink);
+}
+.related-card{
+  background:var(--paper);
+  padding:1.2rem 1.1rem;
+  text-decoration:none;
+  display:grid;
+  gap:0.5rem;
+  border-block-start:4px solid var(--red);
+}
+.related-card:hover{ background:var(--paper-panel); }
+.related-card__id{ font-family:var(--mono); direction:ltr; font-size:0.65rem; color:var(--ink-soft); }
+.related-card__title{ font-weight:700; font-size:1.05rem; }
+.related-card__desc{ font-size:0.88rem; color:var(--ink-soft); line-height:1.6; }
+
+/* ============================================================
+   FOOTER / COLOPHON
+   ============================================================ */
+.colophon{
+  background:var(--ink);
+  color:var(--paper-panel);
+  padding-block:1.4rem;
+  font-family:var(--mono);
+  direction:ltr;
+  font-size:0.66rem;
+  letter-spacing:0.05em;
+}
+.colophon .container{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:0.5rem 1.5rem;
+}
+
+/* corner registration marks, decorative, aria-hidden */
+.crosshair{ position:relative; }
+.crosshair::before, .crosshair::after{
+  content:"";
+  position:absolute;
+  block-size:14px;
+  inline-size:14px;
+  pointer-events:none;
+}
+.crosshair::before{
+  inset-block-start:0; inset-inline-start:0;
+  border-block-start:1px solid var(--ink);
+  border-inline-start:1px solid var(--ink);
+}
+.crosshair::after{
+  inset-block-end:0; inset-inline-end:0;
+  border-block-end:1px solid var(--ink);
+  border-inline-end:1px solid var(--ink);
+}
+
+@media (max-width:480px){
+  .entry-row__desc{ max-width:100%; }
+  .site-head__top{ align-items:flex-start; }
+  .head-controls{ align-items:flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- hidden SVG defs: grain filter used by .grain overlay -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="dzh-grain">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix"
+      values="0 0 0 0 0
+              0 0 0 0 0
+              0 0 0 0 0
+              0 0 0 0.9 0"/>
+  </filter>
+</svg>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============================================================
+     DOC-CONTROL STRIP
+     ============================================================ -->
+<div class="doc-strip bleed">
+  <div class="container">
+    <span class="mono">DZH·014 / REV.A</span>
+    <span class="mono"><span class="status-dot" aria-hidden="true"></span>STATUS: ACTIVE</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     ۱. نمای فهرست — INDEX VIEW
+     ============================================================ -->
+<main id="index">
+
+  <div class="hero bleed">
+    <div class="container site-head">
+      <div class="site-head__top">
+        <div>
+          <h1 class="site-title">دژنبشت</h1>
+          <p class="site-tag"><span class="mono">IDX</span><span>— دانشنامهٔ شخصی</span></p>
+        </div>
+        <div class="head-controls">
+          <button class="lang-key" type="button" dir="ltr" lang="en">English</button>
+          <div class="view-switch" role="group" aria-label="سوییچ نما">
+            <button type="button" aria-pressed="true">موضوعی</button>
+            <button type="button" aria-pressed="false">الفبایی</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-field">
+        <span class="search-field__label mono">SRCH</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="search" placeholder="جست‌وجو در آرشیو…">
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <hr class="rule">
+  </div>
+
+  <div class="container categories">
+
+    <section aria-labelledby="cat-basics">
+      <div class="category__head">
+        <span class="category__count mono">03</span>
+        <h2 class="category__name" id="cat-basics">مفاهیم پایه</h2>
+        <span class="category__meta mono">TOPIC / CRYPTO</span>
+      </div>
+      <ul class="entry-list">
+        <li>
+          <a class="entry-row" href="#entry-blockchain">
+            <div class="entry-row__top">
+              <span class="entry-row__id mono">01</span>
+              <span class="entry-row__title">بلاکچین</span>
+            </div>
+            <p class="entry-row__desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</p>
+          </a>
+        </li>
+        <li>
+          <a class="entry-row" href="#">
+            <div class="entry-row__top">
+              <span class="entry-row__id mono">02</span>
+              <span class="entry-row__title">هش</span>
+            </div>
+            <p class="entry-row__desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</p>
+          </a>
+        </li>
+        <li>
+          <a class="entry-row" href="#">
+            <div class="entry-row__top">
+              <span class="entry-row__id mono">03</span>
+              <span class="entry-row__title">کیف پول</span>
+            </div>
+            <p class="entry-row__desc">ابزاری که کلیدهای خصوصی را نگه می‌دارد، نه خود دارایی را</p>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="cat-consensus">
+      <div class="category__head">
+        <span class="category__count mono">02</span>
+        <h2 class="category__name" id="cat-consensus">اجماع</h2>
+        <span class="category__meta mono">TOPIC / CRYPTO</span>
+      </div>
+      <ul class="entry-list">
+        <li>
+          <a class="entry-row" href="#">
+            <div class="entry-row__top">
+              <span class="entry-row__id mono">01</span>
+              <span class="entry-row__title">اثبات کار</span>
+            </div>
+            <p class="entry-row__desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</p>
+          </a>
+        </li>
+        <li>
+          <a class="entry-row" href="#">
+            <div class="entry-row__top">
+              <span class="entry-row__id mono">02</span>
+              <span class="entry-row__title">نانس</span>
+            </div>
+            <p class="entry-row__desc">عدد یک‌بارمصرفی که ماینر تغییرش می‌دهد تا هش دلخواه پیدا شود</p>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+  </div>
+</main>
+
+<!-- ============================================================
+     جداکنندهٔ نماها — VIEW BREAK
+     ============================================================ -->
+<div class="view-divider bleed" role="separator" aria-label="پایان نمای فهرست، آغاز نمای مدخل">
+  <span class="view-divider__label">END INDEX // BEGIN ENTRY</span>
+</div>
+
+<!-- ============================================================
+     ۲. نمای مدخل — ENTRY VIEW: بلاکچین
+     ============================================================ -->
+<article id="entry-blockchain">
+  <div class="container">
+
+    <nav class="breadcrumb" aria-label="مسیر">
+      <a href="#index">فهرست</a><span aria-hidden="true">/</span>
+      <a href="#index">مفاهیم پایه</a><span aria-hidden="true">/</span>
+      <span aria-current="page">بلاکچین</span>
+    </nav>
+
+    <hr class="rule rule--hair">
+
+    <div class="entry-head">
+      <h1 class="entry-title">بلاکچین</h1>
+      <p class="entry-desc">دفتر کلی که رکوردها را در بلوک‌های زنجیرشدهٔ تغییرناپذیر نگه می‌دارد</p>
+      <div class="hashtags">
+        <button class="hashtag" type="button" dir="ltr" lang="en">#ledger</button>
+        <button class="hashtag" type="button" dir="ltr" lang="en">#bitcoin</button>
+        <button class="hashtag" type="button" dir="ltr" lang="en">#structure</button>
+      </div>
+    </div>
+
+    <hr class="rule">
+
+    <div class="entry-body">
+      <div class="para-block">
+        <span class="para-block__label mono">¶ 01</span>
+        <p>بلاکچین یک دفتر کل است که رکوردها را در دسته‌هایی به نام «بلوک» می‌نویسد. هر بلوک هش بلوک قبلی را در خودش دارد، پس بلوک‌ها مثل حلقه‌های یک زنجیر به هم وصل می‌شوند.</p>
+      </div>
+      <div class="para-block">
+        <span class="para-block__label mono">¶ 02</span>
+        <p>همین ارجاع به عقب است که دفتر را تغییرناپذیر می‌کند: اگر کسی یک بلوک قدیمی را دستکاری کند، هش آن عوض می‌شود، در نتیجه ارجاع بلوک بعدی نامعتبر می‌شود و همین‌طور تا انتهای زنجیره. برای پنهان ماندن دستکاری باید همهٔ بلوک‌های بعدی هم دوباره ساخته شوند.</p>
+      </div>
+      <div class="para-block">
+        <span class="para-block__label mono">¶ 03</span>
+        <p>نسخه‌ای از این دفتر روی هر نود شبکه نگه‌داری می‌شود و نودها با یک الگوریتم <span dir="ltr">consensus</span> سر اینکه کدام نسخه معتبر است به توافق می‌رسند.</p>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="example__bar">
+        <span>// مثال</span>
+        <span>EX.01</span>
+      </div>
+      <p>در بیت‌کوین حدوداً هر ۱۰ دقیقه یک بلوک جدید ساخته می‌شود و تراکنش‌های آن بازه را در خود جا می‌دهد.</p>
+    </div>
+
+    <figure class="figure">
+      <div class="figure__frame" dir="ltr">
+        <svg viewBox="0 0 900 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title fig-desc">
+          <title id="fig-title">نمودار زنجیرهٔ سه بلوک</title>
+          <desc id="fig-desc">سه بلوک که هرکدام به هش بلوک پیشین ارجاع می‌دهند و زنجیره‌ای می‌سازند.</desc>
+          <g style="fill:none;stroke:var(--ink);stroke-width:1">
+            <line x1="0" y1="0" x2="24" y2="0"/><line x1="0" y1="0" x2="0" y2="24"/>
+            <line x1="876" y1="0" x2="900" y2="0"/><line x1="900" y1="0" x2="900" y2="24"/>
+            <line x1="0" y1="206" x2="24" y2="230"/><line x1="0" y1="230" x2="24" y2="230"/>
+            <line x1="900" y1="206" x2="900" y2="230"/><line x1="876" y1="230" x2="900" y2="230"/>
+          </g>
+          <text x="12" y="20" class="mono" style="font-family:ui-monospace,Consolas,monospace;font-size:11px;fill:var(--ink-soft)">FIG.01 — BLOCK CHAIN SEQUENCE</text>
+          <text x="888" y="222" text-anchor="end" class="mono" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--ink-soft)">DZH-014</text>
+
+          <!-- block 1 -->
+          <g>
+            <rect x="60" y="60" width="190" height="110" style="fill:var(--paper);stroke:var(--ink);stroke-width:2"/>
+            <line x1="60" y1="92" x2="250" y2="92" style="stroke:var(--ink);stroke-width:1"/>
+            <text x="80" y="82" style="font-family:ui-monospace,Consolas,monospace;font-size:13px;font-weight:700;fill:var(--ink)">BLOCK 01</text>
+            <text x="80" y="112" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--ink-soft)">HASH</text>
+            <text x="80" y="128" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--red)">4f9a…c21</text>
+            <text x="80" y="152" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--ink-soft)">PREV: —genesis—</text>
+          </g>
+
+          <!-- block 2 -->
+          <g>
+            <rect x="355" y="60" width="190" height="110" style="fill:var(--paper);stroke:var(--ink);stroke-width:2"/>
+            <line x1="355" y1="92" x2="545" y2="92" style="stroke:var(--ink);stroke-width:1"/>
+            <text x="375" y="82" style="font-family:ui-monospace,Consolas,monospace;font-size:13px;font-weight:700;fill:var(--ink)">BLOCK 02</text>
+            <text x="375" y="112" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--ink-soft)">HASH</text>
+            <text x="375" y="128" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--red)">a02e…7b4</text>
+            <text x="375" y="152" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--ink-soft)">PREV: 4f9a…c21</text>
+          </g>
+
+          <!-- block 3 -->
+          <g>
+            <rect x="650" y="60" width="190" height="110" style="fill:var(--paper);stroke:var(--ink);stroke-width:2"/>
+            <line x1="650" y1="92" x2="840" y2="92" style="stroke:var(--ink);stroke-width:1"/>
+            <text x="670" y="82" style="font-family:ui-monospace,Consolas,monospace;font-size:13px;font-weight:700;fill:var(--ink)">BLOCK 03</text>
+            <text x="670" y="112" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--ink-soft)">HASH</text>
+            <text x="670" y="128" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--red)">9d31…e08</text>
+            <text x="670" y="152" style="font-family:ui-monospace,Consolas,monospace;font-size:10px;fill:var(--ink-soft)">PREV: a02e…7b4</text>
+          </g>
+
+          <!-- reference arrows: each block points back at the previous block's hash -->
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" style="fill:var(--red)"/>
+            </marker>
+          </defs>
+          <line x1="355" y1="115" x2="255" y2="115" style="stroke:var(--red);stroke-width:2" marker-end="url(#arrow)"/>
+          <text x="305" y="105" text-anchor="middle" style="font-family:ui-monospace,Consolas,monospace;font-size:9px;fill:var(--red)">REF</text>
+          <line x1="650" y1="115" x2="550" y2="115" style="stroke:var(--red);stroke-width:2" marker-end="url(#arrow)"/>
+          <text x="600" y="105" text-anchor="middle" style="font-family:ui-monospace,Consolas,monospace;font-size:9px;fill:var(--red)">REF</text>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="mono">ORIENTATION: LEFT → RIGHT</span> — ترتیب زمانی: بلوک ۱ سپس بلوک ۲ سپس بلوک ۳؛ فلش قرمز یعنی «ارجاع به هشِ بلوک پیشین».
+      </figcaption>
+    </figure>
+
+    <section class="related" aria-labelledby="related-h">
+      <div class="related__head">
+        <h2 id="related-h">مدخل‌های مرتبط</h2>
+        <span class="mono">REL/02</span>
+      </div>
+      <div class="related-grid">
+        <a class="related-card" href="#">
+          <span class="related-card__id mono">T-02</span>
+          <span class="related-card__title">هش</span>
+          <span class="related-card__desc">اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود</span>
+        </a>
+        <a class="related-card" href="#">
+          <span class="related-card__id mono">C-01</span>
+          <span class="related-card__title">اثبات کار</span>
+          <span class="related-card__desc">اثبات اینکه برای ساخت یک بلوک، محاسبات واقعی خرج شده است</span>
+        </a>
+      </div>
+    </section>
+
+  </div>
+</article>
+
+<footer class="colophon bleed">
+  <div class="container">
+    <span>DEZHNEBESHT ARCHIVE / PERSONAL ENCYCLOPEDIA</span>
+    <span>DZH·014 — DESIGN VARIANT 04 / BRUTALIST</span>
+  </div>
+</footer>
+
+<!--
+DESIGN NOTES
+
+جهت‌گیری:
+سند اداری/صنعتیِ چاپ‌شده روی کاغذِ آرشیو — نه پوستر، نه ترمینال. حس یک دفترچهٔ فنی
+طبقه‌بندی‌شده که قرار است سال‌ها دوباره خوانده شود؛ همین برای «دژنبشت» (دژِ اسناد) درست
+است چون خودِ نام از یک بایگانی واقعی می‌آید.
+
+پالت:
+--paper   #F2F0EA   زمینهٔ اصلی، کاغذِ مات بدون سفیدکننده
+--paper-panel #E8E4D9  زمینهٔ ثانویه برای هاور ردیف‌ها
+--ink     #0B0B0A   متن، خطوط، پس‌زمینهٔ نوارهای واژگون
+--ink-soft #4A4944  متن ثانویه/متادیتا (کنتراست ≈7.6:1 روی کاغذ)
+--red     #B31217   تنها رنگ تأکید — کنتراست ≈5.9:1 در هر دو جهت (متن روی کاغذ، کاغذ روی زمینهٔ قرمز)
+
+تایپوگرافی:
+مقیاس افراطی بین عنوان مدخل (clamp تا ۷rem، وزن ۸۰۰) و برچسب‌های میکرو (۰.۶۸–۰.۷۲rem، مونو).
+severity در فارسی از راه tracking یا حروف بزرگ به دست نیامده — چون این‌ها برای خط فارسیِ
+پیوسته کار نمی‌کنند — بلکه از پرش وزنی شدید (۸۰۰ در برابر ۴۰۰)، خط‌کش‌های سراسری زیر هر
+تیتر، و شمارهٔ پاراگراف مونوی حاشیه‌ای (¶01…) که یک ریتم عمودی منظم می‌سازد. tracking فقط
+روی .mono (ارقام/برچسب‌های لاتین) اعمال شده، هرگز روی رشتهٔ فارسی.
+leading بدنه ۱.۹۵ — نسبتاً باز، چون قرار است چند دقیقه پیوسته خوانده شود؛ leading تیتر ۰.۹.
+
+عنصر امضا:
+نوار باریکِ «بارکد»ی که دو نما را از هم جدا می‌کند (view-divider) — یک شکاف فیزیکیِ سند،
+به‌همراه نشانه‌های ثبت‌گوشه (crosshair) و برچسب شناور «SRCH» روی فیلد جستجو، مثل برچسب
+میدانی روی یک نقشهٔ مهندسی.
+
+ریسکی که گرفتم:
+بدنهٔ اصلیِ مدخل را کاملاً از دکوراسیون خالی کردم — بدون هافتون، بدون گرین، بدون مونو،
+فقط وزن ۴۰۰ و leading باز روی زمینهٔ ساده. تمام خشونتِ صنعتی (هافتون در هدر، گرین سراسری،
+نوار بارکد، برچسب‌های مونوی حاشیه‌ای) در چارچوب (chrome) نگه داشته شده، نه در متنی که باید
+چند دقیقه خوانده شود. این یعنی طراحی در نگاه اول خیلی خشن به‌نظر می‌رسد اما هرجا کاربر واقعاً
+می‌خواند، ساکت می‌شود.
+
+فونت پیشنهادی برای میزبانی محلی:
+Vazirmatn (Variable) برای بدنهٔ فارسی — چون وزن‌های ۱۰۰ تا ۹۰۰ واقعی دارد و پرش وزنیِ
+عنوان/بدن را بدون تکیه به bold مصنوعی مرورگر می‌سازد. برای بخش مونو، IBM Plex Mono یا
+JetBrains Mono — هر دو ارقام tabular و کاراکترهای فنی (٪، →) خوانا دارند.
+-->
+
+</body>
+</html>
