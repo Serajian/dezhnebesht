@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { validate, localized } from '../assets/js/data.js';
+import { validate, localized, loadAll } from '../assets/js/data.js';
 
 const CATEGORIES = [
   { id: 'basics', file: 'basics.json', fa: 'مفاهیم پایه', en: 'Fundamentals' },
@@ -70,6 +70,16 @@ test('related سالم خطا نمی‌دهد', () => {
   assert.deepEqual(validate(CATEGORIES, [a, b]), []);
 });
 
+test('مدخل null یا غیرشیء در validate باعث throw نمی‌شود و به‌جایش خطا گزارش می‌شود', () => {
+  let errors;
+  assert.doesNotThrow(() => {
+    errors = validate(CATEGORIES, [null, 'رشته‌ی نامعتبر']);
+  });
+  assert.equal(errors.length, 2);
+  assert.match(errors[0].message, /شیء معتبر نیست/);
+  assert.match(errors[1].message, /شیء معتبر نیست/);
+});
+
 test('localized بلاک زبان خواسته‌شده را برمی‌گرداند', () => {
   const e = entry({ en: { title: 'Hash', short: 'fingerprint', body: '<p>x</p>' } });
   const view = localized(e, 'en');
@@ -98,4 +108,26 @@ test('svg داخل بلاک زبان جایگزین svg سطح بالا می‌�
 
 test('example اختیاری است و نبودش رشته‌ی خالی می‌دهد', () => {
   assert.equal(localized(entry(), 'fa').example, '');
+});
+
+test('loadAll وقتی categories.json آرایه نیست throw نمی‌کند و آن را به خطا تبدیل می‌کند', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({
+    ok: true,
+    json: async () => ({ basics: 'این یک آرایه نیست' }),
+  });
+
+  let result;
+  try {
+    await assert.doesNotReject(async () => {
+      result = await loadAll('data');
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+
+  assert.deepEqual(result.entries, []);
+  assert.equal(result.errors.length, 1);
+  assert.equal(result.errors[0].file, 'categories.json');
+  assert.match(result.errors[0].message, /آرایه/);
 });

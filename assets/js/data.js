@@ -9,6 +9,11 @@ export function validate(categories, entries) {
   const seenIds = new Map();
 
   for (const entry of entries) {
+    if (entry === null || typeof entry !== 'object') {
+      errors.push({ file: '?.json', id: '(نامعتبر)', message: 'مدخل یک شیء معتبر نیست' });
+      continue;
+    }
+
     const file = `${entry.category ?? '?'}.json`;
 
     if (!entry.id) {
@@ -45,9 +50,14 @@ export function validate(categories, entries) {
     }
   }
 
-  const knownIds = new Set(entries.map((entry) => entry.id).filter(Boolean));
+  const knownIds = new Set(
+    entries
+      .filter((entry) => entry !== null && typeof entry === 'object')
+      .map((entry) => entry.id)
+      .filter(Boolean),
+  );
   for (const entry of entries) {
-    if (!entry.id) continue;
+    if (entry === null || typeof entry !== 'object' || !entry.id) continue;
     for (const ref of entry.related ?? []) {
       if (!knownIds.has(ref)) {
         errors.push({
@@ -95,6 +105,7 @@ export async function loadAll(basePath = 'data') {
   let categories;
   try {
     categories = await fetchJson(`${basePath}/categories.json`);
+    if (!Array.isArray(categories)) throw new Error('محتوای فایل باید یک آرایه باشد');
   } catch (error) {
     return {
       categories: [],
