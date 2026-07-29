@@ -15,7 +15,9 @@
 html, body { margin: 0; padding: 0; }
 
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 22px 22px;
   color: var(--text);
   font-family: "Vazirmatn", "IRANSans", "Segoe UI", Tahoma, system-ui, sans-serif;
   font-size: 16px;
@@ -223,3 +225,51 @@ main {
 .report .ok { color: var(--accent); margin: 0; }
 .report .bad { color: var(--danger); }
 .report li { line-height: 1.8; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .topbar { padding: 0.75rem 1rem; flex-wrap: wrap; }
+  .brand { font-size: 1rem; }
+  main { padding: 1.25rem 1rem 3rem; }
+  .searchbar { padding: 0 1rem; }
+  .entry h1 { font-size: 1.4rem; }
+  .diagram { padding: 0.75rem; }
+  .errors { margin: 0.75rem 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+.group { position: relative; padding-inline-start: 1.35rem; }
+
+/* خطی که دسته‌ها را مثل حلقه‌های یک زنجیر به هم وصل می‌کند */
+.group::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 4px;
+  top: 0.55rem;
+  bottom: -2.25rem;
+  width: 1px;
+  background: var(--border);
+}
+.group:last-child::before { bottom: auto; height: 1.25rem; }
+
+/* گره‌ی لوزی‌شکل ابتدای هر دسته */
+.group::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.45rem;
+  width: 9px;
+  height: 9px;
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
