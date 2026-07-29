@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>دانشنامه کریپتو</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" id="brand" href="#/">دانشنامه کریپتو</a>
+    <div class="controls">
+      <div class="viewtoggle" id="view-toggle" hidden>
+        <button type="button" data-view="topical"></button>
+        <button type="button" data-view="alphabetical"></button>
+      </div>
+      <button type="button" class="langtoggle" id="lang-toggle">English</button>
+    </div>
+  </header>
+
+  <div class="errors" id="errors" hidden></div>
+
+  <div class="searchbar" id="searchbar" hidden>
+    <input type="search" id="search" autocomplete="off" spellcheck="false">
+  </div>
+
+  <main id="main"></main>
+
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>
