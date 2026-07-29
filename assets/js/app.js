@@ -48,7 +48,6 @@ function render() {
       lang,
       view: state.indexView,
       tag: state.route.tag,
-      onClear: clearSearch,
     }));
   } else if (state.route.view === 'entry') {
     const entry = state.entriesById.get(state.route.id);
@@ -95,6 +94,10 @@ dom.viewToggle.addEventListener('click', (event) => {
 dom.search.addEventListener('input', () => {
   state.query = dom.search.value;
   render();
+});
+
+dom.main.addEventListener('click', (event) => {
+  if (event.target.closest('.clear')) clearSearch();
 });
 
 function clearSearch() {
