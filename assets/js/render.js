@@ -75,7 +75,7 @@ function renderAlphabetical(entries, lang) {
   );
 }
 
-export function renderIndex(entries, categories, { lang, view, tag }) {
+export function renderIndex(entries, categories, { lang, view, tag, onClear = null }) {
   const wrap = el('div', { class: 'index' });
 
   if (tag) {
@@ -92,7 +92,13 @@ export function renderIndex(entries, categories, { lang, view, tag }) {
   }
 
   if (entries.length === 0) {
-    wrap.append(el('p', { class: 'empty' }, t('search.empty')));
+    const empty = el('div', { class: 'empty' }, el('p', {}, t('search.empty')));
+    if (onClear) {
+      const button = el('button', { type: 'button', class: 'clear' }, t('search.clear'));
+      button.addEventListener('click', onClear);
+      empty.append(button);
+    }
+    wrap.append(empty);
     return wrap;
   }
 

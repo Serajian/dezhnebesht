@@ -48,6 +48,7 @@ function render() {
       lang,
       view: state.indexView,
       tag: state.route.tag,
+      onClear: clearSearch,
     }));
   } else if (state.route.view === 'entry') {
     const entry = state.entriesById.get(state.route.id);
@@ -94,6 +95,30 @@ dom.viewToggle.addEventListener('click', (event) => {
 dom.search.addEventListener('input', () => {
   state.query = dom.search.value;
   render();
+});
+
+function clearSearch() {
+  state.query = '';
+  dom.search.value = '';
+  render();
+  dom.search.focus();
+}
+
+function isTypingTarget(target) {
+  return target instanceof HTMLElement &&
+    (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+}
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === '/' && !isTypingTarget(event.target) && !dom.searchbar.hidden) {
+    event.preventDefault();
+    dom.search.focus();
+    dom.search.select();
+    return;
+  }
+  if (event.key === 'Escape' && document.activeElement === dom.search) {
+    clearSearch();
+  }
 });
 
 async function init() {
