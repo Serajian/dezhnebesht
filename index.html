@@ -1,30 +1,77 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>دژنبشت</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+<meta charset="utf-8">
+<script>
+/* پیش از اولین رنگ‌آمیزی اجرا می‌شود: فقط وقتی خواننده قبلاً پوسته را
+   صریحاً انتخاب کرده باشد data-theme را ست می‌کند. بدون انتخاب
+   ذخیره‌شده هیچ attributeای نیست و prefers-color-scheme به‌تنهایی
+   حاکم می‌ماند — «از سیستم شروع کن، فقط با انتخاب خواننده جدا شو». */
+(function () {
+  try {
+    var saved = localStorage.getItem("glossary:theme");
+    if (saved === "light" || saved === "dark") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  } catch (e) { /* حالت خصوصی مرورگر یا storage غیرفعال */ }
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>دژنبشت</title>
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" id="brand" href="#/">دژنبشت</a>
-    <div class="controls">
-      <div class="viewtoggle" id="view-toggle" hidden>
-        <button type="button" data-view="topical"></button>
-        <button type="button" data-view="alphabetical"></button>
+  <header class="chrome chrome--index">
+    <div class="chrome-start">
+      <a class="chrome-title" id="brand" href="#/">دژنبشت</a>
+      <div class="chrome-switch" id="view-toggle" hidden>
+        <div class="segmented">
+          <span class="seg-thumb" aria-hidden="true"></span>
+          <button type="button" class="seg-btn" data-view="topical"></button>
+          <button type="button" class="seg-btn" data-view="alphabetical"></button>
+        </div>
       </div>
-      <button type="button" class="langtoggle" id="lang-toggle">English</button>
+    </div>
+
+    <div class="chrome-search" id="searchbar" hidden>
+      <div class="search-field">
+        <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true">
+          <circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <line x1="13.2" y1="13.2" x2="18" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <input type="search" id="search" autocomplete="off" spellcheck="false" aria-label="جستجو در مدخل‌ها">
+        <kbd class="kbd-hint kbd-hint--slash" dir="ltr" aria-hidden="true">/</kbd>
+        <kbd class="kbd-hint kbd-hint--esc" dir="ltr" aria-hidden="true">Esc</kbd>
+      </div>
+    </div>
+
+    <div class="chrome-end">
+      <button type="button" class="chrome-icon-btn chrome-theme" id="theme-toggle" aria-label="تغییر پوستهٔ روشن یا تاریک" title="پوستهٔ روشن/تاریک">
+        <svg class="icon-sun" viewBox="0 0 20 20" aria-hidden="true">
+          <circle cx="10" cy="10" r="3.8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M10 1.8v2.1M10 16.1v2.1M18.2 10h-2.1M3.9 10H1.8"/>
+            <path d="M15.6 4.4l-1.5 1.5M5.9 14.1l-1.5 1.5M15.6 15.6l-1.5-1.5M5.9 5.9 4.4 4.4"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M17 12.1A7.2 7.2 0 1 1 7.9 3a5.8 5.8 0 0 0 9.1 9.1Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button type="button" class="chrome-icon-btn chrome-lang" id="lang-toggle" aria-label="نمایش این صفحه به انگلیسی" title="English">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <ellipse cx="10" cy="10" rx="3.1" ry="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M3 7.2h14M3 12.8h14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </button>
     </div>
   </header>
 
   <div class="errors" id="errors" hidden></div>
 
-  <div class="searchbar" id="searchbar" hidden>
-    <input type="search" id="search" autocomplete="off" spellcheck="false">
-  </div>
-
-  <main id="main"></main>
+  <main id="main" class="content"></main>
 
   <script type="module" src="assets/js/app.js"></script>
 </body>

@@ -7,8 +7,12 @@ export const LANGS = ['fa', 'en'];
 export const STRINGS = {
   fa: {
     'app.title': 'دژنبشت',
+    'theme.toggleLabel': 'تغییر پوستهٔ روشن یا تاریک',
+    'theme.toggleTitle': 'پوستهٔ روشن/تاریک',
     'lang.switch': 'English',
-    'search.placeholder': 'جستجو در مدخل‌ها…',
+    'lang.switchLabel': 'نمایش این صفحه به انگلیسی',
+    'search.placeholder': 'جستجو در همهٔ موضوع‌ها…',
+    'search.ariaLabel': 'جستجو در مدخل‌ها',
     'search.empty': 'مدخلی یافت نشد',
     'search.clear': 'پاک کردن جستجو',
     'view.topical': 'موضوعی',
@@ -34,8 +38,12 @@ export const STRINGS = {
   },
   en: {
     'app.title': 'Dezhnebesht',
+    'theme.toggleLabel': 'Switch between light and dark theme',
+    'theme.toggleTitle': 'Light/dark theme',
     'lang.switch': 'فارسی',
-    'search.placeholder': 'Search entries…',
+    'lang.switchLabel': 'Show this page in Persian',
+    'search.placeholder': 'Search across all topics…',
+    'search.ariaLabel': 'Search entries',
     'search.empty': 'No entries found',
     'search.clear': 'Clear search',
     'view.topical': 'By topic',

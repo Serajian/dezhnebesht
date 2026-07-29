@@ -1,342 +1,788 @@
+/* ===================================================================
+   دژنبشت — پوسته‌ی «مادهٔ شیشه‌ای»
+   منبع: design-variants/7-apple.html (طرح تأییدشده، با یادداشت‌های
+   طراحی کامل در انتهای همان فایل). این فایل نسخه‌ی کامل و آماده‌ی
+   استفاده در سایت واقعی است — شامل قواعد نمای فهرست و نمای مدخل هم
+   هست، برای اینکه وقتی render.js به‌روزرسانی شود چیزی کم نباشد. تا آن
+   زمان، محتوای اصلی (main#main) با نشانه‌گذاری قدیمی render.js رندر
+   می‌شود و ناخواسته بی‌استایل می‌ماند — طبق برنامه، نه یک باگ.
+   =================================================================== */
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, h1, h2, h3, p, ul, li, figure, figcaption, fieldset { margin: 0; padding: 0; }
+ul { list-style: none; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; color: inherit; background: none; border: 0; }
+img, svg { display: block; max-width: 100%; }
+button { cursor: pointer; }
+
+/* ---------- Design tokens ---------- */
 :root {
-  --bg: #0d1117;
-  --surface: #161b22;
-  --border: #262d38;
-  --text: #d5dae1;
-  --muted: #8a94a3;
-  --accent: #2dd4bf;
-  --danger: #f87171;
-  --radius: 10px;
-  --measure: 70ch;
+  color-scheme: light;
+
+  /* canvas — لیفت‌شده از سفید خالص عمداً: پشت خوانش طولانی می‌نشیند،
+     نه فقط پشت چروم. */
+  --bg: #f6f5f1;
+  --bg-elevated: #ffffff;      /* سطوح فشرده: ردیف‌ها، کارت‌ها، دیاگرام — رشته‌های کوتاهِ اسکن‌شدنی */
+  --bg-structural: #efece3;    /* سنگین‌تر/تیره‌تر از بوم — منطقهٔ ساختاری (ریل) */
+  --bg-press: rgba(0, 0, 0, 0.045);
+
+  --chrome-alpha: 0.72;
+  --chrome-bg: rgba(255, 255, 255, var(--chrome-alpha));
+  --chrome-edge: rgba(255, 255, 255, 0.9);
+
+  --text: #1d1d1f;             /* کریسپ — تیتر، breadcrumb، دکمه، هشتگ: رشته‌های کوتاه */
+  --text-secondary: #6e6e73;
+  --text-tertiary: #86868b;
+  --text-prose: #46464c;       /* دیمشده — فقط برای پاراگراف پیوسته‌ی مدخل */
+
+  --accent: #0071e3;
+  --accent-tint: rgba(0, 113, 227, 0.1);
+  --danger: #ff3b30;
+  --separator: rgba(60, 60, 67, 0.13);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* تنظیم متریال — با reduced-transparency / more-contrast بازنویسی می‌شود */
+  --blur-amt: 22px;
+  --sat-amt: 180%;
+
+  /* حرکت — با reduced-motion بازنویسی می‌شود */
+  --dur-fast: 110ms;
+  --dur-med: 240ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* مقیاس تایپوگرافی (rem، پایه ۱۶px) */
+  --fs-display: clamp(1.9rem, 1.6rem + 1.4vw, 2.75rem);
+  --fs-title: 1.0625rem;
+  --fs-eyebrow: 0.8125rem;
+  --fs-body: 1.0625rem;
+  --fs-prose: 1.125rem;
+  --fs-subhead: 0.875rem;
+  --fs-caption: 0.75rem;
+
+  --rail-w: 14rem;
+  --chrome-h: 4rem;
+
+  --font-ui: "Vazirmatn", "IRANSans", "IRANYekan", -apple-system, BlinkMacSystemFont,
+             "Segoe UI", Tahoma, Roboto, Arial, sans-serif;
 }
 
-* { box-sizing: border-box; }
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #19191c;
+    --bg-elevated: #232326;
+    --bg-structural: #131315;
+    --bg-press: rgba(255, 255, 255, 0.06);
 
-html, body { margin: 0; padding: 0; }
+    --chrome-bg: rgba(28, 28, 30, var(--chrome-alpha));
+    --chrome-edge: rgba(255, 255, 255, 0.08);
 
+    --text: #f5f5f7;
+    --text-secondary: #98989d;
+    --text-tertiary: #7c7c80;
+    --text-prose: #b8b8bc;
+
+    --accent: #409cff;
+    --accent-tint: rgba(64, 156, 255, 0.16);
+    --danger: #ff453a;
+    --separator: rgba(84, 84, 88, 0.6);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-2: 0 12px 28px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* بازنویسی صریح خواننده (سوییچ پوسته) — عمداً از specificity بلوک بالا
+   بیشتر است تا همیشه برنده باشد، صرف‌نظر از prefers-color-scheme.
+   فقط توکن‌های رنگ تکرار شده‌اند: حرکت، بلور و کنتراست فقط زیر
+   media queryهای خودشان، در هر دو پوسته، دست‌نخورده می‌مانند. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #19191c;
+  --bg-elevated: #232326;
+  --bg-structural: #131315;
+  --bg-press: rgba(255, 255, 255, 0.06);
+  --chrome-bg: rgba(28, 28, 30, var(--chrome-alpha));
+  --chrome-edge: rgba(255, 255, 255, 0.08);
+  --text: #f5f5f7;
+  --text-secondary: #98989d;
+  --text-tertiary: #7c7c80;
+  --text-prose: #b8b8bc;
+  --accent: #409cff;
+  --accent-tint: rgba(64, 156, 255, 0.16);
+  --danger: #ff453a;
+  --separator: rgba(84, 84, 88, 0.6);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-2: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f5f1;
+  --bg-elevated: #ffffff;
+  --bg-structural: #efece3;
+  --bg-press: rgba(0, 0, 0, 0.045);
+  --chrome-bg: rgba(255, 255, 255, var(--chrome-alpha));
+  --chrome-edge: rgba(255, 255, 255, 0.9);
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #86868b;
+  --text-prose: #46464c;
+  --accent: #0071e3;
+  --accent-tint: rgba(0, 113, 227, 0.1);
+  --danger: #ff3b30;
+  --separator: rgba(60, 60, 67, 0.13);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* prefers-reduced-transparency: شیشه تقریباً جامد می‌شود، بلور می‌رود */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --blur-amt: 0px;
+    --sat-amt: 100%;
+    --chrome-alpha: 0.97;
+  }
+}
+
+/* prefers-reduced-motion: بدون منحنی easing، بدون بازخورد مبتنی بر transform */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-med: 0ms;
+    --ease: linear;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* prefers-contrast: more — کنتراست به سقف برمی‌گردد، به‌علاوه یک
+   border معین چون شفافیت/نرمی پروزه هر دو عقب می‌نشینند. */
+@media (prefers-contrast: more) {
+  :root {
+    --text-prose: var(--text);
+    --chrome-alpha: 0.97;
+    --blur-amt: 4px;
+    --separator: currentColor;
+  }
+  .chrome, .rows, .related-card, .diagram, .example, .rail, .search-field, .segmented, #errors {
+    border: 1px solid var(--separator);
+  }
+  .chrome::after { display: none; }
+}
+
+/* ---------- Base ---------- */
+html { font-size: 100%; scroll-behavior: smooth; }
 body {
-  background-color: var(--bg);
-  background-image: radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-  background-size: 22px 22px;
+  font-family: var(--font-ui);
+  background: var(--bg);
   color: var(--text);
-  font-family: "Vazirmatn", "IRANSans", "Segoe UI", Tahoma, system-ui, sans-serif;
-  font-size: 16px;
-  line-height: 1.9;
-  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 
-code, kbd, .mono {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 0.92em;
-}
+/* ردیابی فارسی: عمداً `normal` (صفر) در هر اندازه — نه منفی، نه مثبت.
+   اتصال حروف کشیده تحمل فاصلهٔ اضافه‌شده را ندارد. سلسله‌مراتب از
+   وزن+اندازه+leading ساخته می‌شود، نه فاصله‌ی حروف. */
+:lang(fa) { letter-spacing: normal; }
 
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
+/* رشته‌های لاتین (span/label با dir="ltr") تنظیم اندازه‌ی کوچک را
+   می‌گیرند — همه‌ی متن لاتین این سایت (هشتگ، برچسب رابط) کوچک است. */
+[dir="ltr"] { letter-spacing: 0.01em; }
+.display-lat { letter-spacing: -0.02em; } /* برای تیترهای بزرگ انگلیسی، اگر لازم شد */
 
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.9rem 1.25rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.brand { font-weight: 700; font-size: 1.1rem; color: var(--text); }
-.controls { display: flex; align-items: center; gap: 0.75rem; }
-
-button {
-  font: inherit;
-  color: var(--text);
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.35rem 0.8rem;
-  cursor: pointer;
-}
-button:hover { border-color: var(--accent); }
-
-main {
-  max-width: var(--measure);
-  margin: 0 auto;
-  padding: 1.5rem 1.25rem 4rem;
-}
-
-.errors {
-  border: 1px solid var(--danger);
-  background: rgba(248, 113, 113, 0.08);
-  color: var(--danger);
-  margin: 1rem;
-  padding: 0.9rem 1.1rem;
-  border-radius: var(--radius);
-}
-
-.searchbar { max-width: var(--measure); margin: 1.25rem auto 0; padding: 0 1.25rem; }
-
-.searchbar input {
-  width: 100%;
-  font: inherit;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.6rem 0.9rem;
-}
-.searchbar input:focus { border-color: var(--accent); }
-.searchbar input:focus:not(:focus-visible) { outline: none; }
-
-.groups { display: grid; gap: 2.25rem; }
-
-.group-title {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin: 0 0 0.75rem;
-  font-size: 1.05rem;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.group-title::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.count {
-  order: 3;
-  font-size: 0.8rem;
-  color: var(--muted);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0 0.5rem;
-}
-
-.cards { display: grid; gap: 0.6rem; }
-
-.card {
-  display: block;
-  padding: 0.75rem 0.95rem;
-  border: 1px solid var(--border);
-  border-inline-start: 3px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--text);
-  transition: border-color 0.12s ease;
-}
-
-.card:hover { border-inline-start-color: var(--accent); text-decoration: none; }
-.card-title { display: block; font-weight: 600; }
-.card-short { display: block; color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
-
-.viewtoggle { display: flex; }
-.viewtoggle button { border-radius: 0; }
-.viewtoggle button:first-child { border-start-start-radius: var(--radius); border-end-start-radius: var(--radius); }
-.viewtoggle button:last-child { border-start-end-radius: var(--radius); border-end-end-radius: var(--radius); margin-inline-start: -1px; }
-.viewtoggle button.active { color: var(--accent); border-color: var(--accent); }
-
-.tagbanner { color: var(--muted); }
-.tag { color: var(--accent); }
-.empty { color: var(--muted); }
-
-.errors ul { margin: 0.5rem 0 0; padding-inline-start: 1.2rem; }
-.errors li { line-height: 1.8; }
-
-.crumbs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.88rem;
-  color: var(--muted);
-  margin-bottom: 1.25rem;
-}
-.crumbs .sep { opacity: 0.5; }
-.crumbs .here { color: var(--text); }
-
-.entry h1 { font-size: 1.75rem; line-height: 1.5; margin: 0 0 0.4rem; }
-
-.lead {
-  color: var(--muted);
-  font-size: 1.05rem;
-  margin: 0 0 1rem;
-}
-
-.notice {
-  border: 1px solid var(--border);
-  border-inline-start: 3px solid var(--accent);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--muted);
-  padding: 0.6rem 0.9rem;
-  font-size: 0.9rem;
-}
-
-.tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
-
-.tags .tag {
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.1rem 0.6rem;
-  font-size: 0.82rem;
-}
-.tags .tag:hover { border-color: var(--accent); text-decoration: none; }
-
-.prose p { margin: 0 0 1rem; }
-.prose code {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 0.05rem 0.3rem;
-}
-
-.example, .related { margin-top: 2rem; }
-.example h2, .related h2 {
-  font-size: 0.95rem;
-  color: var(--muted);
-  font-weight: 600;
-  margin: 0 0 0.75rem;
-}
-
-.example {
-  border-inline-start: 3px solid var(--border);
-  padding-inline-start: 1rem;
-}
-
-.diagram {
-  margin: 2rem 0;
-  padding: 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--muted);
-  text-align: center;
-}
-.diagram svg { max-width: 100%; height: auto; }
-
-.notfound { color: var(--muted); }
-.notfound h1 { color: var(--text); }
-
-.selftest h1 { font-size: 1.5rem; }
-.report { margin-top: 1.75rem; }
-.report h2 { font-size: 0.95rem; color: var(--muted); font-weight: 600; margin: 0 0 0.5rem; }
-.report ul { margin: 0; padding-inline-start: 1.2rem; }
-.report .ok { color: var(--accent); margin: 0; }
-.report .bad { color: var(--danger); }
-.report li { line-height: 1.8; }
-
+:focus { outline: none; }
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-@media (max-width: 640px) {
-  .topbar { padding: 0.75rem 1rem; flex-wrap: wrap; }
-  .brand { font-size: 1rem; }
-  main { padding: 1.25rem 1rem 3rem; }
-  .searchbar { padding: 0 1rem; }
-  .entry h1 { font-size: 1.4rem; }
-  .diagram { padding: 0.75rem; }
-  .errors { margin: 0.75rem 1rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
-}
-
-.group { position: relative; padding-inline-start: 1.35rem; }
-
-/* خطی که دسته‌ها را مثل حلقه‌های یک زنجیر به هم وصل می‌کند */
-.group::before {
-  content: "";
-  position: absolute;
-  inset-inline-start: 4px;
-  top: 0.55rem;
-  bottom: -2.25rem;
-  width: 1px;
-  background: var(--border);
-}
-.group:last-child::before { bottom: auto; height: 1.25rem; }
-
-/* گره‌ی لوزی‌شکل ابتدای هر دسته */
-.group::after {
-  content: "";
-  position: absolute;
-  inset-inline-start: 0;
-  top: 0.45rem;
-  width: 9px;
-  height: 9px;
-  background: var(--bg);
-  border: 1px solid var(--accent);
-  border-radius: 2px;
-  transform: rotate(45deg);
-}
-
-/* ── موضوع‌ها ─────────────────────────────────────────────── */
-
-.topicbar {
+/* ---------- Chrome: نوار شناور نیمه‌شفاف ---------- */
+.chrome {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  min-height: var(--chrome-h);
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 2rem;
+  align-items: center;
+  gap: 0.625rem 0.75rem;
+  padding: 0.875rem clamp(1rem, 4vw, 2rem);
+  background: var(--chrome-bg);
+  backdrop-filter: blur(var(--blur-amt)) saturate(var(--sat-amt));
+  -webkit-backdrop-filter: blur(var(--blur-amt)) saturate(var(--sat-amt));
+  border-block-end: 1px solid var(--chrome-edge);
+}
+/* افکت لبه‌ی اسکرول: یک دنباله‌ی بلور محوشونده زیر لبه‌ی سخت چروم،
+   به‌جای یک خط سخت دوم */
+.chrome::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  height: 22px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+          mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+  pointer-events: none;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .chrome::after { display: none; }
 }
 
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.2rem 0.75rem;
-  font-size: 0.88rem;
-  color: var(--muted);
-}
-.chip:hover { border-color: var(--accent); color: var(--text); text-decoration: none; }
-.chip.active { border-color: var(--accent); color: var(--accent); }
-.chip .count { border: 0; padding: 0; opacity: 0.7; }
-
-.topic + .topic { margin-top: 2.75rem; }
-
-/* گره‌ی موضوع تو‌پر است تا از گره‌ی تو‌خالی دسته متمایز باشد —
-   یک دستگاه بصری، دو وزن. */
-.topic-title {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin: 0 0 1.25rem;
-  font-size: 1.15rem;
+/* نام سایت مهم‌ترین چیز نوار است و باید اول دیده شود. */
+.chrome-title {
+  order: 1;
+  font-size: 1.1875rem;
   font-weight: 700;
+  letter-spacing: normal;
   color: var(--text);
 }
-.topic-title::before {
-  content: "";
-  width: 10px;
-  height: 10px;
+
+/* ---------- Chrome: دکمه‌ی آیکونی مشترک (تم + زبان) ---------- */
+.chrome-icon-btn {
   flex: none;
-  background: var(--accent);
-  border-radius: 2px;
-  transform: rotate(45deg);
-}
-.topic-title::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-.topic-title .count {
-  order: 3;
-  font-size: 0.8rem;
-  color: var(--muted);
-  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 999px;
-  padding: 0 0.5rem;
+  color: var(--text-secondary);
+  transition: transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.chrome-icon-btn svg { width: 19px; height: 19px; }
+.chrome-icon-btn:hover { background: var(--bg-press); color: var(--text); }
+.chrome-icon-btn:active { transform: scale(0.92); background: var(--bg-press); }
+@media (prefers-reduced-motion: reduce) { .chrome-icon-btn:active { transform: none; } }
+
+/* آیکون تم: انتخاب خورشید/ماه فقط با CSS، بر مبنای پوسته‌ی مؤثر —
+   پیش‌فرض سیستم، مگر بازنویسی صریح برنده شود */
+.chrome-theme .icon-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  .chrome-theme .icon-sun { display: none; }
+  .chrome-theme .icon-moon { display: block; }
+}
+:root[data-theme="light"] .chrome-theme .icon-sun { display: block; }
+:root[data-theme="light"] .chrome-theme .icon-moon { display: none; }
+:root[data-theme="dark"] .chrome-theme .icon-sun { display: none; }
+:root[data-theme="dark"] .chrome-theme .icon-moon { display: block; }
+
+/* موبایل (پایه): تیتر+آیکون زبان در ردیف اول، سوییچ/جستجو هرکدام یک
+   ردیف کامل جدا — .chrome-start/.chrome-end با display:contents اینجا
+   فرزندانشان را مثل خواهر/برادرهای مستقیم .chrome--index رفتار می‌کنند */
+.chrome--index .chrome-start,
+.chrome--index .chrome-end { display: contents; }
+.chrome--index .chrome-theme { order: 2; margin-inline-start: auto; }
+.chrome--index .chrome-lang { order: 3; }
+.chrome-switch { order: 4; flex: 1 1 100%; }
+.chrome-search { order: 5; flex: 1 1 100%; }
+
+/* ≥۷۰۰px: گرید سه‌ستونه (1fr auto 1fr) جستجو را مستقل از هرچه کنارش
+   باشد وسط نگه می‌دارد */
+@media (min-width: 700px) {
+  .chrome--index {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    column-gap: 1rem;
+  }
+  .chrome--index .chrome-start {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    grid-column: 1;
+    justify-self: start;
+  }
+  .chrome--index .chrome-switch {
+    position: relative;
+    padding-inline-start: 1.75rem;
+  }
+  .chrome--index .chrome-switch::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block: 0.35rem;
+    width: 1px;
+    background: var(--separator);
+  }
+  .chrome--index .chrome-search {
+    grid-column: 2;
+    justify-self: center;
+    order: 0;
+    flex: none;
+    width: clamp(11rem, 26vw, 22rem);
+  }
+  .chrome--index .chrome-end {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    grid-column: 3;
+    justify-self: end;
+  }
+  .chrome--index .chrome-title { order: 0; }
+  .chrome-switch { order: 1; flex: 0 0 auto; width: 15rem; }
+  .chrome--index .chrome-theme,
+  .chrome--index .chrome-lang { order: 0; margin-inline-start: 0; }
 }
 
-.topic-groups { display: grid; gap: 2.25rem; }
+.chrome--entry .chrome-breadcrumb { flex: 1 1 auto; min-width: 0; }
+.chrome--entry .chrome-end {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex: none;
+}
 
-@media (max-width: 640px) {
-  .topic-title { font-size: 1.05rem; }
+/* ---------- راهنمای میانبر صفحه‌کلید: قاب کلید فقط با هاور ---------- */
+.search-field { position: relative; }
+.kbd-hint {
+  display: none;
+  position: absolute;
+  inset-inline-end: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding-inline: 0.3125rem;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--separator);
+  border-block-end-width: 2px;
+  border-radius: 5px;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .search-field { padding-inline-end: 2.25rem; }
+  .search-field:hover .kbd-hint--slash { display: inline-flex; }
+  .search-field:focus-within .kbd-hint--slash { display: none; }
+  .search-field:focus-within .kbd-hint--esc { display: inline-flex; }
+}
+
+/* ---------- کنترل تقسیم‌شده (موضوعی / الفبایی) ---------- */
+.segmented {
+  position: relative;
+  display: flex;
+  width: 100%;
+  padding: 3px;
+  background: var(--bg-press);
+  border-radius: 10px;
+  isolation: isolate;
+}
+.seg-thumb {
+  position: absolute;
+  inset-block: 3px;
+  inset-inline-start: 3px;
+  width: calc(50% - 3px);
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  transition: inset-inline-start var(--dur-med) var(--ease);
+  z-index: 0;
+}
+/* حالت "الفبایی" فعال: لغزنده را به نیمه‌ی دوم می‌برد — به‌جای
+   data-active روی مادر (که در app.js وجود ندارد)، از کلاس .active
+   که app.js واقعاً روی دکمه می‌گذارد استفاده می‌کنیم */
+.segmented:has(.seg-btn[data-view="alphabetical"].active) .seg-thumb {
+  inset-inline-start: calc(50% + 0px);
+}
+.seg-btn {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  text-align: center;
+  padding-block: 0.4375rem;
+  font-size: var(--fs-subhead);
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  transition: color var(--dur-fast) var(--ease);
+}
+.seg-btn.active { color: var(--text); }
+
+/* ---------- فیلد جستجو ---------- */
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-press);
+  border-radius: 10px;
+  padding-inline: 0.625rem;
+  padding-block: 0.5rem;
+}
+.search-icon { width: 18px; height: 18px; color: var(--text-tertiary); flex: none; }
+.search-field input {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-subhead);
+  color: var(--text);
+}
+.search-field input::placeholder { color: var(--text-tertiary); }
+.search-field input:focus-visible { outline: none; }
+.search-field:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- پوسته‌ی محتوا ---------- */
+.content { padding: 1.5rem clamp(1rem, 4vw, 2rem) 4rem; }
+
+/* چیدمان: یک‌ستونه در پایه، ریل از ۱۰۲۴px ظاهر می‌شود (منطقه‌ی ساختاری) */
+.layout { display: block; }
+.rail { display: none; }
+
+.column { max-width: 34rem; margin-inline: auto; }
+.content--index .column { max-width: 34rem; }
+.content--entry .column { max-width: 34rem; }
+
+@media (min-width: 1024px) {
+  .layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 2.75rem;
+    max-width: 66rem;
+    margin-inline: auto;
+  }
+  .rail {
+    display: block;
+    flex: 0 0 var(--rail-w);
+    position: sticky;
+    top: calc(var(--chrome-h) + 1.5rem);
+    background: var(--bg-structural);
+    border-radius: 14px;
+    padding: 1.125rem 1rem;
+  }
+  .column { margin-inline: 0; }
+  .content--index .column { max-width: 42rem; }
+  .content--entry .column { max-width: 34rem; }
+
+  .group-head h2 { font-size: 0.875rem; }
+  .row-title { font-size: 1.125rem; }
+  .row { padding: 0.875rem 1rem; }
+}
+
+.rail-label {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--text-tertiary);
+  padding-inline: 0.375rem;
+  margin-block-end: 0.5rem;
+}
+.rail-list { display: flex; flex-direction: column; gap: 0.125rem; }
+.rail-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.375rem;
+  border-radius: 8px;
+  font-size: var(--fs-subhead);
+  font-weight: 600;
+  color: var(--text);
+  transition: background var(--dur-fast) var(--ease);
+}
+.rail-list a:hover { background: var(--bg-press); }
+.rail-item-count {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+/* ---------- ریل: موضوع‌ها (ناوبری اصلی) با دسته‌های موضوع فعال
+   تودرتو زیرش ---------- */
+.rail-topics { display: flex; flex-direction: column; gap: 0.25rem; }
+.rail-topic-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem;
+  border-radius: 8px;
+  font-size: var(--fs-subhead);
+  font-weight: 700;
+  color: var(--text);
+  transition: background var(--dur-fast) var(--ease);
+}
+.rail-topic-link:hover { background: var(--bg-press); }
+.rail-topic-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--text-tertiary);
+}
+.rail-topic.is-active .rail-topic-link { color: var(--accent); background: var(--accent-tint); }
+.rail-topic.is-active .rail-topic-dot { background: var(--accent); }
+.rail-topic .rail-item-count { margin-inline-start: auto; }
+
+.rail-subnav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  margin-block-start: 0.25rem;
+  margin-inline-start: 0.6875rem;
+  padding-inline-start: 1.25rem;
+  border-inline-start: 2px solid var(--separator);
+}
+.rail-subnav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 6px;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.rail-subnav a:hover { background: var(--bg-press); color: var(--text); }
+
+/* ---------- گروه‌ها (نمای فهرست) ---------- */
+.group { margin-block-end: 1.75rem; scroll-margin-top: calc(var(--chrome-h) + 1rem); }
+.group[hidden] { display: none; }
+
+summary.group-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 0.375rem 0.5rem;
+  margin-block-end: 0.625rem;
+  transition: background var(--dur-fast) var(--ease);
+}
+summary.group-head::-webkit-details-marker { display: none; }
+summary.group-head::marker { content: ""; }
+summary.group-head:hover { background: var(--bg-press); }
+summary.group-head:active { background: var(--bg-press); }
+
+.group-disclosure {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+  transition: transform var(--dur-fast) var(--ease);
+}
+details[open] > summary .group-disclosure { transform: rotate(-90deg); }
+@media (prefers-reduced-motion: reduce) {
+  .group-disclosure { transition: none; }
+}
+
+.group-head h2 {
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.count {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--bg-press);
+  padding: 0.0625rem 0.5rem;
+  border-radius: 999px;
+}
+
+.rows {
+  background: var(--bg-elevated);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  overflow: clip;
+}
+.rows > li[hidden] { display: none; }
+.rows > li + li { border-block-start: 1px solid var(--separator); }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.row:hover { background: var(--bg-press); }
+.row:active { background: var(--bg-press); transform: scale(0.99); }
+@media (prefers-reduced-motion: reduce) { .row:active { transform: none; } }
+
+.row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.125rem; }
+.row-title { font-size: var(--fs-title); font-weight: 600; line-height: 1.3; }
+.row-desc {
+  font-size: var(--fs-subhead);
+  line-height: 1.45;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.row-badge {
+  flex: none;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-tint);
+  padding: 0.1875rem 0.5rem;
+  border-radius: 999px;
+}
+.row-chevron { flex: none; color: var(--text-tertiary); font-size: 1.125rem; line-height: 1; }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--fs-subhead);
+  padding-block: 2.5rem;
+}
+
+/* ---------- نمای مدخل ---------- */
+.chrome-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: var(--fs-subhead);
+  color: var(--text-secondary);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.chrome-breadcrumb a {
+  color: var(--text-secondary);
+  transition: color var(--dur-fast) var(--ease);
+  flex: none;
+}
+.chrome-breadcrumb a:hover { color: var(--accent); }
+.crumb-sep { color: var(--text-tertiary); flex: none; }
+.crumb-current { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+
+.display-title {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: normal;
+  margin-block-end: 0.5rem;
+  scroll-margin-top: calc(var(--chrome-h) + 1rem);
+}
+.lede {
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-block-end: 1.125rem;
+}
+
+.hashtags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block-end: 1.75rem; }
+.tag {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-tint);
+  padding: 0.3125rem 0.75rem;
+  border-radius: 999px;
+  transition: transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.tag:hover { background: color-mix(in srgb, var(--accent-tint) 70%, var(--accent) 15%); }
+.tag:active { transform: scale(0.95); }
+@media (prefers-reduced-motion: reduce) { .tag:active { transform: none; } }
+
+/* پروزه‌ی پیوسته: متن دیمشده روی بوم لیفت‌شده، leading بازتر، یک پله
+   بزرگ‌تر — سه‌تایی بازتنظیم‌شده برای خوانش پیوسته. بقیه (تیتر، لید،
+   مثال، متا) روی --text/--text-secondary می‌مانند. */
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-block-end: 2rem;
+  scroll-margin-top: calc(var(--chrome-h) + 1rem);
+}
+.prose p {
+  font-size: var(--fs-prose);
+  line-height: 1.9;
+  color: var(--text-prose);
+}
+
+.section-label {
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-block-end: 0.75rem;
+  padding-inline: 0.125rem;
+}
+
+.example {
+  background: var(--accent-tint);
+  border-radius: 14px;
+  padding: 1rem 1.125rem;
+  margin-block-end: 2rem;
+  scroll-margin-top: calc(var(--chrome-h) + 1rem);
+}
+.example .section-label { color: var(--accent); }
+.example p { font-size: var(--fs-body); line-height: 1.65; color: var(--text); }
+
+.diagram-section { margin-block-end: 2rem; scroll-margin-top: calc(var(--chrome-h) + 1rem); }
+.diagram {
+  background: var(--bg-elevated);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  padding: 1.25rem 0.75rem 1rem;
+}
+.diagram svg { width: 100%; height: auto; }
+.diagram figcaption {
+  margin-block-start: 0.75rem;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.related { scroll-margin-top: calc(var(--chrome-h) + 1rem); }
+.related-grid { display: flex; flex-direction: column; gap: 0.625rem; }
+.related-card {
+  display: block;
+  background: var(--bg-elevated);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  padding: 0.875rem 1rem;
+  border-inline-start: 3px solid transparent;
+  transition: transform var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.related-card:hover { border-inline-start-color: var(--accent); }
+.related-card:active { transform: scale(0.99); }
+@media (prefers-reduced-motion: reduce) { .related-card:active { transform: none; } }
+.related-title { display: block; font-size: var(--fs-title); font-weight: 600; margin-block-end: 0.1875rem; }
+.related-desc { display: block; font-size: var(--fs-subhead); line-height: 1.5; color: var(--text-secondary); }
+
+/* ---------- بنر خطای اعتبارسنجی (data.js) ---------- */
+/* ویژگی دائمی سایت است، نه بخشی از ماکت — طبق CLAUDE.md باید همیشه
+   خوانا بماند، حتی وقتی داده خراب است. نشانه‌گذاری از render.js
+   می‌آید (renderErrorBanner): یک div ساده با strong و ul>li>span.mono،
+   بدون کلاس اختصاصی، پس اینجا با #errors هدف‌گیری شده. */
+#errors {
+  margin: 1rem clamp(1rem, 4vw, 2rem) 0;
+  padding: 0.875rem 1rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--separator);
+  border-inline-start: 3px solid var(--danger);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  color: var(--text);
+  font-size: var(--fs-subhead);
+}
+#errors strong {
+  display: block;
+  margin-block-end: 0.5rem;
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+}
+#errors ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding-inline-start: 1.25rem;
+}
+#errors li { line-height: 1.6; }
+#errors .mono {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.92em;
 }

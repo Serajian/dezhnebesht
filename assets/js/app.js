@@ -5,6 +5,7 @@ import * as router from './router.js';
 import * as view from './render.js';
 
 const VIEW_KEY = 'glossary:index-view';
+const THEME_KEY = 'glossary:theme';
 
 const dom = {
   main: document.getElementById('main'),
@@ -14,6 +15,7 @@ const dom = {
   search: document.getElementById('search'),
   langToggle: document.getElementById('lang-toggle'),
   viewToggle: document.getElementById('view-toggle'),
+  themeToggle: document.getElementById('theme-toggle'),
 };
 
 const state = {
@@ -80,8 +82,14 @@ function render() {
 
 function renderChrome() {
   dom.brand.textContent = i18n.t('app.title');
-  dom.langToggle.textContent = i18n.t('lang.switch');
+  // دکمه‌های تم/زبان حالا فقط آیکون‌اند؛ ست‌کردن textContent رویشان
+  // SVG داخلشان را پاک می‌کرد، پس این‌جا فقط title/aria-label به‌روز می‌شود.
+  dom.themeToggle.title = i18n.t('theme.toggleTitle');
+  dom.themeToggle.setAttribute('aria-label', i18n.t('theme.toggleLabel'));
+  dom.langToggle.title = i18n.t('lang.switch');
+  dom.langToggle.setAttribute('aria-label', i18n.t('lang.switchLabel'));
   dom.search.placeholder = i18n.t('search.placeholder');
+  dom.search.setAttribute('aria-label', i18n.t('search.ariaLabel'));
   for (const button of dom.viewToggle.querySelectorAll('button')) {
     button.textContent = i18n.t(`view.${button.dataset.view}`);
     button.classList.toggle('active', button.dataset.view === state.indexView);
@@ -108,6 +116,31 @@ dom.viewToggle.addEventListener('click', (event) => {
     // حالت خصوصی؛ انتخاب فقط در همین نشست می‌ماند
   }
   refresh();
+});
+
+// از سیستم شروع می‌کند: تا خواننده چیزی انتخاب نکرده هیچ data-theme
+// روی <html> نیست (به‌جز اسکریپت پیش‌رنگ در index.html که فقط انتخاب
+// قبلاً ذخیره‌شده را همان اول برمی‌گرداند تا چشمک نزند) و
+// prefers-color-scheme به‌تنهایی حاکم است — همان الگویی که i18n.js
+// برای زبان دارد.
+function effectiveTheme() {
+  const explicit = document.documentElement.getAttribute('data-theme');
+  if (explicit === 'light' || explicit === 'dark') return explicit;
+  const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+  return prefersDark ? 'dark' : 'light';
+}
+
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch {
+    // حالت خصوصی؛ انتخاب فقط در همین نشست می‌ماند
+  }
+}
+
+dom.themeToggle.addEventListener('click', () => {
+  setTheme(effectiveTheme() === 'dark' ? 'light' : 'dark');
 });
 
 dom.search.addEventListener('input', () => {
