@@ -34,6 +34,7 @@ test('مقدار درصدکدشده رمزگشایی می‌شود', () => {
 
 test('درصدکد نامعتبر باعث پرتاب استثنا نمی‌شود', () => {
   assert.doesNotThrow(() => parseHash('#/t/%E0%A4%A'));
+  assert.deepEqual(parseHash('#/t/%E0%A4%A'), { view: 'entry', id: '%E0%A4%A' });
 });
 
 test('t بدون شناسه به فهرست برمی‌گردد', () => {
