@@ -215,3 +215,11 @@ main {
 
 .notfound { color: var(--muted); }
 .notfound h1 { color: var(--text); }
+
+.selftest h1 { font-size: 1.5rem; }
+.report { margin-top: 1.75rem; }
+.report h2 { font-size: 0.95rem; color: var(--muted); font-weight: 600; margin: 0 0 0.5rem; }
+.report ul { margin: 0; padding-inline-start: 1.2rem; }
+.report .ok { color: var(--accent); margin: 0; }
+.report .bad { color: var(--danger); }
+.report li { line-height: 1.8; }

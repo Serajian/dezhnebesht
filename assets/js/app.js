@@ -56,6 +56,8 @@ function render() {
         ? view.renderEntry(entry, { lang, categories: state.categories, entriesById: state.entriesById })
         : view.renderNotFound(state.route.id),
     );
+  } else if (state.route.view === 'self-test') {
+    dom.main.append(view.renderSelfTest(state.entries, state.categories, state.errors, state.entriesById));
   }
 }
 

@@ -1,5 +1,5 @@
 import { localized } from './data.js';
-import { t, dirFor } from './i18n.js';
+import { t, dirFor, current, LANGS } from './i18n.js';
 
 /**
  * سازنده‌ی کوتاه المان. attrs کلید ویژه‌ی `html` دارد که innerHTML
@@ -196,6 +196,53 @@ export function renderNotFound(id) {
     el('p', { class: 'mono', dir: 'ltr' }, id),
     el('p', {}, t('entry.notFoundHint')),
     el('p', {}, el('a', { href: '#/' }, t('entry.back'))),
+  );
+}
+
+function reportSection(title, items) {
+  return el(
+    'section',
+    { class: 'report' },
+    el('h2', {}, title),
+    items.length === 0
+      ? el('p', { class: 'ok' }, `✓ ${t('selftest.pass')}`)
+      : el('ul', { class: 'bad' }, items.map((item) => el('li', {}, item))),
+  );
+}
+
+/**
+ * هر مدخل را در هر دو زبان واقعاً رندر می‌کند تا خطاهای رندری که
+ * فقط روی یک زبان یا یک شکل داده رخ می‌دهند بیرون بیفتند.
+ */
+export function renderSelfTest(entries, categories, errors, entriesById) {
+  const renderFailures = [];
+  const untranslated = [];
+
+  for (const entry of entries) {
+    for (const lang of LANGS) {
+      try {
+        renderEntry(entry, { lang, categories, entriesById });
+      } catch (error) {
+        renderFailures.push(`${entry.id} [${lang}] — ${error.message}`);
+      }
+    }
+    if (!entry.en) untranslated.push(entry.id);
+  }
+
+  const counts = categories.map((category) => {
+    const total = entries.filter((entry) => entry.category === category.id).length;
+    return `${category[current()] ?? category.fa}: ${total}`;
+  });
+  counts.push(`${t('selftest.total')}: ${entries.length}`);
+
+  return el(
+    'div',
+    { class: 'selftest' },
+    el('h1', {}, t('selftest.title')),
+    reportSection(t('selftest.renderErrors'), renderFailures),
+    reportSection(t('selftest.validation'), errors.map((e) => `${e.file} › ${e.id} — ${e.message}`)),
+    reportSection(t('selftest.untranslated'), untranslated),
+    el('section', { class: 'report' }, el('h2', {}, t('selftest.counts')), el('ul', {}, counts.map((line) => el('li', {}, line)))),
   );
 }
 
