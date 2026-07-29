@@ -49,6 +49,13 @@ function render() {
       view: state.indexView,
       tag: state.route.tag,
     }));
+  } else if (state.route.view === 'entry') {
+    const entry = state.entriesById.get(state.route.id);
+    dom.main.append(
+      entry
+        ? view.renderEntry(entry, { lang, categories: state.categories, entriesById: state.entriesById })
+        : view.renderNotFound(state.route.id),
+    );
   }
 }
 

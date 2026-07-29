@@ -104,6 +104,95 @@ export function renderIndex(entries, categories, { lang, view, tag }) {
   return wrap;
 }
 
+function renderTags(tags) {
+  return el(
+    'div',
+    { class: 'tags' },
+    tags.map((tag) =>
+      el(
+        'a',
+        { class: 'tag mono', dir: 'ltr', href: `#/tag/${encodeURIComponent(tag)}` },
+        `#${tag}`,
+      ),
+    ),
+  );
+}
+
+export function renderEntry(entry, { lang, categories, entriesById }) {
+  const content = localized(entry, lang);
+  const category = categories.find((item) => item.id === entry.category);
+
+  const article = el('article', { class: 'entry' });
+
+  article.append(
+    el(
+      'nav',
+      { class: 'crumbs' },
+      el('a', { href: '#/' }, t('nav.index')),
+      el('span', { class: 'sep' }, '›'),
+      category ? el('span', {}, category[lang] ?? category.fa) : null,
+      category ? el('span', { class: 'sep' }, '›') : null,
+      el('span', { class: 'here' }, content.title),
+    ),
+  );
+
+  if (content.untranslated) {
+    article.append(el('p', { class: 'notice' }, t('entry.untranslated')));
+  }
+
+  const body = el('div', { class: 'entry-body', ...contentDirAttrs(content) });
+  body.append(el('h1', {}, content.title));
+  body.append(el('p', { class: 'lead' }, content.short));
+
+  if (entry.tags?.length) body.append(renderTags(entry.tags));
+
+  body.append(el('div', { class: 'prose', html: content.body }));
+
+  if (content.example) {
+    body.append(
+      el(
+        'section',
+        { class: 'example' },
+        el('h2', {}, t('entry.example')),
+        el('div', { class: 'prose', html: content.example }),
+      ),
+    );
+  }
+
+  if (content.svg) {
+    body.append(el('figure', { class: 'diagram', html: content.svg }));
+  }
+
+  const related = (entry.related ?? [])
+    .map((id) => entriesById.get(id))
+    .filter(Boolean);
+
+  if (related.length > 0) {
+    body.append(
+      el(
+        'section',
+        { class: 'related' },
+        el('h2', {}, t('entry.related')),
+        el('div', { class: 'cards' }, related.map((item) => entryCard(item, lang))),
+      ),
+    );
+  }
+
+  article.append(body);
+  return article;
+}
+
+export function renderNotFound(id) {
+  return el(
+    'div',
+    { class: 'notfound' },
+    el('h1', {}, t('entry.notFound')),
+    el('p', { class: 'mono', dir: 'ltr' }, id),
+    el('p', {}, t('entry.notFoundHint')),
+    el('p', {}, el('a', { href: '#/' }, t('entry.back'))),
+  );
+}
+
 export function renderErrorBanner(errors) {
   return el(
     'div',

@@ -140,3 +140,78 @@ main {
 
 .errors ul { margin: 0.5rem 0 0; padding-inline-start: 1.2rem; }
 .errors li { line-height: 1.8; }
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+.crumbs .sep { opacity: 0.5; }
+.crumbs .here { color: var(--text); }
+
+.entry h1 { font-size: 1.75rem; line-height: 1.5; margin: 0 0 0.4rem; }
+
+.lead {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin: 0 0 1rem;
+}
+
+.notice {
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+
+.tags .tag {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.82rem;
+}
+.tags .tag:hover { border-color: var(--accent); text-decoration: none; }
+
+.prose p { margin: 0 0 1rem; }
+.prose code {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+}
+
+.example, .related { margin-top: 2rem; }
+.example h2, .related h2 {
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.example {
+  border-inline-start: 3px solid var(--border);
+  padding-inline-start: 1rem;
+}
+
+.diagram {
+  margin: 2rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+  text-align: center;
+}
+.diagram svg { max-width: 100%; height: auto; }
+
+.notfound { color: var(--muted); }
+.notfound h1 { color: var(--text); }
