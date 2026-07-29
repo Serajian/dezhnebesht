@@ -442,10 +442,15 @@ button, a{ cursor:pointer; }
   display:flex;
   justify-content:space-between;
   align-items:center;
-  font-family:var(--mono);
-  direction:ltr;
   font-size:0.72rem;
   font-weight:700;
+}
+/* Scoped to the Latin/numeric fragments only — does not sit on .example__bar,
+   so it can never inherit onto the Persian word "مثال" that shares the bar. */
+.example__mono{
+  font-family:var(--mono);
+  direction:ltr;
+  unicode-bidi:isolate;
   letter-spacing:0.06em;
 }
 .example p{
@@ -735,8 +740,8 @@ button, a{ cursor:pointer; }
 
     <div class="example">
       <div class="example__bar">
-        <span>// مثال</span>
-        <span>EX.01</span>
+        <span><span class="example__mono" dir="ltr">//</span> مثال</span>
+        <span class="example__mono" dir="ltr">EX.01</span>
       </div>
       <p>در بیت‌کوین حدوداً هر ۱۰ دقیقه یک بلوک جدید ساخته می‌شود و تراکنش‌های آن بازه را در خود جا می‌دهد.</p>
     </div>
