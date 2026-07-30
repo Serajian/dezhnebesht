@@ -30,16 +30,6 @@ function contentDirAttrs(content) {
   return { dir: dirFor('fa'), lang: 'fa' };
 }
 
-export function entryCard(entry, lang) {
-  const content = localized(entry, lang);
-  return el(
-    'a',
-    { class: 'card', href: `#/t/${encodeURIComponent(entry.id)}`, ...contentDirAttrs(content) },
-    el('span', { class: 'card-title' }, content.title),
-    el('span', { class: 'card-short' }, content.short),
-  );
-}
-
 function sortByTitle(entries, lang) {
   return [...entries].sort((a, b) =>
     localized(a, lang).title.localeCompare(localized(b, lang).title, lang),
@@ -252,109 +242,161 @@ export function renderIndex(entries, categories, {
   return layout;
 }
 
-function renderTags(tags) {
+/* ---------- نمای مدخل ---------- */
+
+function entryHashtags(tags) {
   return el(
     'div',
-    { class: 'tags' },
+    { class: 'hashtags', role: 'list', 'aria-label': t('entry.hashtagsLabel') },
     tags.map((tag) =>
       el(
         'a',
-        { class: 'tag mono', dir: 'ltr', href: `#/tag/${encodeURIComponent(tag)}` },
-        `#${tag}`,
+        { class: 'tag', role: 'listitem', href: `#/tag/${encodeURIComponent(tag)}` },
+        el('span', { dir: 'ltr' }, `#${tag}`),
       ),
     ),
   );
 }
 
-export function renderEntry(entry, { lang, categories, entriesById, topics = [] }) {
+function relatedCard(entry, lang) {
   const content = localized(entry, lang);
-  const category = categories.find(
-    (item) => item.id === entry.category && item.topic === entry.topic,
+  return el(
+    'a',
+    { class: 'related-card', href: `#/t/${encodeURIComponent(entry.id)}`, ...contentDirAttrs(content) },
+    el('span', { class: 'related-title' }, content.title),
+    el('span', { class: 'related-desc' }, content.short),
   );
-  const topic = topics.length > 1 ? topics.find((item) => item.id === entry.topic) : null;
+}
 
-  const article = el('article', { class: 'entry' });
+/**
+ * فهرست «در این صفحه»ی رِیل از روی چه‌چیزی واقعاً در مدخل هست ساخته
+ * می‌شود، نه ثابت — مدخلی بدون مثال یا دیاگرام نباید لینک مرده بگیرد.
+ * منطق محض (بدون DOM) و export شده تا در تست بدون نیاز به document
+ * قابل آزمایش باشد.
+ */
+export function onThisPageSections({ hasExample, hasDiagram, hasRelated }) {
+  const sections = [{ id: 'entry-title', key: 'rail.definition' }];
+  if (hasExample) sections.push({ id: 'entry-example', key: 'entry.example' });
+  if (hasDiagram) sections.push({ id: 'entry-diagram', key: 'entry.diagram' });
+  if (hasRelated) sections.push({ id: 'entry-related', key: 'entry.related' });
+  return sections;
+}
 
-  article.append(
+function entryRail(sections) {
+  return el(
+    'aside',
+    { class: 'rail', 'aria-label': t('rail.onThisPage') },
+    el('p', { class: 'rail-label' }, t('rail.onThisPage')),
     el(
-      'nav',
-      { class: 'crumbs' },
-      el('a', { href: '#/' }, t('nav.index')),
-      el('span', { class: 'sep' }, '›'),
-      topic ? el('a', { href: `#/topic/${encodeURIComponent(topic.id)}` }, topic[lang] ?? topic.fa) : null,
-      topic ? el('span', { class: 'sep' }, '›') : null,
-      category ? el('span', {}, category[lang] ?? category.fa) : null,
-      category ? el('span', { class: 'sep' }, '›') : null,
-      el('span', { class: 'here' }, content.title),
+      'ul',
+      { class: 'rail-list' },
+      sections.map((section) =>
+        el('li', {}, el('a', { href: `#${section.id}` }, el('span', {}, t(section.key)))),
+      ),
     ),
   );
+}
 
-  if (content.untranslated) {
-    article.append(el('p', { class: 'notice' }, t('entry.untranslated')));
+/**
+ * پیش‌تر داخل نمای مدخل بود؛ حالا فقط چروم (.chrome--entry) آن را نشان
+ * می‌دهد — app.js آن را داخل .chrome درج می‌کند چون .chrome بخشی از
+ * پوسته‌ی دائمی صفحه است، نه چیزی که این تابع بسازد و جایگزین کند.
+ * دسته برخلاف موضوع همیشه متن ساده می‌ماند، نه لینک — مسیری مثل
+ * «#/c/basics» در router.js تعریف نشده و لینک‌مرده می‌شد.
+ */
+export function renderBreadcrumb({ lang, topic, category, current }) {
+  const children = [el('a', { href: '#/' }, t('nav.index'))];
+  if (topic) {
+    children.push(el('span', { class: 'crumb-sep', 'aria-hidden': 'true' }, '‹'));
+    children.push(el('a', { href: `#/topic/${encodeURIComponent(topic.id)}` }, topic[lang] ?? topic.fa));
   }
+  if (category) {
+    children.push(el('span', { class: 'crumb-sep', 'aria-hidden': 'true' }, '‹'));
+    children.push(el('span', {}, category[lang] ?? category.fa));
+  }
+  children.push(el('span', { class: 'crumb-sep', 'aria-hidden': 'true' }, '‹'));
+  children.push(el('span', { class: 'crumb-current', 'aria-current': 'page' }, current));
+  return el('nav', { class: 'chrome-breadcrumb', 'aria-label': t('nav.breadcrumb') }, children);
+}
 
-  const body = el('div', { class: 'entry-body', ...contentDirAttrs(content) });
-  body.append(el('h1', {}, content.title));
-  body.append(el('p', { class: 'lead' }, content.short));
+export function renderEntry(entry, { lang, categories, entriesById, topics = [] }) {
+  const content = localized(entry, lang);
+  const related = (entry.related ?? []).map((id) => entriesById.get(id)).filter(Boolean);
+  const sections = onThisPageSections({
+    hasExample: Boolean(content.example),
+    hasDiagram: Boolean(content.svg),
+    hasRelated: related.length > 0,
+  });
 
-  if (entry.tags?.length) body.append(renderTags(entry.tags));
+  // فقط محتوای برگرفته از entry (تیتر تا مرتبط) جهت را برمی‌گرداند — نه
+  // کل ستون، وگرنه نشان «ترجمه نشده» که خودش متن رابط به زبان جاری است
+  // هم وارونه می‌شد.
+  const contentWrap = el('div', { ...contentDirAttrs(content) });
+  contentWrap.append(el('h1', { class: 'display-title', id: 'entry-title' }, content.title));
+  contentWrap.append(el('p', { class: 'lede' }, content.short));
 
-  body.append(el('div', { class: 'prose', html: content.body }));
+  if (entry.tags?.length) contentWrap.append(entryHashtags(entry.tags));
+
+  contentWrap.append(el('div', { class: 'prose', html: content.body }));
 
   if (content.example) {
-    body.append(
+    contentWrap.append(
       el(
         'section',
-        { class: 'example' },
-        el('h2', {}, t('entry.example')),
-        el('div', { class: 'prose', html: content.example }),
+        { class: 'example', id: 'entry-example' },
+        el('h2', { class: 'section-label' }, t('entry.example')),
+        el('div', { html: content.example }),
       ),
     );
   }
 
   if (content.svg) {
-    body.append(el('figure', { class: 'diagram', html: content.svg }));
-  }
-
-  const related = (entry.related ?? [])
-    .map((id) => entriesById.get(id))
-    .filter(Boolean);
-
-  if (related.length > 0) {
-    body.append(
+    contentWrap.append(
       el(
         'section',
-        { class: 'related' },
-        el('h2', {}, t('entry.related')),
-        el('div', { class: 'cards' }, related.map((item) => entryCard(item, lang))),
+        { class: 'diagram-section', id: 'entry-diagram' },
+        el('h2', { class: 'section-label' }, t('entry.diagram')),
+        el('figure', { class: 'diagram', html: content.svg }),
       ),
     );
   }
 
-  article.append(body);
-  return article;
+  if (related.length > 0) {
+    contentWrap.append(
+      el(
+        'section',
+        { class: 'related', id: 'entry-related' },
+        el('h2', { class: 'section-label' }, t('entry.related')),
+        el('div', { class: 'related-grid' }, related.map((item) => relatedCard(item, lang))),
+      ),
+    );
+  }
+
+  const column = el('div', { class: 'column' });
+  if (content.untranslated) column.append(el('p', { class: 'notice' }, t('entry.untranslated')));
+  column.append(contentWrap);
+
+  return el('div', { class: 'layout' }, entryRail(sections), column);
 }
 
 export function renderNotFound(id) {
-  return el(
+  const column = el(
     'div',
-    { class: 'notfound' },
-    el('h1', {}, t('entry.notFound')),
-    el('p', { class: 'mono', dir: 'ltr' }, id),
-    el('p', {}, t('entry.notFoundHint')),
+    { class: 'column' },
+    el('h1', { class: 'display-title' }, t('entry.notFound')),
+    el('p', { class: 'lede' }, `${t('entry.notFoundHint')} `, el('span', { dir: 'ltr' }, id)),
     el('p', {}, el('a', { href: '#/' }, t('entry.back'))),
   );
+  return el('div', { class: 'layout' }, column);
 }
 
+/* ---------- نمای خودآزمایی ---------- */
+
 function reportSection(title, items) {
-  return el(
-    'section',
-    { class: 'report' },
-    el('h2', {}, title),
-    items.length === 0
-      ? el('p', { class: 'ok' }, `✓ ${t('selftest.pass')}`)
-      : el('ul', { class: 'bad' }, items.map((item) => el('li', {}, item))),
-  );
+  const body = items.length === 0
+    ? el('p', { class: 'lede' }, `✓ ${t('selftest.pass')}`)
+    : el('ul', { class: 'rows' }, items.map((item) => el('li', { class: 'row' }, el('span', { class: 'row-title' }, item))));
+  return el('div', { class: 'group' }, el('h2', { class: 'section-label' }, title), body);
 }
 
 /**
@@ -390,15 +432,21 @@ export function renderSelfTest(entries, categories, errors, entriesById, topics 
   }
   counts.push(`${t('selftest.total')}: ${entries.length}`);
 
-  return el(
+  const column = el(
     'div',
-    { class: 'selftest' },
-    el('h1', {}, t('selftest.title')),
+    { class: 'column' },
+    el('h1', { class: 'display-title' }, t('selftest.title')),
     reportSection(t('selftest.renderErrors'), renderFailures),
     reportSection(t('selftest.validation'), errors.map((e) => `${e.file} › ${e.id} — ${e.message}`)),
     reportSection(t('selftest.untranslated'), untranslated),
-    el('section', { class: 'report' }, el('h2', {}, t('selftest.counts')), el('ul', {}, counts.map((line) => el('li', {}, line)))),
+    el(
+      'div',
+      { class: 'group' },
+      el('h2', { class: 'section-label' }, t('selftest.counts')),
+      el('ul', { class: 'rows' }, counts.map((line) => el('li', { class: 'row' }, el('span', { class: 'row-title' }, line)))),
+    ),
   );
+  return el('div', { class: 'layout' }, column);
 }
 
 export function renderErrorBanner(errors) {

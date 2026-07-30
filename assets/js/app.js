@@ -1,4 +1,4 @@
-import { loadAll } from './data.js';
+import { loadAll, localized } from './data.js';
 import * as i18n from './i18n.js';
 import { filterEntries } from './search.js';
 import * as router from './router.js';
@@ -18,6 +18,13 @@ const dom = {
   langToggle: document.getElementById('lang-toggle'),
   viewToggle: document.getElementById('view-toggle'),
   themeToggle: document.getElementById('theme-toggle'),
+  // بدون id در index.html (فقط کلاس) — چروم پوسته‌ی دائمی صفحه است و
+  // بین نمای فهرست/مدخل عوض نمی‌شود، فقط محتوایش؛ به همین دلیل با
+  // querySelector گرفته می‌شود، نه با یک id تازه که به index.html نیاز
+  // داشت (خارج از محدوده‌ی این تسک).
+  chrome: document.querySelector('.chrome'),
+  chromeStart: document.querySelector('.chrome-start'),
+  chromeEnd: document.querySelector('.chrome-end'),
 };
 
 const state = {
@@ -108,6 +115,32 @@ dom.main.addEventListener(
   true,
 );
 
+/**
+ * breadcrumb داخل چروم فقط برای نمای مدخل/خودآزمایی لازم است. render.js
+ * فقط DOM محضِ آن را می‌سازد (renderBreadcrumb)؛ اینکه کدام مسیر به
+ * کدام breadcrumb می‌رسد منطق مسیریابی است، پس اینجا زندگی می‌کند.
+ * مدخل ناشناخته (renderNotFound) هم از همین مسیر رد می‌شود، صرفاً بدون
+ * موضوع/دسته.
+ */
+function buildBreadcrumb(lang) {
+  if (state.route.view === 'entry') {
+    const entry = state.entriesById.get(state.route.id);
+    if (!entry) {
+      return view.renderBreadcrumb({ lang, topic: null, category: null, current: i18n.t('entry.notFound') });
+    }
+    const content = localized(entry, lang);
+    const category = state.categories.find(
+      (item) => item.id === entry.category && item.topic === entry.topic,
+    );
+    const topic = state.topics.length > 1 ? state.topics.find((item) => item.id === entry.topic) : null;
+    return view.renderBreadcrumb({ lang, topic, category, current: content.title });
+  }
+  if (state.route.view === 'self-test') {
+    return view.renderBreadcrumb({ lang, topic: null, category: null, current: i18n.t('selftest.title') });
+  }
+  return null;
+}
+
 function render() {
   const lang = i18n.current();
   dom.main.replaceChildren();
@@ -115,7 +148,19 @@ function render() {
   const isIndex = state.route.view === 'index';
   dom.searchbar.hidden = !isIndex;
   dom.viewToggle.hidden = !isIndex;
+  dom.chromeStart.hidden = !isIndex;
+  dom.chrome.classList.toggle('chrome--index', isIndex);
+  dom.chrome.classList.toggle('chrome--entry', !isIndex);
   dom.main.classList.toggle('content--index', isIndex);
+
+  // breadcrumb قبلی (اگر بود) همیشه اول برداشته می‌شود — چروم بین دو
+  // رندر پشت‌سرهم دوباره ساخته نمی‌شود (برخلاف dom.main)، پس اگر این‌جا
+  // پاک نشود، برگشتن به فهرست یک breadcrumb یتیم را پشت سر می‌گذارد.
+  dom.chrome.querySelector('.chrome-breadcrumb')?.remove();
+  if (!isIndex) {
+    const crumb = buildBreadcrumb(lang);
+    if (crumb) dom.chrome.insertBefore(crumb, dom.chromeEnd);
+  }
 
   if (isIndex) {
     const matched = filterEntries(state.entries, { query: state.query, tag: state.route.tag });
