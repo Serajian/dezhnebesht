@@ -223,6 +223,23 @@ function refresh() {
   render();
 }
 
+// انیمیشن ورود فقط موقع لود اول و تغییر مسیر — نه با هر کلید جستجو،
+// که فهرست را زیر دست کاربر می‌لرزاند. حذف و خواندن دوباره‌ی offsetWidth
+// لازم است تا مرورگر انیمیشن را از نو شروع کند؛ بدون آن، افزودن دوبارهٔ
+// همان کلاس هیچ اثری ندارد.
+function playEnter() {
+  dom.main.classList.remove('is-entering');
+  void dom.main.offsetWidth;
+  dom.main.classList.add('is-entering');
+  // کلاس باید بعد از پایان برداشته شود. اگر بماند، هر فرزندی که جستجو
+  // بعداً می‌سازد هم انیمیشن را می‌گیرد و فهرست با هر کلید می‌لرزد.
+  dom.main.addEventListener(
+    'animationend',
+    () => dom.main.classList.remove('is-entering'),
+    { once: true },
+  );
+}
+
 dom.langToggle.addEventListener('click', () => {
   i18n.toggle();
   refresh();
@@ -357,8 +374,19 @@ async function init() {
   router.start((route) => {
     state.route = route;
     refresh();
+    playEnter();
     window.scrollTo(0, 0); // فقط موقع تغییر مسیر، نه با هر کلید جستجو
   });
 }
 
-init();
+// اسکلت بارگذاری در خودِ HTML است، پس اگر راه‌اندازی بترکد تا ابد
+// می‌ماند و کاربر فکر می‌کند صفحه هنوز در حال بارگذاری است. loadAll
+// خودش هرگز throw نمی‌کند، ولی این محافظِ آخر است تا خرابیِ ناشناخته
+// به‌جای انتظار بی‌پایان، پیام بدهد.
+init().catch((error) => {
+  dom.main.replaceChildren();
+  dom.errors.replaceChildren(
+    view.renderErrorBanner([{ file: 'app.js', id: '', message: String(error && error.message || error) }]),
+  );
+  dom.errors.hidden = false;
+});

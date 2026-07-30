@@ -71,7 +71,26 @@
 
   <div class="errors" id="errors" hidden></div>
 
-  <main id="main" class="content"></main>
+  <!-- اسکلت بارگذاری در خودِ HTML است تا از اولین فریم دیده شود، نه بعد از
+       اجرای جاوااسکریپت. app.js با آمدن داده جایگزینش می‌کند. -->
+  <main id="main" class="content">
+    <div class="skeleton" id="skeleton" aria-hidden="true">
+      <div class="skeleton-rail"></div>
+      <div class="skeleton-column">
+        <div class="skeleton-group">
+          <div class="skeleton-bar skeleton-head"></div>
+          <div class="skeleton-bar skeleton-row"></div>
+          <div class="skeleton-bar skeleton-row"></div>
+          <div class="skeleton-bar skeleton-row"></div>
+        </div>
+        <div class="skeleton-group">
+          <div class="skeleton-bar skeleton-head"></div>
+          <div class="skeleton-bar skeleton-row"></div>
+          <div class="skeleton-bar skeleton-row"></div>
+        </div>
+      </div>
+    </div>
+  </main>
 
   <script type="module" src="assets/js/app.js"></script>
 </body>

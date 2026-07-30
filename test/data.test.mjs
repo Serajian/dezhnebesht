@@ -201,3 +201,35 @@ test('loadAll به‌خاطر related شکسته مدخل را از entries حذ
   assert.deepEqual(result.entries.map((e) => e.id), ['hash']);
   assert.ok(result.errors.some((e) => e.id === 'hash' && /does-not-exist/.test(e.message)));
 });
+
+test('loadAll فایل‌ها را موازی می‌گیرد، نه پشت سر هم', async () => {
+  // اگر درخواست‌ها زنجیره‌ای شوند، بیشترین هم‌پوشانی ۱ می‌ماند و صفحه
+  // به‌ازای هر دسته یک رفت‌وبرگشت کامل منتظر می‌ماند.
+  const originalFetch = globalThis.fetch;
+  let inFlight = 0;
+  let peak = 0;
+
+  globalThis.fetch = async (path) => {
+    inFlight += 1;
+    peak = Math.max(peak, inFlight);
+    await new Promise((resolve) => setTimeout(resolve, 15));
+    inFlight -= 1;
+    const body =
+      path.endsWith('topics.json') ? [{ id: 'a', fa: 'الف', en: 'A' }, { id: 'b', fa: 'ب', en: 'B' }]
+      : path.endsWith('categories.json') ? [
+          { id: 'one', file: 'one.json', fa: 'یک', en: 'One' },
+          { id: 'two', file: 'two.json', fa: 'دو', en: 'Two' },
+        ]
+      : [];
+    return { ok: true, json: async () => body };
+  };
+
+  try {
+    await loadAll('data');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+
+  // دو categories.json با هم، بعد چهار فایل مدخل با هم.
+  assert.ok(peak >= 4, `بیشترین درخواست هم‌زمان ${peak} بود؛ انتظار حداقل ۴`);
+});

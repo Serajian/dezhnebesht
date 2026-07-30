@@ -813,3 +813,79 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
   color: var(--text-secondary);
   font-size: 0.9375rem;
 }
+
+/* ── بارگذاری اولیه و ورود محتوا ───────────────────────────────────
+   داده با fetch می‌آید، پس بین اولین رنگ‌آمیزی و آماده‌شدن فهرست
+   فاصله‌ای هست. اسکلت همان چیدمان واقعی را می‌گیرد (ریل + ستون با
+   دو گروه) تا وقتی محتوا جایش را می‌گیرد چیزی نپرد. */
+
+.skeleton {
+  display: block;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+.skeleton-rail { display: none; }
+.skeleton-group + .skeleton-group { margin-top: 2rem; }
+
+.skeleton-bar {
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--separator);
+}
+.skeleton-head {
+  height: 1.25rem;
+  width: 40%;
+  margin-bottom: 0.75rem;
+  border: 0;
+  background: var(--separator);
+  border-radius: 6px;
+}
+.skeleton-row { height: 4.25rem; }
+.skeleton-row + .skeleton-row { margin-top: 0.5rem; }
+
+/* درخشش ملایم که می‌گوید صفحه منتظر است، نه اینکه گیر کرده. فقط
+   opacity متحرک است تا روی لایهٔ ترکیب بماند. */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.skeleton-bar { animation: skeleton-pulse 1.4s var(--ease) infinite; }
+.skeleton-group:nth-child(2) .skeleton-bar { animation-delay: 0.12s; }
+
+@media (min-width: 1024px) {
+  .skeleton {
+    display: flex;
+    align-items: flex-start;
+    gap: 2.75rem;
+    max-width: 66rem;
+  }
+  .skeleton-rail {
+    display: block;
+    flex: 0 0 var(--rail-w);
+    height: 11rem;
+    background: var(--bg-structural);
+    border-radius: 14px;
+  }
+  .skeleton-column { flex: 1; min-width: 0; }
+}
+
+/* ورود محتوا: بالا آمدن کوتاه به‌علاوهٔ محو. فقط transform و opacity،
+   و فقط یک‌بار موقع لود یا تغییر مسیر — نه با هر کلید جستجو، که
+   حالت تهوع‌آور می‌شد. */
+@keyframes content-enter {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to   { opacity: 1; transform: none; }
+}
+.content.is-entering > * {
+  animation: content-enter var(--dur-med) var(--ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* حرکت برداشته می‌شود ولی محو می‌ماند: بازخورد حفظ می‌شود بدون
+     تحریک دهلیزی. درخشش اسکلت هم متوقف می‌شود. */
+  .skeleton-bar { animation: none; }
+  @keyframes content-enter {
+    from { opacity: 0; transform: none; }
+    to   { opacity: 1; transform: none; }
+  }
+}

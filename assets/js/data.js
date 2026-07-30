@@ -167,28 +167,56 @@ export async function loadAll(basePath = 'data') {
   const categories = [];
   const entries = [];
 
-  for (const topic of topics) {
-    let topicCategories;
+  // درخواست‌ها موازی‌اند، نه پشت سر هم. با await داخل حلقه هر فایل منتظر
+  // قبلی می‌ماند: با N موضوع و M دسته یعنی ۱+N+M رفت‌وبرگشتِ زنجیره‌ای، که
+  // با رشد محتوا صفحه را ثانیه‌ها خالی نگه می‌دارد. حالا دو موج است:
+  // همهٔ categories.json با هم، بعد همهٔ فایل‌های مدخل با هم.
+  const perTopic = await Promise.all(topics.map(async (topic) => {
     try {
-      topicCategories = await fetchJson(`${basePath}/${topic.id}/categories.json`);
-      if (!Array.isArray(topicCategories)) throw new Error('محتوای فایل باید یک آرایه باشد');
+      const list = await fetchJson(`${basePath}/${topic.id}/categories.json`);
+      if (!Array.isArray(list)) throw new Error('محتوای فایل باید یک آرایه باشد');
+      return { topic, list };
     } catch (error) {
+      return { topic, error };
+    }
+  }));
+
+  // درخواست‌ها همین‌جا شروع می‌شوند تا با هم در راه باشند؛ نتیجه‌شان پایین
+  // به ترتیب خوانده می‌شود تا ترتیب مدخل‌ها قطعی بماند. rejection همان‌جا
+  // به مقدار تبدیل می‌شود تا هیچ promise بی‌صاحبی نماند.
+  const pending = [];
+  for (const { topic, list, error } of perTopic) {
+    if (error) {
       errors.push({ file: `${topic.id}/categories.json`, id: '', message: error.message });
       continue;
     }
-
-    for (const category of topicCategories) {
+    for (const category of list) {
       // موضوع از نام پوشه می‌آید، دقیقاً همان‌طور که دسته از نام فایل.
-      categories.push({ ...category, topic: topic.id });
-      try {
-        const raw = await fetchJson(`${basePath}/${topic.id}/entries/${category.file}`);
-        if (!Array.isArray(raw)) throw new Error('محتوای فایل باید یک آرایه باشد');
-        for (const entry of raw) {
-          entries.push({ ...entry, category: category.id, topic: topic.id });
-        }
-      } catch (error) {
-        errors.push({ file: `${topic.id}/${category.file}`, id: '', message: error.message });
-      }
+      const withTopic = { ...category, topic: topic.id };
+      categories.push(withTopic);
+      pending.push({
+        category: withTopic,
+        request: fetchJson(`${basePath}/${topic.id}/entries/${category.file}`).then(
+          (raw) => ({ raw }),
+          (error) => ({ error }),
+        ),
+      });
+    }
+  }
+
+  for (const { category, request } of pending) {
+    const { raw, error } = await request;
+    const file = `${category.topic}/${category.file}`;
+    if (error) {
+      errors.push({ file, id: '', message: error.message });
+      continue;
+    }
+    if (!Array.isArray(raw)) {
+      errors.push({ file, id: '', message: 'محتوای فایل باید یک آرایه باشد' });
+      continue;
+    }
+    for (const entry of raw) {
+      entries.push({ ...entry, category: category.id, topic: category.topic });
     }
   }
 
