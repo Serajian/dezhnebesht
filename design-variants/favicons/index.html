@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دژنبشت — دوازده نامزد favicon</title>
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --panel: #fff;
+    --ink: #1d1d1f;
+    --muted: #6e6e73;
+    --line: rgba(60,60,67,0.14);
+    --accent: #0071e3;
+    --tab-light: #dee1e6;
+    --tab-dark: #2b2b30;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #19191c; --panel: #232326; --ink: #f2f2f5; --muted: #98989d;
+      --line: rgba(255,255,255,0.12); --accent: #409cff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Vazirmatn", "IRANSans", "Segoe UI", Tahoma, system-ui, sans-serif;
+    line-height: 1.8;
+  }
+  header { padding: 2.5rem 1.5rem 1rem; max-width: 60rem; margin-inline: auto; }
+  h1 { margin: 0 0 0.4rem; font-size: 1.5rem; }
+  header p { margin: 0; color: var(--muted); }
+  .legend {
+    max-width: 60rem; margin: 0.75rem auto 0; padding: 0 1.5rem;
+    color: var(--muted); font-size: 0.9rem;
+  }
+  .grid {
+    max-width: 60rem; margin-inline: auto; padding: 1.5rem;
+    display: grid; gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  }
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 1rem 1.1rem 1.2rem;
+  }
+  .card-head { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.15rem; }
+  .num { font-family: ui-monospace, Menlo, monospace; font-size: 0.8rem; color: var(--muted); }
+  .name { font-weight: 700; }
+  .note { margin: 0 0 0.9rem; color: var(--muted); font-size: 0.85rem; line-height: 1.7; }
+
+  /* ── اندازه‌های واقعی ───────────────────────────────────────── */
+  .sizes { display: flex; align-items: flex-end; gap: 1rem; margin-bottom: 0.9rem; }
+  .size { text-align: center; }
+  .size span { display: block; font-family: ui-monospace, Menlo, monospace; font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
+  .ico { display: block; color: var(--accent); --icon-bg: var(--panel); }
+  .s16 { width: 16px; height: 16px; }
+  .s32 { width: 32px; height: 32px; }
+  .s64 { width: 64px; height: 64px; }
+
+  /* ── تبِ شبیه‌سازی‌شده: جایی که آیکن واقعاً دیده می‌شود ────── */
+  .tabs { display: grid; gap: 0.4rem; }
+  .tab {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.35rem 0.7rem; border-radius: 8px 8px 0 0;
+    font-size: 0.78rem; overflow: hidden; white-space: nowrap;
+  }
+  .tab .ico { width: 16px; height: 16px; flex: none; }
+  .tab--light { background: var(--tab-light); color: #202124; }
+  .tab--light .ico { color: #0071e3; --icon-bg: var(--tab-light); }
+  .tab--dark { background: var(--tab-dark); color: #e8e8ed; }
+  .tab--dark .ico { color: #409cff; --icon-bg: var(--tab-dark); }
+
+  /* ── تک‌رنگ: آزمون سیلوئت ──────────────────────────────────── */
+  .mono { display: flex; gap: 0.5rem; margin-top: 0.9rem; align-items: center; }
+  .mono .ico { width: 16px; height: 16px; }
+  .mono .on-dark { color: #fff; --icon-bg: #000; background: #000; border-radius: 4px; padding: 2px; box-sizing: content-box; }
+  .mono .on-light { color: #000; --icon-bg: #fff; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 2px; box-sizing: content-box; }
+  .mono small { color: var(--muted); font-size: 0.75rem; }
+
+  /* ── پیکسل‌های واقعی ۱۶×۱۶، بزرگ‌شده بدون نرم‌سازی ─────────── */
+  .pixels { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.9rem; }
+  .pixels canvas {
+    width: 96px; height: 96px;
+    image-rendering: pixelated;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  .pixels small { color: var(--muted); font-size: 0.75rem; line-height: 1.5; }
+
+  footer { max-width: 60rem; margin-inline: auto; padding: 1rem 1.5rem 4rem; color: var(--muted); font-size: 0.9rem; }
+  code { font-family: ui-monospace, Menlo, monospace; background: var(--bg); padding: 0.1rem 0.35rem; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>دوازده نامزد favicon</h1>
+  <p>هر آیکن در اندازهٔ واقعی تب مرورگر نشان داده شده، نه بزرگ‌شده.</p>
+</header>
+
+<p class="legend">
+  ترتیب هر کارت: ۱۶ و ۳۲ و ۶۴ پیکسل · دو تبِ شبیه‌سازی‌شده (روشن و تاریک) · و آزمون سیلوئت در سیاه‌وسفید.
+  <strong>۱۶ پیکسل تصمیم‌گیرنده است</strong> — بیشتر آیکن‌های زیبا همان‌جا از هم می‌پاشند.
+</p>
+
+<div class="grid" id="grid"></div>
+
+<footer>
+  <p>آیکن انتخابی به‌صورت <code>favicon.svg</code> در ریشهٔ سایت نصب می‌شود، به‌علاوهٔ یک نسخهٔ ۱۸۰ پیکسلی برای صفحهٔ خانهٔ آی‌اواس. هیچ فایل بیرونی و هیچ CDN — همان قید همیشگی.</p>
+</footer>
+
+<script type="module">
+import { ICONS } from './_icons.js';
+
+const FA_DIGITS = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+const faNum = (n) => String(n).split('').map((d) => FA_DIGITS[+d] ?? d).join('');
+const wrap = (svg, cls) =>
+  `<svg class="ico ${cls}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${svg}</svg>`;
+
+document.getElementById('grid').innerHTML = ICONS.map((icon, i) => `
+  <div class="card">
+    <div class="card-head">
+      <span class="num">${faNum(String(i + 1).padStart(2, '0'))}</span>
+      <span class="name">${icon.fa}</span>
+    </div>
+    <p class="note">${icon.note}</p>
+
+    <div class="sizes">
+      <div class="size">${wrap(icon.svg, 's16')}<span>16</span></div>
+      <div class="size">${wrap(icon.svg, 's32')}<span>32</span></div>
+      <div class="size">${wrap(icon.svg, 's64')}<span>64</span></div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab tab--light">${wrap(icon.svg, 's16')}<span>دژنبشت</span></div>
+      <div class="tab tab--dark">${wrap(icon.svg, 's16')}<span>دژنبشت</span></div>
+    </div>
+
+    <div class="mono">
+      ${wrap(icon.svg, 's16 on-light')}
+      ${wrap(icon.svg, 's16 on-dark')}
+      <small>سیلوئت</small>
+    </div>
+
+    <div class="pixels">
+      <canvas data-icon="${i}" width="16" height="16"></canvas>
+      <small>همان ۱۶ پیکسل، بزرگ‌شده بدون نرم‌سازی</small>
+    </div>
+  </div>
+`).join('');
+
+/* آزمون واقعی: آیکن را در بوم ۱۶×۱۶ رسم کن و بعد با پیکسل‌های درشت
+   بزرگش کن. این دقیقاً همان چیزی است که مرورگر در تب می‌کشد — چشم روی
+   نسخهٔ ۶۴ پیکسلی فریب می‌خورد، این‌جا نه. */
+const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const ink = cssVar('--accent') || '#0071e3';
+const paper = cssVar('--panel') || '#ffffff';
+
+for (const canvas of document.querySelectorAll('canvas[data-icon]')) {
+  const icon = ICONS[+canvas.dataset.icon];
+  const markup = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">`
+    + `<g style="color:${ink}">${icon.svg.replaceAll('var(--icon-bg, #fff)', paper)}</g></svg>`;
+  const img = new Image();
+  img.onload = () => {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 16, 16);
+    ctx.drawImage(img, 0, 0, 16, 16);
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(markup);
+}
+</script>
+
+</body>
+</html>
