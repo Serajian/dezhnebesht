@@ -3,9 +3,11 @@ import * as i18n from './i18n.js';
 import { filterEntries } from './search.js';
 import * as router from './router.js';
 import * as view from './render.js';
+import { resolveActiveTopicId, parseGroupState } from './groups.js';
 
 const VIEW_KEY = 'glossary:index-view';
 const THEME_KEY = 'glossary:theme';
+const GROUPS_KEY = 'glossary:groups';
 
 const dom = {
   main: document.getElementById('main'),
@@ -27,6 +29,11 @@ const state = {
   route: { view: 'index', topic: '', tag: '' },
   query: '',
   indexView: readIndexView(),
+  // شمار کل مدخل‌ها به تفکیک موضوع/دسته — یک‌بار در init() از روی کل
+  // داده محاسبه می‌شود، نه از روی نتیجه‌ی فیلترشده؛ رِیل ناوبری پایدار
+  // است و نباید با هر ضربه‌کلید جستجو کوچک/بزرگ شود.
+  topicTotals: new Map(),
+  categoryTotals: new Map(),
 };
 
 function readIndexView() {
@@ -37,6 +44,70 @@ function readIndexView() {
   }
 }
 
+/* ---------- ترجیح باز/بسته‌ی گروه‌های تاشوی فهرست ----------
+ * تصمیم نهایی (باز باشد یا نه) منطق محضی است که در groups.js زندگی
+ * می‌کند و با تست پوشش داده شده؛ این‌جا فقط همان ترجیح را از
+ * localStorage می‌خوانیم/می‌نویسیم، در try/catch چون حالت خصوصی
+ * مرورگر گاهی رویش خطا می‌دهد. */
+function readGroupState() {
+  try {
+    return parseGroupState(localStorage.getItem(GROUPS_KEY));
+  } catch {
+    return {};
+  }
+}
+
+const groupState = readGroupState();
+
+function saveGroupState() {
+  try {
+    localStorage.setItem(GROUPS_KEY, JSON.stringify(groupState));
+  } catch {
+    // حالت خصوصی؛ ترجیح فقط در همین نشست می‌ماند
+  }
+}
+
+/*
+ * رویداد toggle خودِ <details> غیرهمزمان است — تأییدشده با آزمایش
+ * مستقیم در مرورگر، نه فقط حدس: حتی ساختنِ یک <details> با open از
+ * همان لحظه‌ی ایجاد (نه با mutation بعدی) هم، به‌محض اتصال به سند، یک
+ * toggle غیرهمزمان صف می‌کند. چون render() این‌جا هر بار عنصرهای
+ * <details> را از نو می‌سازد (نه استفاده‌ی دوباره از قبلی‌ها، برخلاف
+ * ماکت)، شمارنده‌ی سراسری ماکت (programmaticToggles) این‌جا جواب
+ * نمی‌دهد: اگر یک رندر تازه، قبل از رسیدن toggleِ رندر قبلی، عنصر را
+ * از سند حذف کند، آن رویداد هرگز به شنونده‌ی delegated نمی‌رسد (چون
+ * عنصر وقتی رویداد واقعاً fire می‌شود دیگر اجداد ندارد) و شمارنده برای
+ * همیشه نامتوازن می‌ماند. راه‌حلِ این‌جا یک نشانه‌ی به‌ازای-هر-عنصر است:
+ * درست بعد از append، هر <details> تازه‌ی باز به suppressNextToggle
+ * اضافه می‌شود؛ شنونده فقط اولین toggleِ همان عنصر مشخص را نادیده
+ * می‌گیرد — مستقل از هر عنصر دیگر، پس هرگز از هم‌گام خارج نمی‌شود.
+ */
+const suppressNextToggle = new WeakSet();
+
+function markProgrammaticGroups() {
+  for (const details of dom.main.querySelectorAll('details.group[open]')) {
+    suppressNextToggle.add(details);
+  }
+}
+
+// toggle حباب نمی‌کند (تأییدشده با آزمایش)، پس فقط با شنونده‌ی فاز
+// capture روی dom.main — که هرگز جایگزین نمی‌شود، فقط فرزندانش عوض
+// می‌شوند — قابل تفویض است.
+dom.main.addEventListener(
+  'toggle',
+  (event) => {
+    const details = event.target;
+    if (!(details instanceof HTMLDetailsElement) || !details.classList.contains('group')) return;
+    if (suppressNextToggle.has(details)) {
+      suppressNextToggle.delete(details);
+      return; // ساختِ برنامه‌ای بود (رندر تازه یا فیلتر)، نه کلیک خواننده
+    }
+    groupState[details.id] = details.open;
+    saveGroupState();
+  },
+  true,
+);
+
 function render() {
   const lang = i18n.current();
   dom.main.replaceChildren();
@@ -44,6 +115,7 @@ function render() {
   const isIndex = state.route.view === 'index';
   dom.searchbar.hidden = !isIndex;
   dom.viewToggle.hidden = !isIndex;
+  dom.main.classList.toggle('content--index', isIndex);
 
   if (isIndex) {
     const matched = filterEntries(state.entries, { query: state.query, tag: state.route.tag });
@@ -55,19 +127,24 @@ function render() {
       ? matched.filter((entry) => entry.topic === activeTopic)
       : matched;
 
-    const topicCounts = new Map();
-    for (const entry of matched) {
-      topicCounts.set(entry.topic, (topicCounts.get(entry.topic) ?? 0) + 1);
-    }
+    // جستجو یا فیلتر هشتگ — هر دو باید هر گروهی را که نتیجه دارد
+    // مجبور به باز-بودن کنند؛ یک گروه بسته هرگز نباید نتیجه را ببلعد.
+    // فیلترِ موضوع به‌تنهایی (صرفِ مرور) این قانون را فعال نمی‌کند.
+    const filtered = searching || Boolean(state.route.tag);
 
     dom.main.append(view.renderIndex(visible, state.categories, {
       lang,
       view: state.indexView,
       tag: state.route.tag,
       topics: state.topics,
-      topic: activeTopic,
-      topicCounts,
+      activeTopicId: resolveActiveTopicId(state.topics, state.route.topic),
+      filtered,
+      topicTotals: state.topicTotals,
+      categoryTotals: state.categoryTotals,
+      storedGroupState: groupState,
     }));
+
+    markProgrammaticGroups();
   } else if (state.route.view === 'entry') {
     const entry = state.entriesById.get(state.route.id);
     dom.main.append(
@@ -149,7 +226,11 @@ dom.search.addEventListener('input', () => {
 });
 
 dom.main.addEventListener('click', (event) => {
-  if (event.target.closest('.clear')) clearSearch();
+  const subnavLink = event.target.closest('.rail-subnav a');
+  if (subnavLink) {
+    event.preventDefault();
+    openGroupFromRail(subnavLink.getAttribute('href').slice(1));
+  }
 });
 
 function clearSearch() {
@@ -157,6 +238,34 @@ function clearSearch() {
   dom.search.value = '';
   render();
   dom.search.focus();
+}
+
+/**
+ * لینک زیردسته‌ی ریل هرگز نباید به یک گروه بسته یا فیلترشده ختم شود —
+ * یعنی خواننده کلیک می‌کند و چیز تازه‌ای نمی‌بیند. پس قبل از اسکرول:
+ * اگر نمای الفبایی فعال است (که اصلاً <details> ندارد) به نمای موضوعی
+ * برمی‌گردیم، جستجوی فعال (اگر بود) پاک می‌شود، و ترجیح این گروه صریحاً
+ * باز ثبت می‌شود. فیلتر هشتگ عمداً دست‌نخورده می‌ماند: پاک‌کردنش یعنی
+ * تغییر مسیر (location.hash)، که با scrollTo(0,0) روتر رقابت می‌کند و
+ * اسکرولِ همین تابع را باطل می‌کرد.
+ */
+function openGroupFromRail(id) {
+  if (state.indexView !== 'topical') {
+    state.indexView = 'topical';
+    try {
+      localStorage.setItem(VIEW_KEY, state.indexView);
+    } catch {
+      // حالت خصوصی؛ انتخاب فقط در همین نشست می‌ماند
+    }
+  }
+  if (state.query.trim() !== '') {
+    state.query = '';
+    dom.search.value = '';
+  }
+  groupState[id] = true;
+  saveGroupState();
+  refresh();
+  document.getElementById(id)?.scrollIntoView();
 }
 
 function isTypingTarget(target) {
@@ -185,6 +294,15 @@ async function init() {
   state.entries = entries;
   state.entriesById = new Map(entries.map((entry) => [entry.id, entry]));
   state.errors = errors;
+
+  // شمار کل هر موضوع/دسته، مستقل از جستجو — رِیل ناوبری پایدار است،
+  // نه بازتاب لحظه‌ای فیلتر جاری؛ برخلاف داده‌ی خودِ entries، این‌ها
+  // در طول نشست عوض نمی‌شوند، پس یک‌بار همین‌جا کافی است.
+  for (const entry of entries) {
+    state.topicTotals.set(entry.topic, (state.topicTotals.get(entry.topic) ?? 0) + 1);
+    const key = `${entry.topic}/${entry.category}`;
+    state.categoryTotals.set(key, (state.categoryTotals.get(key) ?? 0) + 1);
+  }
 
   if (errors.length > 0) {
     dom.errors.replaceChildren(view.renderErrorBanner(errors));

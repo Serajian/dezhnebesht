@@ -1,5 +1,6 @@
 import { localized } from './data.js';
 import { t, dirFor, current, LANGS } from './i18n.js';
+import { groupId, resolveGroupOpen } from './groups.js';
 
 /**
  * سازنده‌ی کوتاه المان. attrs کلید ویژه‌ی `html` دارد که innerHTML
@@ -45,128 +46,210 @@ function sortByTitle(entries, lang) {
   );
 }
 
-function categoryGroup(category, inCategory, lang) {
+/* ---------- نمای فهرست: ریل موضوع‌ها، گروه‌های تاشو، ردیف‌ها ---------- */
+
+// شورونِ دست‌ساز به‌جای مثلث پیش‌فرض <summary>؛ چون همیشه یکی است و از
+// کدِ خودِ render.js می‌آید (نه از داده)، با innerHTML درج می‌شود — دقیقاً
+// همان الگویی که دیاگرام/svg مدخل‌ها (content.svg) از آن استفاده می‌کنند؛
+// document.createElement('svg') فضای‌نام درست نمی‌سازد، پس از طریق el()
+// قابل ساخت نیست.
+const GROUP_DISCLOSURE_SVG =
+  '<svg class="group-disclosure" viewBox="0 0 14 14" aria-hidden="true">' +
+  '<path d="M9 3.2 4.4 7l4.6 3.8" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+  'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function entryRow(entry, lang, badge) {
+  const content = localized(entry, lang);
   return el(
-    'section',
-    { class: 'group' },
+    'li',
+    {},
     el(
-      'h2',
-      { class: 'group-title' },
-      el('span', {}, category[lang] ?? category.fa),
-      el('span', { class: 'count' }, String(inCategory.length)),
+      'a',
+      { class: 'row', href: `#/t/${encodeURIComponent(entry.id)}`, ...contentDirAttrs(content) },
+      el(
+        'span',
+        { class: 'row-main' },
+        el('span', { class: 'row-title' }, content.title),
+        el('span', { class: 'row-desc' }, content.short),
+      ),
+      badge
+        ? el('span', { class: 'row-badge' }, badge)
+        : el('span', { class: 'row-chevron', 'aria-hidden': 'true' }, '‹'),
     ),
-    el('div', { class: 'cards' }, sortByTitle(inCategory, lang).map((e) => entryCard(e, lang))),
   );
 }
 
 /**
- * موضوع ← دسته ← مدخل. تطبیق دسته روی «موضوع و شناسه» با هم انجام
- * می‌شود، نه فقط شناسه: دو موضوع می‌توانند هر دو دسته‌ای به نام
- * basics داشته باشند و مقایسه‌ی تک‌فیلدی مدخل‌هایشان را قاطی می‌کند.
+ * یک دسته‌ی تاشوشدنی. شناسه از موضوع+دسته ساخته می‌شود (groupId)، نه
+ * فقط دسته، چون دو موضوع می‌توانند دسته‌ای هم‌نام داشته باشند. باز یا
+ * بسته‌بودنش با resolveGroupOpen تعیین می‌شود — منطق محض، بدون DOM،
+ * تست‌شده در test/groups.test.mjs؛ اینجا فقط نتیجه‌اش را به attribute
+ * open تبدیل می‌کنیم.
  */
-function renderTopical(entries, categories, topics, lang, { showTopics }) {
-  const wrap = el('div', { class: 'groups' });
+function categoryGroup(topicId, category, inCategory, lang, { filtered, storedGroupState }) {
+  const id = groupId(topicId, category.id);
+  const open = resolveGroupOpen(id, { filtered, storedState: storedGroupState });
+  const summary = el(
+    'summary',
+    { class: 'group-head' },
+    el('h2', {}, category[lang] ?? category.fa),
+    el('span', { class: 'count' }, String(inCategory.length)),
+  );
+  summary.insertAdjacentHTML('beforeend', GROUP_DISCLOSURE_SVG);
+  return el(
+    'details',
+    { class: 'group', id, open },
+    summary,
+    el('ul', { class: 'rows' }, sortByTitle(inCategory, lang).map((entry) => entryRow(entry, lang))),
+  );
+}
 
+/**
+ * موضوع ← دسته ← مدخل، بدون سرتیتر موضوع: آن مسئولیت حالا رِیل است
+ * (railTopics پایین‌تر). تطبیق دسته روی «موضوع و شناسه» با هم انجام
+ * می‌شود، نه فقط شناسه — دو موضوع می‌توانند هر دو دسته‌ای به نام basics
+ * داشته باشند. entries از قبل فیلترشده (جستجو/هشتگ/موضوع) به اینجا
+ * می‌رسد، پس یک دسته‌ی خالی از این فهرست اصلاً رندر نمی‌شود — نه
+ * «مخفی»، از ابتدا وجود ندارد.
+ */
+function renderTopical(entries, categories, topics, lang, groupOptions) {
+  const wrap = el('div', { class: 'index-list' });
   for (const topic of topics) {
     const inTopic = entries.filter((entry) => entry.topic === topic.id);
     if (inTopic.length === 0) continue;
-
     const topicCategories = categories.filter((category) => category.topic === topic.id);
-    const groups = [];
     for (const category of topicCategories) {
       const inCategory = inTopic.filter((entry) => entry.category === category.id);
-      if (inCategory.length > 0) groups.push(categoryGroup(category, inCategory, lang));
-    }
-    if (groups.length === 0) continue;
-
-    if (showTopics) {
-      wrap.append(
-        el(
-          'section',
-          { class: 'topic' },
-          el(
-            'h2',
-            { class: 'topic-title' },
-            el('span', {}, topic[lang] ?? topic.fa),
-            el('span', { class: 'count' }, String(inTopic.length)),
-          ),
-          el('div', { class: 'topic-groups' }, groups),
-        ),
-      );
-    } else {
-      wrap.append(...groups);
+      if (inCategory.length === 0) continue;
+      wrap.append(categoryGroup(topic.id, category, inCategory, lang, groupOptions));
     }
   }
   return wrap;
 }
 
-function renderTopicFilter(topics, current, counts, lang) {
-  // لینک‌اند نه دکمه — مسیریابی hash خودش کار را می‌کند و
-  // این‌طور render.js هیچ رویدادی نمی‌بندد.
-  return el(
-    'nav',
-    { class: 'topicbar' },
-    el('a', { class: current ? 'chip' : 'chip active', href: '#/' }, t('topic.all')),
-    topics.map((topic) =>
-      el(
-        'a',
-        { class: current === topic.id ? 'chip active' : 'chip', href: `#/topic/${encodeURIComponent(topic.id)}` },
-        el('span', {}, topic[lang] ?? topic.fa),
-        el('span', { class: 'count' }, String(counts.get(topic.id) ?? 0)),
-      ),
-    ),
-  );
-}
-
-function renderAlphabetical(entries, lang) {
-  return el(
-    'div',
-    { class: 'cards' },
-    sortByTitle(entries, lang).map((entry) => entryCard(entry, lang)),
-  );
-}
-
-export function renderIndex(entries, categories, { lang, view, tag, topics = [], topic = '', topicCounts = new Map() }) {
-  const wrap = el('div', { class: 'index' });
-
-  // ردیف موضوع فقط وقتی معنی دارد که بیش از یک موضوع وجود داشته باشد.
-  if (topics.length > 1) wrap.append(renderTopicFilter(topics, topic, topicCounts, lang));
-
-  if (tag) {
-    wrap.append(
-      el(
-        'p',
-        { class: 'tagbanner' },
-        `${t('tag.filtered')} `,
-        el('span', { class: 'tag mono', dir: 'ltr' }, `#${tag}`),
-        ' ',
-        el('a', { href: '#/' }, t('tag.clear')),
-      ),
+/**
+ * نمای الفبایی: فهرست تخت، بدون گروه — پس هیچ‌چیز تاشدنی نیست و هیچ
+ * دکمه‌ی تاشوی بی‌عملی هم نمایش داده نمی‌شود. چون سرتیترِ گروه‌بندی‌کننده
+ * در کار نیست، هر ردیف برچسبِ دسته‌ی خودش را نشان می‌دهد.
+ */
+function renderAlphabetical(entries, categories, lang) {
+  const rows = sortByTitle(entries, lang).map((entry) => {
+    const category = categories.find(
+      (item) => item.id === entry.category && item.topic === entry.topic,
     );
-  }
+    const badge = category ? (category[lang] ?? category.fa) : '';
+    return entryRow(entry, lang, badge);
+  });
+  return el('div', { class: 'index-list' }, el('ul', { class: 'rows rows--flat' }, rows));
+}
+
+/**
+ * رِیل: ناوبری موضوع‌ها، نه دسته‌ها — سلسله‌مراتب واقعی موضوع←دسته←مدخل
+ * است و ناوبری اصلی نباید یک لایه را رد کند. فقط موضوعِ فعال دسته‌هایش
+ * را تودرتو زیر خودش نشان می‌دهد؛ بقیه فقط لینک+شمارنده‌ی کل‌اند، تا
+ * وقتی موضوع‌ها به ده‌ها برسند رِیل قابل‌اسکن بماند. شمارنده‌ها همیشه از
+ * کلِ داده می‌آیند، نه از نتیجه‌ی جستجوی جاری — رِیل ناوبری پایدار است،
+ * نه بازتاب لحظه‌ای جستجو (و اگر با جستجو کوچک می‌شد، لینک زیردسته‌ای که
+ * موقتاً صفر نتیجه دارد باید ناپدید می‌شد و همین باعث بن‌بست کلیک می‌شد).
+ */
+function railTopics(topics, categories, activeTopicId, topicTotals, categoryTotals, lang) {
+  const items = topics.map((topic) => {
+    const isActive = topic.id === activeTopicId;
+    const linkChildren = [
+      el('span', { class: 'rail-topic-dot', 'aria-hidden': 'true' }),
+      el('span', {}, topic[lang] ?? topic.fa),
+    ];
+    if (!isActive) {
+      linkChildren.push(
+        el('span', { class: 'rail-item-count' }, String(topicTotals.get(topic.id) ?? 0)),
+      );
+    }
+    const link = el(
+      'a',
+      {
+        class: 'rail-topic-link',
+        href: `#/topic/${encodeURIComponent(topic.id)}`,
+        ...(isActive ? { 'aria-current': 'page' } : {}),
+      },
+      linkChildren,
+    );
+
+    const li = el('li', { class: isActive ? 'rail-topic is-active' : 'rail-topic' }, link);
+
+    if (isActive) {
+      const subnavItems = categories
+        .filter((category) => category.topic === topic.id)
+        .map((category) => {
+          const count = categoryTotals.get(`${topic.id}/${category.id}`) ?? 0;
+          if (count === 0) return null;
+          return el(
+            'li',
+            {},
+            el(
+              'a',
+              { href: `#${groupId(topic.id, category.id)}` },
+              el('span', {}, category[lang] ?? category.fa),
+              el('span', { class: 'rail-item-count' }, String(count)),
+            ),
+          );
+        })
+        .filter(Boolean);
+      if (subnavItems.length > 0) {
+        li.append(el('ul', { class: 'rail-subnav' }, subnavItems));
+      }
+    }
+
+    return li;
+  });
+
+  return el(
+    'aside',
+    { class: 'rail', 'aria-label': t('rail.label') },
+    el('p', { class: 'rail-label' }, t('rail.heading')),
+    el('ul', { class: 'rail-topics' }, items),
+  );
+}
+
+function tagBanner(tag) {
+  return el(
+    'p',
+    { class: 'tag-banner' },
+    `${t('tag.filtered')} `,
+    el('span', { class: 'tag', dir: 'ltr' }, `#${tag}`),
+    ' ',
+    el('a', { href: '#/' }, t('tag.clear')),
+  );
+}
+
+export function renderIndex(entries, categories, {
+  lang,
+  view,
+  tag,
+  topics = [],
+  activeTopicId = '',
+  filtered = false,
+  topicTotals = new Map(),
+  categoryTotals = new Map(),
+  storedGroupState = {},
+}) {
+  const column = el('div', { class: 'column' });
+
+  if (tag) column.append(tagBanner(tag));
 
   if (entries.length === 0) {
-    const empty = el(
-      'div',
-      { class: 'empty' },
-      el('p', {}, t('search.empty')),
-      el('button', { type: 'button', class: 'clear' }, t('search.clear')),
-    );
-    wrap.append(empty);
-    return wrap;
+    column.append(el('p', { class: 'empty-state' }, t('search.empty')));
+  } else if (view === 'alphabetical') {
+    column.append(renderAlphabetical(entries, categories, lang));
+  } else {
+    column.append(renderTopical(entries, categories, topics, lang, { filtered, storedGroupState }));
   }
 
-  wrap.append(
-    view === 'alphabetical'
-      ? renderAlphabetical(entries, lang)
-      // وقتی یک موضوع انتخاب شده، سرتیتر موضوع تکراری است.
-      // با یک موضوع، سرتیتر موضوع سلسله‌مراتب بی‌فایده اضافه می‌کند.
-      // ساختار وقتی ظاهر می‌شود که واقعاً لازم شود.
-      : renderTopical(entries, categories, topics, lang, {
-          showTopics: !topic && topics.length > 1,
-        }),
-  );
-  return wrap;
+  const layout = el('div', { class: 'layout' });
+  if (topics.length > 0) {
+    layout.append(railTopics(topics, categories, activeTopicId, topicTotals, categoryTotals, lang));
+  }
+  layout.append(column);
+  return layout;
 }
 
 function renderTags(tags) {
