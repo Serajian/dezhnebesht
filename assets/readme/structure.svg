@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1200" height="372" viewBox="0 0 1200 372"
+     role="img" aria-labelledby="stTitle stDesc">
+  <title id="stTitle">موضوع ← دسته ← مدخل</title>
+  <desc id="stDesc">موضوع از نام پوشه می‌آید و دسته از نام فایل. هیچ‌کدام فیلدی روی خود مدخل نیستند. شناسهٔ مدخل در کل سایت یکتاست، پس related می‌تواند بین موضوع‌ها لینک بدهد.</desc>
+
+  <rect width="1200" height="372" rx="26" fill="#0f1115"/>
+
+  <text x="1136" y="62" text-anchor="start" direction="rtl"
+        font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Tahoma, sans-serif"
+        font-size="30" font-weight="700" fill="#f6f5f1">موضوع ← دسته ← مدخل</text>
+  <text x="1136" y="96" text-anchor="start" direction="rtl"
+        font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Tahoma, sans-serif"
+        font-size="21" fill="#8b929c">هیچ‌کدام فیلدی روی خود مدخل نیستند — از مسیر فایل می‌آیند.</text>
+
+  <!-- درخت واقعی پوشه‌ها؛ تورفتگی همان چیزی است که سلسله‌مراتب را می‌رساند -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="21">
+    <rect x="60" y="132" width="470" height="204" rx="14" fill="#161a20" stroke="#262a31"/>
+    <text x="88"  y="172" fill="#6f757f">data/</text>
+    <text x="116" y="206" fill="#c9ccd2">topics.json</text>
+    <text x="116" y="240" fill="#409cff">crypto/</text>
+    <text x="144" y="274" fill="#c9ccd2">categories.json</text>
+    <text x="144" y="308" fill="#409cff">entries/</text>
+    <text x="272" y="308" fill="#c9ccd2">basics.json</text>
+  </g>
+
+  <!-- هر سطح چه چیزی را تعیین می‌کند -->
+  <g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Tahoma, sans-serif" font-size="21">
+    <g>
+      <rect x="596" y="132" width="540" height="58" rx="12" fill="#161a20" stroke="#262a31"/>
+      <circle cx="1108" cy="161" r="5" fill="#409cff"/>
+      <text x="1088" y="168" text-anchor="start" direction="rtl" fill="#c9ccd2">نام پوشه</text>
+      <text x="972" y="168" text-anchor="start" direction="rtl" fill="#6f757f">موضوع را تعیین می‌کند</text>
+    </g>
+    <g>
+      <rect x="596" y="202" width="540" height="58" rx="12" fill="#161a20" stroke="#262a31"/>
+      <circle cx="1108" cy="231" r="5" fill="#409cff"/>
+      <text x="1088" y="238" text-anchor="start" direction="rtl" fill="#c9ccd2">نام فایل</text>
+      <text x="986" y="238" text-anchor="start" direction="rtl" fill="#6f757f">دسته را تعیین می‌کند</text>
+    </g>
+    <g>
+      <rect x="596" y="272" width="540" height="64" rx="12" fill="#161a20" stroke="#262a31"/>
+      <circle cx="1108" cy="292" r="5" fill="#409cff"/>
+      <text x="1088" y="299" text-anchor="start" direction="rtl" fill="#c9ccd2">شناسه</text>
+      <text x="1018" y="299" text-anchor="start" direction="rtl" fill="#6f757f">در کل سایت یکتاست، نه فقط داخل یک موضوع</text>
+      <text x="1088" y="325" text-anchor="start" direction="rtl" fill="#6f757f">پس related می‌تواند بین موضوع‌ها لینک بدهد</text>
+    </g>
+  </g>
+</svg>

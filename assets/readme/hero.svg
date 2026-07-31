@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1200" height="420" viewBox="0 0 1200 420"
+     role="img" aria-labelledby="heroTitle heroDesc">
+  <title id="heroTitle">دژنبشت — دانشنامهٔ شخصی</title>
+  <desc id="heroDesc">یک آبجکت JSON به یک فایل دسته اضافه می‌شود و فهرست، جستجو، دسته‌ها، هشتگ‌ها و لینک‌های مرتبط خودشان از همان داده ساخته می‌شوند.</desc>
+
+  <defs>
+    <!-- طاق: همان موتیف favicon، از ریشهٔ نام «دژِ نوشته‌ها» -->
+    <path id="arch" d="M4 28V16A12 12 0 0 1 28 16V28H20V16A4 4 0 0 0 12 16V28Z"/>
+    <clipPath id="cardClip"><rect x="60" y="60" width="440" height="132" rx="14"/></clipPath>
+  </defs>
+
+  <rect width="1200" height="420" rx="26" fill="#0f1115"/>
+
+  <!-- طاقِ کم‌رنگ پشت بلوک عنوان؛ نشان پروژه است نه تزئین -->
+  <g opacity="0.05" transform="translate(196 232) scale(5.6)" fill="#ffffff">
+    <use href="#arch"/>
+  </g>
+
+  <!-- بلوک عنوان سمت راست: برای متن فارسی، «آغاز» سمت راست است.
+       direction=rtl لازم است وگرنه نقطه و ویرگول اول خط می‌افتند. -->
+  <g id="title-block" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Tahoma, sans-serif">
+    <g fill="#409cff" transform="translate(1106 74) scale(1.05)">
+      <use href="#arch"/>
+    </g>
+    <text x="1092" y="98" text-anchor="end"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="19" letter-spacing="0.14em" fill="#7d838e">PERSONAL ENCYCLOPEDIA</text>
+
+    <text x="1136" y="190" text-anchor="start" direction="rtl"
+          font-size="86" font-weight="700" fill="#f6f5f1">دژنبشت</text>
+    <text x="1136" y="230" text-anchor="end"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="22" fill="#6f757f">dezhnebesht</text>
+
+    <text x="1136" y="292" text-anchor="start" direction="rtl"
+          font-size="25" fill="#c9ccd2">یک آبجکت JSON اضافه کن. فهرست، جستجو،</text>
+    <text x="1136" y="328" text-anchor="start" direction="rtl"
+          font-size="25" fill="#c9ccd2">دسته‌ها، هشتگ‌ها و لینک‌های مرتبط</text>
+    <text x="1136" y="364" text-anchor="start" direction="rtl"
+          font-size="25" fill="#c9ccd2">خودشان ساخته می‌شوند.</text>
+  </g>
+
+  <!-- سازوکار: داده می‌رود تو، دانشنامه می‌آید بیرون -->
+  <g id="mechanism">
+    <text x="76" y="50" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="18" fill="#6f757f">data/crypto/entries/basics.json</text>
+    <rect x="60" y="60" width="440" height="132" rx="14" fill="#161a20" stroke="#262a31"/>
+    <g clip-path="url(#cardClip)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19">
+      <text x="80" y="90"  fill="#6f757f">{</text>
+      <text x="100" y="116" fill="#8b93a1">"id"</text>
+      <text x="150" y="116" fill="#6f757f">:</text>
+      <text x="166" y="116" fill="#409cff">"hash"</text>
+      <text x="100" y="142" fill="#8b93a1">"tags"</text>
+      <text x="162" y="142" fill="#6f757f">:</text>
+      <text x="178" y="142" fill="#409cff">["crypto"]</text>
+      <text x="100" y="168" fill="#8b93a1">"fa"</text>
+      <text x="138" y="168" fill="#6f757f">:</text>
+      <text x="154" y="168" fill="#409cff">{ "title": … }</text>
+    </g>
+
+    <path d="M280 206 V238" stroke="#3a404a" stroke-width="2"/>
+    <path d="M273 231 L280 240 L287 231" fill="none" stroke="#3a404a" stroke-width="2"/>
+
+    <!-- مینیاتور صفحهٔ ساخته‌شده: ریل موضوع‌ها + ستون دسته‌ها -->
+    <rect x="60" y="252" width="440" height="126" rx="14" fill="#161a20" stroke="#262a31"/>
+    <rect x="392" y="268" width="92" height="94" rx="8" fill="#1d222a"/>
+    <rect x="404" y="282" width="58" height="7" rx="3.5" fill="#409cff"/>
+    <rect x="404" y="300" width="44" height="6" rx="3" fill="#39404a"/>
+    <rect x="404" y="315" width="50" height="6" rx="3" fill="#39404a"/>
+
+    <rect x="286" y="268" width="86" height="8" rx="4" fill="#565d68"/>
+    <rect x="76" y="290" width="296" height="26" rx="7" fill="#1d222a"/>
+    <rect x="290" y="299" width="68" height="8" rx="4" fill="#767d88"/>
+    <rect x="76" y="324" width="296" height="26" rx="7" fill="#1d222a"/>
+    <rect x="266" y="333" width="92" height="8" rx="4" fill="#767d88"/>
+  </g>
+
+  <!-- متادیتا: یک رشتهٔ واحد با direction=rtl. جدا کردنشان به چند
+       عنصر با x ثابت، ترتیب را در متن راست‌به‌چپ به هم می‌ریخت.
+       فونت sans است نه mono: مونواسپیس به هر حرف عرض ثابت می‌دهد و
+       اتصال‌های خط فارسی را کش می‌آورد. -->
+  <text x="1136" y="394" text-anchor="start" direction="rtl"
+        font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Tahoma, sans-serif"
+        font-size="19" fill="#6f757f">بدون فریم‌ورک · بدون build · بدون وابستگی · ۸۴ تست</text>
+</svg>
