@@ -39,6 +39,8 @@ Before publishing, open `#/self-test` — it renders every entry in both languag
 - Give an established technical term its English name in parentheses on **first use** in the Persian body — `اثر بهمنی <span dir="ltr">(Avalanche Effect)</span>` — because that is the form the reader will meet again in documentation and search for later. Once per entry, not on every mention.
 - Never set `letter-spacing` on Persian, and never set Persian in a monospace face. The script is cursive; both break the joins and the word stops reading as a word. Monospace is for Latin and hex only.
 - An inline SVG inside an entry needs `direction="ltr"` on its root when it contains Latin or hex strings. The entry body is RTL and the SVG inherits it, which reorders and clips those strings.
+- Write formulas in plain `<code>` with normal spaces. `render.js` turns the spaces of any inline `<code>` up to 32 characters into non-breaking ones, so `p − y` never splits across a line, while a 64-character hex key still wraps instead of overflowing. CSS cannot tell those two apart — it does not see length — so this is a render-time rule, not something an entry has to encode with invisible characters.
+- Entry prose may use `<table>` for genuinely tabular content. Only horizontal rules are drawn; the table scrolls inside itself so the page body never scrolls horizontally.
 
 ## Architecture
 

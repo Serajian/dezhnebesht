@@ -941,6 +941,42 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
   overflow-wrap: normal;
 }
 
+/* ── جدول در متن مدخل ───────────────────────────────────────────
+   بعضی چیزها واقعاً جدول‌اند — فهرست پارامترها، مقایسه‌ی چند حالت —
+   و شکستنشان به پاراگراف فقط خواندن را سخت می‌کند. خطوط افقی کافی
+   است: خط عمودی بین ستون‌ها در متن فارسی شلوغی می‌سازد بی‌آنکه چیزی
+   روشن کند. عرض روی موبایل کم می‌آید، پس جدول داخل خودش اسکرول
+   می‌شود و بدنه‌ی صفحه هرگز افقی اسکرول نمی‌خورد. */
+
+.prose table,
+.example table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.prose th,
+.example th,
+.prose td,
+.example td {
+  text-align: start;
+  vertical-align: baseline;
+  padding: 0.5rem 0.875rem;
+  border-block-end: 1px solid var(--separator);
+}
+.prose th,
+.example th {
+  font-weight: 600;
+  font-size: var(--fs-eyebrow);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.prose tr:last-child td,
+.example tr:last-child td { border-block-end: 0; }
+.prose td:first-child,
+.example td:first-child { white-space: nowrap; }
+
 /* ── چند دیاگرام در یک مدخل ─────────────────────────────────────── */
 
 .diagram + .diagram { margin-block-start: 1.25rem; }

@@ -3,6 +3,40 @@ import { t, dirFor, current, LANGS } from './i18n.js';
 import { groupId, resolveGroupOpen } from './groups.js';
 
 /**
+ * یک فرمول کوتاه داخل <code> نباید وسطش بشکند: «p − y» که سرِ سطر دو
+ * تکه شود دیگر یک عبارت خوانده نمی‌شود. ولی کلید ۶۴ کاراکتری هگز باید
+ * بشکند، وگرنه از ستون بیرون می‌زند — و همان `overflow-wrap: anywhere`
+ * که آن را می‌شکند، روی فاصله‌های عبارت کوتاه هم می‌شکند. CSS این دو را
+ * از هم جدا نمی‌کند، چون طول را نمی‌بیند. پس فاصله‌ی عبارت‌های کوتاه به
+ * فاصله‌ی نشکن تبدیل می‌شود و بلندها دست‌نخورده می‌مانند.
+ *
+ * اینجا انجام می‌شود، نه در خود داده، چون قاعده‌ی تایپوگرافیِ سایت است
+ * نه ویژگیِ یک مدخل — و نوشتنِ U+00A0 نامرئی در JSON چیزی است که
+ * نویسنده‌ی مدخل بعدی فراموشش می‌کند.
+ */
+const FORMULA_MAX = 32;
+
+export function isShortFormula(text) {
+  return text.length <= FORMULA_MAX && text.includes(' ');
+}
+
+export function hardenSpaces(text) {
+  return text.replaceAll(' ', '\u00a0');
+}
+
+// روی گره‌های متنی راه می‌رود، نه textContent: «2<sup>256</sup> − 2<sup>32</sup>»
+// یک فرمول کوتاه است و بازنویسیِ textContent نشانه‌گذاری داخلش را پاک می‌کند.
+function keepFormulasWhole(root) {
+  for (const code of root.querySelectorAll('code')) {
+    if (code.closest('pre') || !isShortFormula(code.textContent)) continue;
+    const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT);
+    for (let text = walker.nextNode(); text; text = walker.nextNode()) {
+      text.data = hardenSpaces(text.data);
+    }
+  }
+}
+
+/**
  * سازنده‌ی کوتاه المان. attrs کلید ویژه‌ی `html` دارد که innerHTML
  * را ست می‌کند — فقط برای محتوای مدخل‌ها که در خود ریپو نوشته شده.
  */
@@ -11,7 +45,10 @@ export function el(tag, attrs = {}, ...children) {
   for (const [key, value] of Object.entries(attrs)) {
     if (value === null || value === undefined || value === false) continue;
     if (key === 'class') node.className = value;
-    else if (key === 'html') node.innerHTML = value;
+    else if (key === 'html') {
+      node.innerHTML = value;
+      keepFormulasWhole(node);
+    }
     else node.setAttribute(key, value);
   }
   for (const child of children.flat()) {

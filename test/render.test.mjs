@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { onThisPageSections } from '../assets/js/render.js';
+import { onThisPageSections, isShortFormula, hardenSpaces } from '../assets/js/render.js';
 
 // render.js نیاز به document دارد، اما onThisPageSections منطق محضی
 // است که هیچ DOM نمی‌سازد — همان چیزی که رِیل «در این صفحه»ی نمای
@@ -47,4 +47,29 @@ test('برچسب رِیل با تعداد دیاگرام جمع می‌شود', 
 test('بدون دیاگرام، لینکی در رِیل ساخته نمی‌شود', () => {
   const none = onThisPageSections({ hasExample: true, diagramCount: 0, hasRelated: true });
   assert.equal(none.some((s) => s.id === 'entry-diagram'), false);
+});
+
+// ── فرمول کوتاه در برابر رشته‌ی بلند ────────────────────────────────
+// همان مرزی که keepFormulasWhole روی آن تصمیم می‌گیرد. راه‌رفتن روی DOM
+// اینجا تست نمی‌شود (document لازم دارد)، ولی تصمیم — اینکه کدام <code>
+// نباید بشکند — منطق محض است و همین‌جا بسته می‌شود.
+
+test('عبارت کوتاهِ فاصله‌دار فرمول است و باید یکپارچه بماند', () => {
+  for (const formula of ['p − y', 'n·G = O', 's·G = R + e·P', 'Gy² ≡ Gx³ + 7 (mod p)']) {
+    assert.equal(isShortFormula(formula), true, formula);
+  }
+});
+
+test('کلید ۶۴ کاراکتری هگز فرمول نیست و باید بشکند، وگرنه از ستون بیرون می‌زند', () => {
+  const key = 'x = f028892bad7ed57d2fb57bf33081d5cfcf6f9ed3d3d7f159c2e2fff579dc341a';
+  assert.equal(isShortFormula(key), false);
+});
+
+test('کدِ بدون فاصله دست نمی‌خورد — جای شکستنی ندارد که حفظ شود', () => {
+  assert.equal(isShortFormula('secp256k1'), false);
+});
+
+test('hardenSpaces فقط فاصله‌ها را نشکن می‌کند و بقیه را دست نمی‌زند', () => {
+  assert.equal(hardenSpaces('a = 0'), 'a\u00a0=\u00a00');
+  assert.equal(hardenSpaces('secp256k1'), 'secp256k1');
 });
