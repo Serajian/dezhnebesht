@@ -333,6 +333,18 @@ export function renderEntry(entry, { lang, categories, entriesById, topics = [] 
   // هم وارونه می‌شد.
   const contentWrap = el('div', { ...contentDirAttrs(content) });
   contentWrap.append(el('h1', { class: 'display-title', id: 'entry-title' }, content.title));
+
+  // عنوان زبان دیگر زیر عنوان اصلی: اصطلاح تخصصی همان چیزی است که بعداً
+  // دنبالش می‌گردی یا در مستندات می‌بینی. فقط وقتی می‌آید که آن بلاک
+  // واقعاً وجود داشته باشد و عنوانش با عنوان جاری فرق کند — وگرنه تکرار است.
+  const otherLang = lang === 'fa' ? 'en' : 'fa';
+  const otherTitle = entry[otherLang]?.title;
+  if (otherTitle && otherTitle !== content.title) {
+    contentWrap.append(
+      el('p', { class: 'display-alt', dir: dirFor(otherLang), lang: otherLang }, otherTitle),
+    );
+  }
+
   contentWrap.append(el('p', { class: 'lede' }, content.short));
 
   if (entry.tags?.length) contentWrap.append(entryHashtags(entry.tags));
