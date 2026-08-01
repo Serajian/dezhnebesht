@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { validate, localized, loadAll } from '../assets/js/data.js';
+import { validate, localized, loadAll, figures } from '../assets/js/data.js';
 
 const CATEGORIES = [
   { id: 'basics', file: 'basics.json', fa: 'مفاهیم پایه', en: 'Fundamentals' },
@@ -102,8 +102,38 @@ test('svg داخل بلاک زبان جایگزین svg سطح بالا می‌�
     svg: '<svg id="shared"></svg>',
     en: { title: 'Hash', short: 'x', body: '<p>x</p>', svg: '<svg id="en"></svg>' },
   });
-  assert.equal(localized(e, 'fa').svg, '<svg id="shared"></svg>');
-  assert.equal(localized(e, 'en').svg, '<svg id="en"></svg>');
+  assert.deepEqual(localized(e, 'fa').figures, [{ svg: '<svg id="shared"></svg>', caption: '' }]);
+  assert.deepEqual(localized(e, 'en').figures, [{ svg: '<svg id="en"></svg>', caption: '' }]);
+});
+
+test('svg رشته‌ای به آرایه‌ی یک‌عضوی تبدیل می‌شود', () => {
+  const e = entry({ svg: '<svg id="one"></svg>' });
+  assert.deepEqual(figures(e, 'fa'), [{ svg: '<svg id="one"></svg>', caption: '' }]);
+});
+
+test('نبود svg آرایه‌ی خالی می‌دهد، نه رشته‌ی خالی', () => {
+  assert.deepEqual(figures(entry(), 'fa'), []);
+});
+
+test('آرایه‌ی رشته‌ها چند دیاگرام بدون عنوان می‌سازد', () => {
+  const e = entry({ svg: ['<svg id="a"></svg>', '<svg id="b"></svg>'] });
+  assert.deepEqual(figures(e, 'fa').map((f) => f.svg), ['<svg id="a"></svg>', '<svg id="b"></svg>']);
+  assert.deepEqual(figures(e, 'fa').map((f) => f.caption), ['', '']);
+});
+
+test('عنوان دیاگرام از زبان جاری می‌آید و به فارسی برمی‌گردد', () => {
+  const e = entry({
+    svg: [{ svg: '<svg id="a"></svg>', fa: 'نمودار یک', en: 'Figure one' },
+          { svg: '<svg id="b"></svg>', fa: 'نمودار دو' }],
+  });
+  assert.deepEqual(figures(e, 'fa').map((f) => f.caption), ['نمودار یک', 'نمودار دو']);
+  // دومی en ندارد، پس به fa برمی‌گردد — همان قاعده‌ی کل سایت
+  assert.deepEqual(figures(e, 'en').map((f) => f.caption), ['Figure one', 'نمودار دو']);
+});
+
+test('عضو بدون svg کنار گذاشته می‌شود تا figure خالی رندر نشود', () => {
+  const e = entry({ svg: ['<svg id="a"></svg>', '', { fa: 'بی‌تصویر' }] });
+  assert.equal(figures(e, 'fa').length, 1);
 });
 
 test('example اختیاری است و نبودش رشته‌ی خالی می‌دهد', () => {

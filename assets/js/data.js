@@ -108,6 +108,26 @@ export function validate(categories, entries, topics = []) {
 /**
  * محتوای یک مدخل در زبان خواسته‌شده، با برگشت به فارسی اگر آن زبان نباشد.
  */
+/**
+ * `svg` سه شکل را می‌پذیرد و همه به یک آرایه‌ی یکدست تبدیل می‌شوند، تا
+ * render فقط یک حالت را بشناسد:
+ *   "…"                              یک دیاگرام بدون عنوان
+ *   ["…", "…"]                       چند دیاگرام
+ *   [{ svg: "…", fa: "…", en: "…" }] چند دیاگرام با عنوان دوزبانه
+ * با بیش از یک دیاگرام، عنوان لازم می‌شود وگرنه خواننده نمی‌داند کدام
+ * کدام است — ولی اجباری نیست، چون مدخل‌های تک‌دیاگرامی نباید مجبور شوند.
+ */
+export function figures(entry, lang) {
+  const raw = entry[lang]?.svg ?? entry.svg ?? '';
+  const list = Array.isArray(raw) ? raw : [raw];
+  return list
+    .map((item) => (typeof item === 'string' ? { svg: item, caption: '' } : {
+      svg: item?.svg ?? '',
+      caption: item?.[lang] ?? item?.fa ?? '',
+    }))
+    .filter((item) => item.svg);
+}
+
 export function localized(entry, lang) {
   const block = entry[lang] ?? entry.fa;
   return {
@@ -115,7 +135,7 @@ export function localized(entry, lang) {
     short: block.short,
     body: block.body,
     example: block.example ?? '',
-    svg: block.svg ?? entry.svg ?? '',
+    figures: figures(entry, lang),
     untranslated: !entry[lang],
   };
 }

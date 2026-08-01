@@ -274,10 +274,14 @@ function relatedCard(entry, lang) {
  * منطق محض (بدون DOM) و export شده تا در تست بدون نیاز به document
  * قابل آزمایش باشد.
  */
-export function onThisPageSections({ hasExample, hasDiagram, hasRelated }) {
+export function onThisPageSections({ hasExample, diagramCount = 0, hasRelated }) {
   const sections = [{ id: 'entry-title', key: 'rail.definition' }];
   if (hasExample) sections.push({ id: 'entry-example', key: 'entry.example' });
-  if (hasDiagram) sections.push({ id: 'entry-diagram', key: 'entry.diagram' });
+  // برچسب رِیل باید با سرتیتر همان بخش یکی باشد، وگرنه خواننده فکر
+  // می‌کند به جای دیگری می‌رود.
+  if (diagramCount > 0) {
+    sections.push({ id: 'entry-diagram', key: diagramCount > 1 ? 'entry.diagrams' : 'entry.diagram' });
+  }
   if (hasRelated) sections.push({ id: 'entry-related', key: 'entry.related' });
   return sections;
 }
@@ -324,7 +328,7 @@ export function renderEntry(entry, { lang, categories, entriesById, topics = [] 
   const related = (entry.related ?? []).map((id) => entriesById.get(id)).filter(Boolean);
   const sections = onThisPageSections({
     hasExample: Boolean(content.example),
-    hasDiagram: Boolean(content.svg),
+    diagramCount: content.figures.length,
     hasRelated: related.length > 0,
   });
 
@@ -362,15 +366,20 @@ export function renderEntry(entry, { lang, categories, entriesById, topics = [] 
     );
   }
 
-  if (content.svg) {
-    contentWrap.append(
-      el(
-        'section',
-        { class: 'diagram-section', id: 'entry-diagram' },
-        el('h2', { class: 'section-label' }, t('entry.diagram')),
-        el('figure', { class: 'diagram', html: content.svg }),
-      ),
-    );
+  if (content.figures.length > 0) {
+    // عنوان بخش وقتی چند دیاگرام هست جمع می‌شود، و هر دیاگرام عنوان
+    // اختیاری خودش را زیر خودش می‌گیرد.
+    const section = el('section', { class: 'diagram-section', id: 'entry-diagram' },
+      el('h2', { class: 'section-label' },
+        content.figures.length > 1 ? t('entry.diagrams') : t('entry.diagram')));
+    for (const figure of content.figures) {
+      section.append(
+        el('figure', { class: 'diagram' },
+          el('div', { class: 'diagram-canvas', html: figure.svg }),
+          figure.caption ? el('figcaption', {}, figure.caption) : null),
+      );
+    }
+    contentWrap.append(section);
   }
 
   if (related.length > 0) {
