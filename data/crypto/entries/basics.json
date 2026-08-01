@@ -1,8 +1,15 @@
 [
   {
     "id": "blockchain",
-    "tags": ["ledger", "bitcoin", "structure"],
-    "related": ["hash", "proof-of-work"],
+    "tags": [
+      "ledger",
+      "bitcoin",
+      "structure"
+    ],
+    "related": [
+      "hash",
+      "proof-of-work"
+    ],
     "svg": "<svg viewBox=\"0 0 320 80\" role=\"img\" aria-label=\"زنجیره بلوک\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"8\" y=\"20\" width=\"80\" height=\"40\" rx=\"6\"/><rect x=\"120\" y=\"20\" width=\"80\" height=\"40\" rx=\"6\"/><rect x=\"232\" y=\"20\" width=\"80\" height=\"40\" rx=\"6\"/><path d=\"M88 40h32M200 40h32\"/></g><g fill=\"currentColor\" font-size=\"11\" text-anchor=\"middle\" font-family=\"monospace\"><text x=\"48\" y=\"44\">#1</text><text x=\"160\" y=\"44\">#2</text><text x=\"272\" y=\"44\">#3</text></g></svg>",
     "fa": {
       "title": "بلاکچین",
@@ -19,25 +26,40 @@
   },
   {
     "id": "hash",
-    "tags": ["crypto", "structure"],
-    "related": ["blockchain", "nonce"],
+    "tags": [
+      "crypto",
+      "structure",
+      "integrity"
+    ],
+    "related": [
+      "blockchain",
+      "nonce",
+      "proof-of-work",
+      "wallet"
+    ],
     "fa": {
       "title": "هش",
       "short": "اثر انگشتی با طول ثابت که از هر حجم داده‌ای ساخته می‌شود",
-      "body": "<p>تابع هش رمزنگارانه هر ورودی با هر طولی را می‌گیرد و یک خروجی با طول ثابت می‌دهد — مثلاً <span dir=\"ltr\">SHA-256</span> همیشه ۲۵۶ بیت برمی‌گرداند.</p><p>سه خاصیت آن را در بلاکچین بنیادی می‌کند: یک ورودی مشخص همیشه همان خروجی را می‌دهد، از روی خروجی نمی‌شود ورودی را بازسازی کرد، و کوچک‌ترین تغییر در ورودی خروجی را به‌کلی عوض می‌کند.</p>",
-      "example": "<p>هش <span dir=\"ltr\">SHA-256</span> واژه‌ی <span dir=\"ltr\">hello</span> با هش <span dir=\"ltr\">Hello</span> هیچ شباهتی ندارد، با اینکه فقط یک حرف فرق کرده‌اند.</p>"
+      "body": "<p>تابع هش رمزنگارانه هر ورودی با هر طولی را می‌گیرد — یک کلمه، یک عکس، یا کل متن شاهنامه — و یک خروجی با <strong>طول ثابت</strong> می‌دهد: رشته‌ای که تصادفی به نظر می‌رسد ولی نیست.</p><p>ساده‌ترین تشبیه: هش <strong>اثر انگشتِ دیجیتالِ داده</strong> است. از روی اثر انگشت نمی‌توانی آدم را بازسازی کنی، ولی می‌توانی مطمئن شوی که همان آدم است.</p><p>پنج ویژگی آن را در بلاکچین بنیادی می‌کند:</p><p><strong>۱. قطعی است.</strong> اگر هزار بار <span dir=\"ltr\">salam</span> را هش کنی، هزار بار دقیقاً همان خروجی را می‌گیری. هیچ تصادفی در کار نیست.</p><p><strong>۲. طولش ثابت است.</strong> یک کلمهٔ پنج‌حرفی یا یک کتاب هزارصفحه‌ای — خروجی <span dir=\"ltr\">SHA-256</span> همیشه ۲۵۶ بیت است، یعنی ۶۴ رقم در مبنای شانزده. به همین دلیل هش «فشرده‌سازی» نیست: اطلاعات از بین می‌رود و برگشت‌پذیر نیست.</p><p><strong>۳. اثر بهمنی دارد</strong> — مهم‌ترین ویژگی. کوچک‌ترین تغییر در ورودی، خروجی را کاملاً زیرورو می‌کند. در مثال زیر فقط یک حرف بزرگ شده، ولی هیچ شباهتی میان دو خروجی نیست. یعنی از «نزدیک بودن» دو هش نمی‌شود نتیجه گرفت ورودی‌هایشان نزدیک بوده‌اند.</p><p><strong>۴. یک‌طرفه است.</strong> از روی هش نمی‌توانی به ورودی برگردی. تنها راه حدس زدن است: ورودی حدس بزن، هش کن، مقایسه کن. برای <span dir=\"ltr\">SHA-256</span> تعداد خروجی‌های ممکن <span dir=\"ltr\">2<sup>256</sup></span> است، یعنی حدود <span dir=\"ltr\">۱٫۲ × ۱۰<sup>۷۷</sup></span> — عددی که در برابرش تعداد اتم‌های کرهٔ زمین (حدود <span dir=\"ltr\">۱۰<sup>۵۰</sup></span>) ناچیز است، و در همان مرتبهٔ تعداد اتم‌های جهانِ قابل مشاهده قرار می‌گیرد. جستجوی کامل عملاً ناممکن است.</p><p><strong>۵. در برابر تصادم مقاوم است.</strong> پیدا کردن دو ورودی متفاوت با هش یکسان باید عملاً ناممکن باشد. از نظر ریاضی چون ورودی‌ها بی‌شمارند و خروجی‌ها محدود، تصادم قطعاً <em>وجود دارد</em> — ولی پیدا کردنش شدنی نیست.</p><p>سه کاربردش در بلاکچین: بلوک‌ها با هش به هم زنجیر می‌شوند، استخراج یعنی گشتن دنبال ورودی‌ای که هشش شکل خاصی داشته باشد، و آدرس کیف پول از هش گرفتن کلید عمومی ساخته می‌شود.</p>",
+      "example": "<p>یک فایل پنج گیگابایتی دانلود کرده‌ای. از کجا بفهمی خراب نشده یا کسی دستکاری‌اش نکرده؟ سایت اصلی هش فایل را منتشر می‌کند؛ تو فایل خودت را هش می‌گیری و مقایسه می‌کنی. اگر حتی یک بیت فرق کرده باشد، هش کاملاً متفاوت می‌شود.</p><p>کاربرد دوم: سایت‌ها رمز عبورت را ذخیره نمی‌کنند — یا نباید بکنند. هشِ رمز را ذخیره می‌کنند. موقع ورود، رمز واردشده را هش می‌کنند و با هشِ ذخیره‌شده می‌سنجند. اگر دیتابیس هک شود، مهاجم فقط هش‌ها را دارد، نه رمزها.</p>"
     },
     "en": {
       "title": "Hash",
       "short": "A fixed-length fingerprint computed from data of any size",
-      "body": "<p>A cryptographic hash function takes an input of any length and returns an output of fixed length — SHA-256 always returns 256 bits.</p><p>Three properties make it fundamental to blockchains: the same input always produces the same output, the input cannot be recovered from the output, and the smallest change to the input completely changes the output.</p>",
-      "example": "<p>The SHA-256 hash of <code>hello</code> looks nothing like the hash of <code>Hello</code>, even though only one letter differs.</p>"
-    }
+      "body": "<p>A cryptographic hash function takes an input of any length — a word, an image, or the full text of a thousand-page book — and returns a <strong>fixed-length</strong> output: a string that looks random but is not.</p><p>The simplest analogy: a hash is a <strong>digital fingerprint of data</strong>. You cannot rebuild the person from the fingerprint, but you can be certain it is the same person.</p><p>Five properties make it fundamental to blockchains:</p><p><strong>1. It is deterministic.</strong> Hash <code>salam</code> a thousand times and you get exactly the same output a thousand times. Nothing about it is random.</p><p><strong>2. The length is fixed.</strong> A five-letter word or a thousand-page book — SHA-256 always returns 256 bits, which is 64 hexadecimal digits. This is why hashing is not compression: information is destroyed and cannot be recovered.</p><p><strong>3. It avalanches</strong> — the property that matters most. The smallest change to the input completely upends the output. In the example below only one letter changed case, yet the two outputs share nothing. So you cannot infer from two hashes being \"close\" that their inputs were close.</p><p><strong>4. It runs one way.</strong> You cannot work backwards from a hash to its input. The only route is guessing: guess an input, hash it, compare. SHA-256 has 2<sup>256</sup> possible outputs, roughly 1.2 × 10<sup>77</sup> — a number that dwarfs the count of atoms in the Earth (about 10<sup>50</sup>) and sits in the same range as the atoms in the observable universe. An exhaustive search is not practical.</p><p><strong>5. It resists collisions.</strong> Finding two different inputs with the same hash must be infeasible. Mathematically collisions certainly <em>exist</em>, since inputs are unbounded and outputs are not — but finding one is out of reach.</p><p>Three uses in a blockchain: blocks are chained together by hashes, mining means searching for an input whose hash has a particular shape, and a wallet address is derived by hashing the public key.</p>",
+      "example": "<p>You have downloaded a five-gigabyte file. How do you know it arrived intact and untampered? The source publishes the file’s hash; you hash your copy and compare. A single flipped bit produces a completely different hash.</p><p>A second use: sites do not store your password — or should not. They store its hash. At sign-in they hash what you typed and compare it against the stored hash. If the database leaks, the attacker holds hashes, not passwords.</p>"
+    },
+    "svg": "<svg viewBox=\"0 0 380 160\" direction=\"ltr\" role=\"img\" aria-label=\"اثر بهمنی: با تغییر یک حرف، کل خروجی هش عوض می‌شود\" xmlns=\"http://www.w3.org/2000/svg\"><g font-family=\"ui-monospace, Menlo, monospace\" font-size=\"13\" fill=\"currentColor\"><text x=\"6\" y=\"34\">salam</text><text x=\"6\" y=\"118\">Salam</text></g><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M52 29h16m-6-5 6 5-6 5\"/><path d=\"M52 113h16m-6-5 6 5-6 5\"/><rect x=\"72\" y=\"16\" width=\"62\" height=\"26\" rx=\"6\"/><rect x=\"72\" y=\"100\" width=\"62\" height=\"26\" rx=\"6\"/><path d=\"M138 29h16m-6-5 6 5-6 5\"/><path d=\"M138 113h16m-6-5 6 5-6 5\"/></g><g font-family=\"ui-monospace, Menlo, monospace\" font-size=\"11\" fill=\"currentColor\" text-anchor=\"middle\"><text x=\"103\" y=\"33\">SHA-256</text><text x=\"103\" y=\"117\">SHA-256</text></g><g font-family=\"ui-monospace, Menlo, monospace\" font-size=\"11\" fill=\"currentColor\"><text x=\"160\" y=\"25\">0582bd2c13fff71d</text><text x=\"160\" y=\"39\">7f40ef5586e3f4da</text><text x=\"160\" y=\"109\">e6aff8d7aabcab5a</text><text x=\"160\" y=\"123\">e824356814a091ba</text></g><g font-family=\"ui-monospace, Menlo, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\"0.55\"><text x=\"160\" y=\"52\">…</text><text x=\"160\" y=\"136\">…</text></g><g stroke=\"currentColor\" stroke-width=\"1.5\" opacity=\"0.5\" fill=\"none\"><path d=\"M20 42v56\"/></g><text x=\"26\" y=\"74\" font-size=\"11\" fill=\"currentColor\" opacity=\"0.7\" direction=\"rtl\">۱ حرف</text><text x=\"160\" y=\"156\" font-size=\"11\" fill=\"currentColor\" opacity=\"0.7\" direction=\"rtl\">صفر شباهت میان دو خروجی</text></svg>"
   },
   {
     "id": "wallet",
-    "tags": ["keys", "custody"],
-    "related": ["hash"],
+    "tags": [
+      "keys",
+      "custody"
+    ],
+    "related": [
+      "hash"
+    ],
     "fa": {
       "title": "کیف پول",
       "short": "ابزاری که کلیدهای خصوصی را نگه می‌دارد، نه خود دارایی را",
