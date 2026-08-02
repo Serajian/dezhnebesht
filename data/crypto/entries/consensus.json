@@ -36,7 +36,8 @@
       "proof-of-work",
       "hash",
       "private-key",
-      "public-key-cryptography"
+      "public-key-cryptography",
+      "bit"
     ],
     "fa": {
       "title": "نانس",

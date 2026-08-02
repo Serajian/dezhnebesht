@@ -1,5 +1,70 @@
 [
   {
+    "id": "bit",
+    "tags": [
+      "structure",
+      "encoding",
+      "security"
+    ],
+    "related": [
+      "byte",
+      "hash",
+      "private-key",
+      "nonce"
+    ],
+    "svg": [
+      {
+        "svg": "<svg viewBox=\"0 0 380 222\" direction=\"ltr\" role=\"img\" aria-label=\"با هر بیت که اضافه شود شمار حالت‌های ممکن دو برابر می‌شود: یک بیت دو حالت، دو بیت چهار، سه بیت هشت، و ۲۵۶ بیت عددی با ۷۸ رقم\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"332\" y=\"20\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.5\">طول</text><text x=\"48\" y=\"20\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.5\">حالت‌های ممکن</text><path d=\"M14 28 H366\" stroke=\"currentColor\" stroke-width=\"0.8\" opacity=\"0.3\"/><text x=\"332\" y=\"48\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.8\">۱ بیت</text><text x=\"190\" y=\"48\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.85\" font-weight=\"400\">0  1</text><text x=\"48\" y=\"48\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">۲ حالت</text><text x=\"332\" y=\"72\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.8\">۲ بیت</text><text x=\"190\" y=\"72\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.85\" font-weight=\"400\">00  01  10  11</text><text x=\"48\" y=\"72\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">۴ حالت</text><text x=\"332\" y=\"96\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.8\">۳ بیت</text><text x=\"190\" y=\"96\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.85\" font-weight=\"400\">000 001 010 011 100 101 110 111</text><text x=\"48\" y=\"96\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">۸ حالت</text><text x=\"190\" y=\"138\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"10\" fill=\"currentColor\" opacity=\"0.5\" font-weight=\"400\">⋮</text><text x=\"332\" y=\"162\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.8\">۸ بیت</text><text x=\"190\" y=\"162\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.6\">یک بایت</text><text x=\"48\" y=\"162\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">۲۵۶ حالت</text><text x=\"332\" y=\"184\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.8\">۲۵۶ بیت</text><text x=\"48\" y=\"184\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">عددی با ۷۸ رقم</text><path d=\"M14 196 H366\" stroke=\"currentColor\" stroke-width=\"0.8\" opacity=\"0.3\"/><text x=\"190\" y=\"214\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.6\">هر بیت که اضافه شود، شمار حالت‌ها دو برابر می‌شود</text></svg>",
+        "fa": "هر بیت شمار حالت‌ها را دو برابر می‌کند — نه یکی زیاد",
+        "en": "Each bit doubles the number of states — it does not add one"
+      }
+    ],
+    "fa": {
+      "title": "بیت",
+      "short": "کوچک‌ترین واحد اطلاعات — یک بله/نه، و پایهٔ هر عددی که در این دانشنامه می‌بینی",
+      "body": "<p><strong>بیت</strong> <span dir=\"ltr\">(Bit)</span> کوتاه‌شدهٔ <span dir=\"ltr\">binary digit</span> است: کوچک‌ترین واحد اطلاعات، با تنها دو حالت ممکن — صفر یا یک، بله یا نه، روشن یا خاموش. بیت «عدد کوچکی» نیست؛ <em>یک تمایز</em> است، و کوچک‌ترین تمایزی که اصلاً می‌شود ثبت کرد.</p><p><strong>و تمام ماجرا در یک قاعده است: <code>n</code> بیت یعنی <code>2<sup>n</sup></code> حالت.</strong> یک بیت دو حالت دارد، دو بیت چهار، سه بیت هشت. هر بیتی که اضافه می‌شود شمار حالت‌ها را <em>دو برابر</em> می‌کند، نه یکی زیاد. این تفاوت در نگاه اول کوچک به نظر می‌رسد و اصلاً کوچک نیست — به همین دلیل است که در این حوزه همه‌چیز را با شمار بیت اندازه می‌گیرند، نه با حجم داده.</p><p><strong>یک بیت اضافه، دو برابر کارِ مهاجم.</strong> فرض کن ماشینی داری که ثانیه‌ای هزار میلیارد کلید امتحان می‌کند — سرعتی که هیچ ماشین واقعی ندارد:</p><table><thead><tr><th>طول کلید</th><th>زمان لازم برای گشتن همهٔ فضا</th></tr></thead><tbody><tr><td>۶۴ بیت</td><td>۲۱۴ روز</td></tr><tr><td>۱۲۸ بیت</td><td>حدود <code>10<sup>19</sup></code> سال — نزدیک یک میلیارد برابر عمر جهان</td></tr><tr><td>۲۵۶ بیت</td><td>حدود <code>10<sup>57</sup></code> سال</td></tr></tbody></table><p>تفاوت ۶۴ و ۲۵۶ «چهار برابر» نیست. کلید ۶۴ بیتی زیر یک سال می‌افتد و کلید ۲۵۶ بیتی در عمر این جهان و میلیاردها جهان دیگر نمی‌افتد. همین یک جدول توضیح می‌دهد چرا کسی سرِ چند بیت بیشتر یا کمتر چانه می‌زند.</p><p><strong>و یک تلهٔ رایج.</strong> «کلید ۲۵۶ بیتی» یعنی داده‌ای به بزرگی ۳۲ بایت — چیزی که در یک سطر متن جا می‌شود و روی کاغذ می‌نویسی‌اش. ولی شمار حالت‌هایش عددی با ۷۸ رقم است. <strong>اندازهٔ داده و شمار حالت‌ها دو چیز کاملاً متفاوت‌اند</strong>، و قاطی کردنشان باعث می‌شود آدم فکر کند «۲۵۶ بیت که چیزی نیست».</p><p>در بقیهٔ مدخل‌ها همه‌جا سروکارت با همین شمارش است: هش ۲۵۶ بیتی، فیلد نانس ۳۲ بیتی که در میکروثانیه ته می‌کشد، هر کلمهٔ عبارت بازیابی که ۱۱ بیت حمل می‌کند، و حالت داخلی ۱۶۰۰ بیتی کچاک. هر بار که عددی با «بیت» دیدی، منظور همین است: <code>2</code> به توان آن عدد.</p>",
+      "example": "<p>شمردن حالت‌ها برای طول‌های کوچک، جایی که هنوز می‌شود همه را نوشت:</p><pre><code>1 bit   0  1                                   → 2\n2 bits  00  01  10  11                         → 4\n3 bits  000 001 010 011 100 101 110 111        → 8\n4 bits  0000 … 1111                            → 16</code></pre><p>و همان قاعده وقتی ادامه پیدا کند — این‌بار طول‌هایی که در همین دانشنامه دیده‌ای:</p><table><thead><tr><th>بیت</th><th>حالت‌های ممکن</th><th>کجا</th></tr></thead><tbody><tr><td>۸</td><td>۲۵۶</td><td>یک بایت</td></tr><tr><td>۱۱</td><td>۲٬۰۴۸</td><td>طول فهرست <span dir=\"ltr\">BIP-39</span></td></tr><tr><td>۳۲</td><td>۴٬۲۹۴٬۹۶۷٬۲۹۶</td><td>فیلد نانس بیت‌کوین</td></tr><tr><td>۱۲۸</td><td><code>3.4 × 10<sup>38</sup></code></td><td>آنتروپی عبارت ۱۲ کلمه‌ای</td></tr><tr><td>۲۵۶</td><td><code>1.16 × 10<sup>77</sup></code></td><td>کلید خصوصی — عددی با ۷۸ رقم</td></tr></tbody></table>"
+    },
+    "en": {
+      "title": "Bit",
+      "short": "The smallest unit of information — one yes/no, and the basis of every number here",
+      "body": "<p><strong>Bit</strong> is short for <em>binary digit</em>: the smallest unit of information, with only two possible states — zero or one, yes or no, on or off. A bit is not \"a small number\"; it is <em>a single distinction</em>, and the smallest one that can be recorded at all.</p><p><strong>And the whole story is one rule: <code>n</code> bits means <code>2<sup>n</sup></code> states.</strong> One bit has two states, two bits four, three bits eight. Every added bit <em>doubles</em> the number of states rather than adding one. The difference looks small at first and is not small at all — which is why everything in this field is measured in bits rather than in volume of data.</p><p><strong>One more bit, twice the attacker's work.</strong> Suppose you had a machine trying a thousand billion keys a second — a speed no real machine reaches:</p><table><thead><tr><th>Key length</th><th>Time to search the whole space</th></tr></thead><tbody><tr><td>64 bits</td><td>214 days</td></tr><tr><td>128 bits</td><td>about <code>10<sup>19</sup></code> years — near a billion times the age of the universe</td></tr><tr><td>256 bits</td><td>about <code>10<sup>57</sup></code> years</td></tr></tbody></table><p>The gap between 64 and 256 is not \"four times\". A 64-bit key falls in under a year; a 256-bit key does not fall within the lifetime of this universe or billions of others. That one table explains why anyone argues over a few bits either way.</p><p><strong>And a common trap.</strong> A \"256-bit key\" is data the size of 32 bytes — it fits on one line of text and you can write it on paper. But its number of possible states is a 78-digit number. <strong>The size of the data and the count of states are two entirely different things</strong>, and confusing them is what makes people think \"256 bits is nothing\".</p><p>Throughout the other entries you are dealing with this same counting: the 256-bit hash, the 32-bit nonce field that runs dry in microseconds, each recovery word carrying 11 bits, and Keccak's 1600-bit internal state. Every time you see a number followed by \"bits\", it means exactly this: <code>2</code> raised to that number.</p>",
+      "example": "<p>Counting the states for small lengths, while they can still all be written out:</p><pre><code>1 bit   0  1                                   → 2\n2 bits  00  01  10  11                         → 4\n3 bits  000 001 010 011 100 101 110 111        → 8\n4 bits  0000 … 1111                            → 16</code></pre><p>And the same rule carried further:</p><pre><code>  8 bits  → 256\n 11 bits  → 2048          (size of the BIP-39 list)\n 32 bits  → 4294967296    (Bitcoin nonce field)\n128 bits  → 3.4 × 10^38\n256 bits  → 1.16 × 10^77  (a 78-digit number)</code></pre>"
+    }
+  },
+  {
+    "id": "byte",
+    "tags": [
+      "structure",
+      "encoding"
+    ],
+    "related": [
+      "bit",
+      "hash",
+      "keccak-256",
+      "public-key-cryptography"
+    ],
+    "svg": [
+      {
+        "svg": "<svg viewBox=\"0 0 380 206\" direction=\"ltr\" role=\"img\" aria-label=\"هش ۲۵۶ بیتی در مبنای شانزده ۶۴ رقم است؛ هر دو رقم یک بایت و هر بایت هشت بیت\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"190\" y=\"20\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.6\">یک هش ۲۵۶ بیتی، در مبنای شانزده</text><text x=\"56\" y=\"50\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"1\" font-weight=\"400\">05</text><text x=\"90\" y=\"50\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"0.7\" font-weight=\"400\">82</text><text x=\"124\" y=\"50\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"0.7\" font-weight=\"400\">bd</text><text x=\"158\" y=\"50\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"0.7\" font-weight=\"400\">2c</text><text x=\"192\" y=\"50\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"0.7\" font-weight=\"400\">13</text><text x=\"226\" y=\"50\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"0.7\" font-weight=\"400\">ff</text><text x=\"260\" y=\"50\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"0.7\" font-weight=\"400\">f7</text><text x=\"294\" y=\"50\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"0.7\" font-weight=\"400\">1d</text><text x=\"328\" y=\"50\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"0.5\" font-weight=\"400\">…</text><rect x=\"42\" y=\"36\" width=\"28\" height=\"20\" rx=\"4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M56 58 V78\" stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M52 73 l4 6 4-6 z\" fill=\"currentColor\"/><rect x=\"14\" y=\"80\" width=\"84\" height=\"26\" rx=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"56\" y=\"97\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"10\" fill=\"currentColor\" opacity=\"1.0\" font-weight=\"400\">0000 0101</text><text x=\"200\" y=\"97\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.7\">۸ بیت = یک بایت</text><path d=\"M14 128 H366\" stroke=\"currentColor\" stroke-width=\"0.8\" opacity=\"0.3\"/><text x=\"300\" y=\"154\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"10.5\" fill=\"currentColor\" opacity=\"1.0\">۲۵۶ بیت</text><text x=\"190\" y=\"154\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"10.5\" fill=\"currentColor\" opacity=\"1.0\">۳۲ بایت</text><text x=\"78\" y=\"154\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"10.5\" fill=\"currentColor\" opacity=\"1.0\">۶۴ رقم هگز</text><text x=\"245\" y=\"154\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\"0.5\" font-weight=\"400\">=</text><text x=\"133\" y=\"154\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\"0.5\" font-weight=\"400\">=</text><text x=\"190\" y=\"180\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.6\">هر دو رقم هگز یک بایت است — و همین است که طول هش را توضیح می‌دهد</text></svg>",
+        "fa": "دو رقم هگز یک بایت — و همین است که طول هرچه دیده‌ای را توضیح می‌دهد",
+        "en": "Two hex digits make a byte — and that explains the length of everything you have seen"
+      }
+    ],
+    "fa": {
+      "title": "بایت",
+      "short": "هشت بیت — واحدی که داده با آن شمرده می‌شود، و پل میان بیت و مبنای شانزده",
+      "body": "<p>یک <strong>بایت</strong> <span dir=\"ltr\">(Byte)</span> هشت بیت است، پس <code>2<sup>8</sup> = 256</code> مقدار ممکن دارد — از ۰ تا ۲۵۵. بیت واحد نظری است و بایت واحد عملی: حافظه، فایل، و کلید همه با بایت شمرده می‌شوند.</p><p><strong>چرا هشت؟</strong> دلیل ریاضی ندارد، تاریخی است. ماشین‌های قدیمی بایت‌های شش و هفت و نه بیتی هم داشتند، و <span dir=\"ltr\">IBM System/360</span> در دههٔ ۱۹۶۰ هشت را تثبیت کرد. دقیقاً چون همیشه هشت نبوده، در استانداردهای شبکه به‌جای «بایت» واژهٔ <strong>اکتت</strong> <span dir=\"ltr\">(Octet)</span> را به کار می‌برند تا هیچ ابهامی نماند.</p><p><strong>و مهم‌ترین کارش اینجا: پل میان بیت و مبنای شانزده.</strong> هر رقم هگز دقیقاً چهار بیت است — چون <code>2<sup>4</sup> = 16</code> — پس <strong>دو رقم هگز یک بایت است</strong>. همین یک قاعده توضیح می‌دهد چرا هش ۲۵۶ بیتی را همیشه با ۶۴ کاراکتر می‌بینی: ۲۵۶ بیت یعنی ۳۲ بایت، و ۳۲ بایت یعنی ۶۴ رقم.</p><table><thead><tr><th>چیزی که دیده‌ای</th><th>بیت</th><th>بایت</th><th>رقم هگز</th></tr></thead><tbody><tr><td>شناسهٔ تابع قرارداد</td><td>۳۲</td><td>۴</td><td>۸</td></tr><tr><td>فیلد نانس بیت‌کوین</td><td>۳۲</td><td>۴</td><td>۸</td></tr><tr><td>آدرس اتریوم</td><td>۱۶۰</td><td>۲۰</td><td>۴۰</td></tr><tr><td>هش <span dir=\"ltr\">SHA-256</span></td><td>۲۵۶</td><td>۳۲</td><td>۶۴</td></tr><tr><td>کلید عمومی فشرده</td><td>۲۶۴</td><td>۳۳</td><td>۶۶</td></tr><tr><td>بذر <span dir=\"ltr\">BIP-39</span></td><td>۵۱۲</td><td>۶۴</td><td>۱۲۸</td></tr><tr><td>حالت داخلی کچاک</td><td>۱۶۰۰</td><td>۲۰۰</td><td>۴۰۰</td></tr></tbody></table><p><strong>متن هم بایت است</strong> — و اینجا یک نکتهٔ مهم برای فارسی‌زبان‌ها هست. کلمهٔ <span dir=\"ltr\">salam</span> پنج حرف و پنج بایت است، ولی «سلام» چهار حرف و <strong>هشت</strong> بایت، چون در <span dir=\"ltr\">UTF-8</span> هر حرف فارسی دو بایت می‌گیرد. تابع هش «حرف» نمی‌بیند؛ بایت می‌بیند. پس اگر می‌خواهی بدانی چه چیزی دارد هش می‌شود، باید به بایت‌ها فکر کنی نه به آنچه روی صفحه می‌بینی.</p><p><strong>و یک ابهام که باید حواست به آن باشد:</strong> عدد ۲۵۶ در این حوزه دو معنای کاملاً متفاوت دارد. «هش ۲۵۶ بیتی» یعنی <em>طول</em>، و «یک بایت ۲۵۶ مقدار دارد» یعنی <em>شمار حالت‌ها</em>. اینکه هر دو ۲۵۶ درآمده‌اند تصادفی است — یکی <code>8 × 32</code> است و آن یکی <code>2<sup>8</sup></code>.</p>",
+      "example": "<p>یک بایت، در سه لباس. مقدار <code>05</code> در مبنای شانزده:</p><pre><code>hex      05\nbinary   0000 0101\ndecimal  5</code></pre><p>و همان هش <span dir=\"ltr\">salam</span> که در مدخل هش دیدیم، این بار با فاصله میان بایت‌ها — سی‌ودو جفت، که همان ۶۴ کاراکتر است:</p><pre><code>05 82 bd 2c 13 ff f7 1d 7f 40 ef 55 86 e3 f4 da\n05 a3 a6 1f e5 ba 9f 0b 4d 06 e9 99 05 ab 83 ea</code></pre><p>و همان تفاوت لاتین و فارسی. <span dir=\"ltr\">salam</span> پنج حرف و پنج بایت است:</p><pre><code>73 61 6c 61 6d</code></pre><p>ولی «سلام» چهار حرف و هشت بایت — هر حرف دو بایت:</p><pre><code>d8 b3  d9 84  d8 a7  d9 85</code></pre>"
+    },
+    "en": {
+      "title": "Byte",
+      "short": "Eight bits — the unit data is counted in, and the bridge from bits to hex",
+      "body": "<p>A <strong>byte</strong> is eight bits, so it has <code>2<sup>8</sup> = 256</code> possible values — 0 through 255. The bit is the theoretical unit and the byte the practical one: memory, files and keys are all counted in bytes.</p><p><strong>Why eight?</strong> There is no mathematical reason; it is historical. Older machines had six-, seven- and nine-bit bytes, and IBM's System/360 settled on eight in the 1960s. Precisely because it was not always eight, network standards say <strong>octet</strong> rather than byte, so that no ambiguity remains.</p><p><strong>And its most important job here: the bridge between bits and hexadecimal.</strong> Each hex digit is exactly four bits — because <code>2<sup>4</sup> = 16</code> — so <strong>two hex digits are one byte</strong>. That single rule explains why you always see a 256-bit hash as 64 characters: 256 bits is 32 bytes, and 32 bytes is 64 digits.</p><table><thead><tr><th>Something you have seen</th><th>Bits</th><th>Bytes</th><th>Hex digits</th></tr></thead><tbody><tr><td>contract function selector</td><td>32</td><td>4</td><td>8</td></tr><tr><td>Bitcoin nonce field</td><td>32</td><td>4</td><td>8</td></tr><tr><td>Ethereum address</td><td>160</td><td>20</td><td>40</td></tr><tr><td>SHA-256 hash</td><td>256</td><td>32</td><td>64</td></tr><tr><td>compressed public key</td><td>264</td><td>33</td><td>66</td></tr><tr><td>BIP-39 seed</td><td>512</td><td>64</td><td>128</td></tr><tr><td>Keccak internal state</td><td>1600</td><td>200</td><td>400</td></tr></tbody></table><p><strong>Text is bytes too</strong> — and here is a point that matters for anyone writing in Persian. The word <em>salam</em> is five letters and five bytes, but «سلام» is four letters and <strong>eight</strong> bytes, because in UTF-8 each Persian letter takes two. A hash function does not see \"letters\"; it sees bytes. So if you want to know what is actually being hashed, you have to think in bytes rather than in what appears on screen.</p><p><strong>And one ambiguity to watch:</strong> the number 256 carries two entirely different meanings in this field. A \"256-bit hash\" is a <em>length</em>, while \"a byte has 256 values\" is a <em>count of states</em>. That both came out as 256 is a coincidence — one is <code>8 × 32</code> and the other is <code>2<sup>8</sup></code>.</p>",
+      "example": "<p>One byte, in three outfits. The value <code>05</code> in hexadecimal:</p><pre><code>hex      05\nbinary   0000 0101\ndecimal  5</code></pre><p>And that same <em>salam</em> hash from the hash entry, this time spaced by byte — thirty-two pairs, which is the same thing as 64 characters:</p><pre><code>05 82 bd 2c 13 ff f7 1d 7f 40 ef 55 86 e3 f4 da\n05 a3 a6 1f e5 ba 9f 0b 4d 06 e9 99 05 ab 83 ea</code></pre><p>And the Latin-versus-Persian difference. <em>salam</em> in Latin script is five letters and five bytes:</p><pre><code>73 61 6c 61 6d</code></pre><p>The same word written in Persian is four letters and eight bytes — two per letter:</p><pre><code>d8 b3  d9 84  d8 a7  d9 85</code></pre>"
+    }
+  },
+  {
     "id": "blockchain",
     "tags": [
       "ledger",
@@ -39,7 +104,9 @@
       "wallet",
       "preimage-resistance",
       "public-key-cryptography",
-      "keccak-256"
+      "keccak-256",
+      "bit",
+      "byte"
     ],
     "fa": {
       "title": "هش",
@@ -67,7 +134,8 @@
       "hash",
       "collision",
       "preimage-resistance",
-      "public-key-cryptography"
+      "public-key-cryptography",
+      "byte"
     ],
     "svg": [
       {
@@ -189,7 +257,8 @@
       "generator-point",
       "private-key",
       "nonce",
-      "keccak-256"
+      "keccak-256",
+      "byte"
     ],
     "svg": [
       {
@@ -272,7 +341,8 @@
       "generator-point",
       "wallet",
       "preimage-resistance",
-      "nonce"
+      "nonce",
+      "bit"
     ],
     "svg": [
       {
