@@ -38,7 +38,8 @@
       "hash",
       "private-key",
       "public-key-cryptography",
-      "bit"
+      "bit",
+      "ecdsa"
     ],
     "fa": {
       "title": "نانس",
