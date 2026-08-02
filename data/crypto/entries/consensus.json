@@ -40,7 +40,8 @@
       "public-key-cryptography",
       "bit",
       "ecdsa",
-      "ed25519"
+      "ed25519",
+      "hex"
     ],
     "fa": {
       "title": "نانس",
