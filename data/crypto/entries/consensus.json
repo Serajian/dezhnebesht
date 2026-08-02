@@ -9,7 +9,8 @@
     "related": [
       "hash",
       "nonce",
-      "blockchain"
+      "blockchain",
+      "sha-256"
     ],
     "fa": {
       "title": "اثبات کار",
