@@ -11,7 +11,8 @@
       "hash",
       "private-key",
       "nonce",
-      "sha-256"
+      "sha-256",
+      "secp256k1"
     ],
     "svg": [
       {
@@ -356,7 +357,8 @@
       "nonce",
       "keccak-256",
       "byte",
-      "ecdsa"
+      "ecdsa",
+      "secp256k1"
     ],
     "svg": [
       {
@@ -400,7 +402,8 @@
       "public-key-cryptography",
       "wallet",
       "private-key",
-      "ecdsa"
+      "ecdsa",
+      "secp256k1"
     ],
     "svg": [
       {
@@ -428,6 +431,46 @@
     }
   },
   {
+    "id": "secp256k1",
+    "tags": [
+      "crypto",
+      "keys",
+      "security",
+      "bitcoin"
+    ],
+    "related": [
+      "public-key-cryptography",
+      "generator-point",
+      "private-key",
+      "ecdsa",
+      "bit"
+    ],
+    "svg": [
+      {
+        "svg": "<svg viewBox=\"0 0 380 214\" direction=\"ltr\" role=\"img\" aria-label=\"در secp256k1 پارامتر b برابر ۷ است ولی در P-256 عددی ۶۴ رقمی که از بذری بی‌توضیح مشتق شده\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"190\" y=\"20\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"0.7\">همین یک پارامتر، کل بحث اعتماد است</text><path d=\"M14 30 H366\" stroke=\"currentColor\" stroke-width=\"0.7\" opacity=\"0.25\"/><text x=\"366\" y=\"52\" text-anchor=\"end\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"0.8\" font-weight=\"400\">secp256k1</text><text x=\"190\" y=\"78\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"20\" fill=\"currentColor\" opacity=\"1\" font-weight=\"600\">b = 7</text><text x=\"190\" y=\"100\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.55\">یک رقم — جای مانوری نیست</text><path d=\"M14 118 H366\" stroke=\"currentColor\" stroke-width=\"0.7\" opacity=\"0.25\"/><text x=\"366\" y=\"140\" text-anchor=\"end\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"0.8\" font-weight=\"400\">P-256</text><text x=\"190\" y=\"160\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.85\" font-weight=\"400\">b = 5ac635d8aa3a93e7b3ebbd55769886bc</text><text x=\"206\" y=\"174\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.85\" font-weight=\"400\">651d06b0cc53b0f63bce3c3e27d2604b</text><text x=\"190\" y=\"196\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.55\">۶۴ رقم، مشتق‌شده از بذری که کسی مبدأش را نگفته</text></svg>",
+        "fa": "یک رقم در برابر ۶۴ رقم — و بحث بر سر همین است",
+        "en": "One digit against sixty-four — and that is the whole argument"
+      },
+      {
+        "svg": "<svg viewBox=\"0 0 380 186\" direction=\"ltr\" role=\"img\" aria-label=\"اسکالر ۲۵۶ بیتی به دو نیمهٔ حدود ۱۲۸ بیتی شکسته می‌شود که هم‌زمان اجرا می‌شوند\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"190\" y=\"20\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.6\">ضرب اسکالر، پیش از ترفند</text><rect x=\"30\" y=\"30\" width=\"300\" height=\"26\" rx=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"180.0\" y=\"47\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"10\" fill=\"currentColor\" opacity=\"1.0\" font-weight=\"400\">k  —  256 bits</text><path d=\"M190 60 V78\" stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\"/><path d=\"M186 73 l4 6 4-6 z\" fill=\"currentColor\"/><text x=\"190\" y=\"96\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.6\">با درون‌ریختیِ منحنی، به دو نیمه</text><rect x=\"30\" y=\"106\" width=\"144\" height=\"26\" rx=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"102.0\" y=\"123\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"1.0\" font-weight=\"400\">k₁ — 128</text><rect x=\"186\" y=\"106\" width=\"144\" height=\"26\" rx=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"258.0\" y=\"123\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"1.0\" font-weight=\"400\">k₂ — 128</text><text x=\"190\" y=\"154\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.65\">هر دو هم‌زمان اجرا می‌شوند، پس شمار دو-برابرکردن‌ها نصف می‌شود</text><text x=\"190\" y=\"172\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.65\">و این فقط چون <tspan direction=\"ltr\">a = 0</tspan> است ممکن می‌شود</text></svg>",
+        "fa": "ترفندی که فقط روی منحنی‌های a = 0 ممکن است",
+        "en": "A trick available only on curves with a = 0"
+      }
+    ],
+    "fa": {
+      "title": "منحنی secp256k1",
+      "short": "منحنی بیت‌کوین — انتخاب‌هایی که هم سرعت می‌دهند و هم چیزی برای توضیح دادن باقی نمی‌گذارند",
+      "body": "<p>اسم <span dir=\"ltr\">secp256k1</span> تصادفی به نظر می‌رسد ولی هر تکه‌اش معنایی دارد: <span dir=\"ltr\">sec</span> از <span dir=\"ltr\">Standards for Efficient Cryptography</span>، <span dir=\"ltr\">p</span> یعنی روی میدان اعداد اول تعریف شده، <span dir=\"ltr\">256</span> اندازهٔ میدان، <span dir=\"ltr\">k</span> یعنی از نوع <strong>کوبلیتز</strong> <span dir=\"ltr\">(Koblitz)</span>، و <span dir=\"ltr\">1</span> یعنی اولین منحنی از این نوع در استاندارد. یعنی «منحنی کوبلیتز ۲۵۶ بیتی روی میدان اول، شمارهٔ یک».</p><p>معادله‌اش <code>y² = x³ + ax + b</code> است به پیمانهٔ <code>p</code>، و چون <code>a = 0</code> و <code>b = 7</code> است، ساده می‌شود به <code>y² = x³ + 7</code>. شش پارامترش را تکه‌تکه در مدخل‌های پیشین دیده‌ای؛ اینجا کنار هم‌اند.</p><p><strong>چرا <code>p</code> این شکل عجیب را دارد؟</strong> اولین انتخاب هوشمندانهٔ طراحی همین است. <code>p = 2²⁵⁶ − 2³² − 977</code> چون <em>باقیمانده گرفتن را بسیار سریع می‌کند</em>. منطقش مثل مبنای ده است: باقیمانده بر ۱۰۰۰ یعنی سه رقم آخر را بردار، ولی باقیمانده بر ۷۳۹ تقسیم واقعی می‌خواهد. اینجا هم چون <code>p</code> نزدیک <code>2²⁵⁶</code> است، رابطهٔ <code>2²⁵⁶ ≡ 2³² + 977</code> برقرار می‌شود، پس هر بار که عددی از ۲۵۶ بیت فراتر رفت به‌جای تقسیم می‌شود با چند شیفت و جمع برش گرداند. تقسیم گران‌ترین عمل در حساب عددی است، و این طراحی از آن فرار می‌کند.</p><p><strong>و چرا <code>a = 0</code>؟</strong> این همان <span dir=\"ltr\">k</span>ِ اسم است. دو سود دارد. اولی ساده است: در فرمول دو برابر کردن، <code>λ = (3x² + a) / 2y</code>، با <code>a = 0</code> یک جمع در هر عملیات کم می‌شود.</p><p>دومی خیلی عمیق‌تر است. منحنی‌هایی با <code>a = 0</code> یک ساختار ویژه دارند: عددی مثل <code>β</code> وجود دارد که <code>β³ ≡ 1</code> به پیمانهٔ <code>p</code>، و اگر <code>(x, y)</code> روی منحنی باشد <code>(β·x, y)</code> هم روی منحنی است — چون <code>(βx)³ = β³x³ = x³</code> و معادله فقط <code>x³</code> دارد. اینجاست که <code>a = 0</code> بودن حیاتی می‌شود: اگر <code>ax</code> در معادله بود، این تبدیل آن را به هم می‌ریخت.</p><p>سودش این است که عددی مثل <code>λ</code> هست که <code>λ·(x, y)</code> دقیقاً همان <code>(β·x, y)</code> می‌شود — یعنی یک ضرب اسکالر کامل، فقط با <em>یک</em> ضرب در میدان. و از همین می‌شود ضرب اسکالر را به دو نیمه شکست: به‌جای یک اسکالر ۲۵۶ بیتی، دو اسکالر حدود ۱۲۸ بیتی که هم‌زمان اجرا می‌شوند. شمار دو-برابرکردن‌ها نصف می‌شود، و در عمل حدود چهل درصد سریع‌تر تمام می‌شود. اسمش <span dir=\"ltr\">GLV</span> است، و همین <span dir=\"ltr\">secp256k1</span> را یکی از سریع‌ترین منحنی‌های ۲۵۶ بیتی می‌کند.</p><p><strong>و چرا <code>h = 1</code> مهم است؟</strong> <code>h</code> هم‌عامل است و رابطه‌اش <code>تعداد کل نقاط = n × h</code>. با <code>h = 1</code> تعداد نقاط دقیقاً <code>n</code> است، یعنی <code>G</code> تمام نقاط منحنی را تولید می‌کند و هیچ زیرگروه کوچکی وجود ندارد. اهمیتش این است که وگرنه حمله‌ای به نام <strong>زیرگروه کوچک</strong> <span dir=\"ltr\">(Small Subgroup Attack)</span> ممکن می‌شد: مهاجم کلید عمومی جعلی‌ای می‌فرستد که در زیرگروهی کوچک نشسته، و از رفتار سیستم تکه‌تکه اطلاعات کلید خصوصی را بیرون می‌کشد. با <code>h = 1</code> این کلاس کامل حذف می‌شود. برای مقایسه، <span dir=\"ltr\">Curve25519</span> که در سیگنال و <span dir=\"ltr\">SSH</span> به کار می‌رود <code>h = 8</code> دارد و پیاده‌سازی‌اش باید احتیاط‌های اضافه رعایت کند.</p><p><strong>و حالا جالب‌ترین بخش: چرا ساتوشی این را انتخاب کرد؟</strong> در ۲۰۰۸ منحنی رایج <span dir=\"ltr\">P-256</span> از <span dir=\"ltr\">NIST</span> بود — که نام دیگرش <span dir=\"ltr\">secp256r1</span> است، با <span dir=\"ltr\">r</span> به‌جای <span dir=\"ltr\">k</span>. تقریباً همه از آن استفاده می‌کردند. ساتوشی به‌جایش <span dir=\"ltr\">secp256k1</span> را برداشت که آن موقع تقریباً ناشناخته بود.</p><p>تفاوت در یک پارامتر است. در <span dir=\"ltr\">secp256k1</span> مقدار <code>b</code> برابر ۷ است؛ یک رقم، که جای مانوری در آن نیست. در <span dir=\"ltr\">P-256</span> مقدار <code>b</code> عددی ۶۴ رقمی است که طبق روالی منتشرشده از یک «بذر» مشتق شده — و <strong>خودِ آن بذر هیچ توضیحی ندارد</strong>. بذرها را <span dir=\"ltr\">NSA</span> فراهم کرده بود و مبدأشان از همان ۱۹۹۹ که در استاندارد <span dir=\"ltr\">X9.62</span> منتشر شدند زیر سؤال رفت.</p><p>نگرانی دقیقاً این است: «تصادفیِ قابل‌تأیید» فقط تضمین می‌کند <code>b</code> از بذر درست درآمده، نه اینکه بذر بی‌غرض انتخاب شده. اگر کسی خانواده‌ای ضعیف از منحنی‌ها را می‌شناخت، می‌توانست آن‌قدر بذر امتحان کند تا به منحنی‌ای برسد که ظاهرش تصادفی است، و بعد فقط بذر برنده را منتشر کند. افشاگری‌های اسنودن در ۲۰۱۳ این نگرانی را جدی‌تر کرد، وقتی معلوم شد <span dir=\"ltr\">NSA</span> در استاندارد دیگری به نام <span dir=\"ltr\">Dual_EC_DRBG</span> واقعاً در پشتی گذاشته بود.</p><p><strong>و نکتهٔ منصفانه:</strong> <span dir=\"ltr\">P-256</span> هرگز شکسته نشده و هیچ مدرکی از ضعفش وجود ندارد. بحث بر سر <em>قابل اثبات بودن اعتماد</em> است، نه شکست عملی. ولی <span dir=\"ltr\">secp256k1</span> هیچ عددی ندارد که لازم باشد کسی توضیحش بدهد، و انتخاب ساتوشی از نگاه امروز دوراندیشانه به نظر می‌رسد.</p><table><thead><tr><th></th><th>secp256k1</th><th>P-256</th><th>Curve25519</th></tr></thead><tbody><tr><td><code>a</code></td><td>۰</td><td>−۳</td><td>ساختار دیگری دارد</td></tr><tr><td><code>b</code></td><td>۷</td><td>عددی ۶۴ رقمی</td><td>ساختار دیگری دارد</td></tr><tr><td><code>h</code></td><td>۱</td><td>۱</td><td>۸</td></tr><tr><td>شفافیت پارامترها</td><td>کامل</td><td>مبهم</td><td>کامل</td></tr><tr><td>کاربرد اصلی</td><td>بیت‌کوین، اتریوم</td><td>TLS، دولت آمریکا</td><td>سیگنال، SSH</td></tr></tbody></table><p><strong>و یک صداقت آخر:</strong> در حالی که <code>a</code> و <code>b</code> و <code>p</code> کاملاً قابل توضیح‌اند، خودِ نقطهٔ <code>G</code> هیچ توضیح مستندی ندارد و کسی نمی‌داند چرا دقیقاً آن مختصات انتخاب شد. ولی همان‌طور که در مدخل نقطهٔ پایه گفتیم، این از نظر ریاضی تقریباً بی‌اهمیت است: هر نقطه‌ای با مرتبهٔ درست همان امنیت را می‌دهد.</p>",
+      "example": "<p>شش پارامتر، کامل:</p><pre><code>y² = x³ + 7   (mod p)\n\na = 0\nb = 7\np = 2^256 − 2^32 − 977\n  = fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f\nn = fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141\nh = 1\nG = (79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,\n     483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8)</code></pre><p>رابطه‌ای که کاهش سریع را ممکن می‌کند، و می‌شود در یک خط بررسی‌اش کرد:</p><pre><code>2^256 ≡ 2^32 + 977   (mod p)</code></pre><p>و عددهای ترفند <span dir=\"ltr\">GLV</span>. اولی به پیمانهٔ <code>p</code> به توان سه یک می‌شود و دومی به پیمانهٔ <code>n</code>:</p><pre><code>β = 7ae96a2b657c07106e64479eac3434e99cf0497512f58995c1396c28719501ee\nλ = 5363ad4cc05c30e0a5261c028812645a122e22ea20816678df02967c1b23bd72\n\nβ³ ≡ 1 (mod p)      λ³ ≡ 1 (mod n)      λ·(x, y) = (β·x, y)</code></pre><p>و همین یعنی هر اسکالر ۲۵۶ بیتی به دو نیمهٔ حدود ۱۲۸ بیتی می‌شکند:</p><pre><code>k  = 256 bits   →   k₁ ≈ 127 bits ,  k₂ ≈ 127 bits\nk·P = k₁·P + k₂·(β·x, y)</code></pre>"
+    },
+    "en": {
+      "title": "secp256k1",
+      "short": "Bitcoin's curve — choices that buy speed and leave nothing needing explanation",
+      "body": "<p>The name secp256k1 looks arbitrary but every piece means something: <em>sec</em> from Standards for Efficient Cryptography, <em>p</em> for a prime field, <em>256</em> for the field size, <em>k</em> for <strong>Koblitz</strong>, and <em>1</em> for the first curve of that kind in the standard. So: \"256-bit Koblitz curve over a prime field, number one\".</p><p>Its equation is <code>y² = x³ + ax + b</code> modulo <code>p</code>, and since <code>a = 0</code> and <code>b = 7</code> it simplifies to <code>y² = x³ + 7</code>. You have met its six parameters piecemeal in earlier entries; here they are together.</p><p><strong>Why does <code>p</code> have that strange shape?</strong> This is the first clever design choice. <code>p = 2²⁵⁶ − 2³² − 977</code> because it <em>makes reduction very fast</em>. The logic is the same as in base ten: taking a remainder modulo 1000 means keeping the last three digits, while modulo 739 requires real division. Here, because <code>p</code> is close to <code>2²⁵⁶</code>, the relation <code>2²⁵⁶ ≡ 2³² + 977</code> holds, so whenever a number exceeds 256 bits it can be folded back with a few shifts and additions instead of a division. Division is the most expensive operation in arithmetic, and this design avoids it.</p><p><strong>And why <code>a = 0</code>?</strong> This is the <em>k</em> in the name. It brings two benefits. The first is plain: in the doubling formula <code>λ = (3x² + a) / 2y</code>, setting <code>a = 0</code> removes one addition from every operation.</p><p>The second is far deeper. Curves with <code>a = 0</code> have a special structure: there is a number <code>β</code> with <code>β³ ≡ 1</code> modulo <code>p</code>, and if <code>(x, y)</code> is on the curve then so is <code>(β·x, y)</code> — because <code>(βx)³ = β³x³ = x³</code> and the equation contains only <code>x³</code>. This is exactly where <code>a = 0</code> becomes essential: an <code>ax</code> term would break the transformation.</p><p>The payoff is that there is a number <code>λ</code> for which <code>λ·(x, y)</code> is precisely <code>(β·x, y)</code> — a full scalar multiplication for the price of <em>one</em> field multiplication. From that, a scalar multiplication can be split in half: instead of one 256-bit scalar, two scalars of about 128 bits run simultaneously. The number of doublings halves, and in practice it comes out around forty per cent faster. The technique is called GLV, and it is what makes secp256k1 one of the fastest 256-bit curves.</p><p><strong>And why does <code>h = 1</code> matter?</strong> <code>h</code> is the cofactor, and <code>total points = n × h</code>. With <code>h = 1</code> the point count is exactly <code>n</code>, meaning <code>G</code> generates every point on the curve and no small subgroup exists. That matters because otherwise a <strong>small subgroup attack</strong> becomes possible: an attacker sends a forged public key sitting in a small subgroup and extracts the private key piecewise from how the system responds. With <code>h = 1</code> the whole class is eliminated. By comparison Curve25519, used in Signal and SSH, has <code>h = 8</code> and its implementations must take extra care.</p><p><strong>And now the most interesting part: why did Satoshi choose this one?</strong> In 2008 the common curve was NIST's P-256 — also called secp256r1, with an <em>r</em> instead of a <em>k</em>. Nearly everyone used it. Satoshi took secp256k1 instead, which was then almost unknown.</p><p>The difference lies in one parameter. In secp256k1, <code>b</code> is 7: a single digit, with no room to manoeuvre. In P-256, <code>b</code> is a 64-digit number derived from a \"seed\" by a published procedure — and <strong>the seed itself has no explanation</strong>. The seeds were supplied by the NSA, and their provenance was questioned from 1999, when they appeared in the X9.62 standard.</p><p>The concern is precisely this: \"verifiably random\" only guarantees that <code>b</code> follows from the seed, not that the seed was chosen innocently. Anyone who knew of a weak family of curves could try seeds until one landed there, then publish only the winning seed. The 2013 Snowden disclosures sharpened the worry, when it emerged that the NSA had in fact placed a backdoor in another standard, Dual_EC_DRBG.</p><p><strong>And the fair note:</strong> P-256 has never been broken and there is no evidence of weakness. The argument is about <em>demonstrable</em> trust, not a practical break. But secp256k1 contains no number anyone needs to explain, and Satoshi's choice looks farsighted in hindsight.</p><table><thead><tr><th></th><th>secp256k1</th><th>P-256</th><th>Curve25519</th></tr></thead><tbody><tr><td><code>a</code></td><td>0</td><td>−3</td><td>a different form</td></tr><tr><td><code>b</code></td><td>7</td><td>a 64-digit number</td><td>a different form</td></tr><tr><td><code>h</code></td><td>1</td><td>1</td><td>8</td></tr><tr><td>Parameter transparency</td><td>complete</td><td>opaque</td><td>complete</td></tr><tr><td>Main use</td><td>Bitcoin, Ethereum</td><td>TLS, US government</td><td>Signal, SSH</td></tr></tbody></table><p><strong>One last honesty:</strong> while <code>a</code>, <code>b</code> and <code>p</code> are fully accountable, the point <code>G</code> itself has no documented justification and nobody knows why those particular coordinates were chosen. But as the generator-point entry said, that is mathematically almost irrelevant: any point of the right order gives the same security.</p>",
+      "example": "<p>All six parameters:</p><pre><code>y² = x³ + 7   (mod p)\n\na = 0\nb = 7\np = 2^256 − 2^32 − 977\n  = fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f\nn = fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141\nh = 1\nG = (79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,\n     483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8)</code></pre><p>The relation that makes fast reduction possible, checkable in one line:</p><pre><code>2^256 ≡ 2^32 + 977   (mod p)</code></pre><p>And the numbers behind the GLV trick. The first cubes to one modulo <code>p</code>, the second modulo <code>n</code>:</p><pre><code>β = 7ae96a2b657c07106e64479eac3434e99cf0497512f58995c1396c28719501ee\nλ = 5363ad4cc05c30e0a5261c028812645a122e22ea20816678df02967c1b23bd72\n\nβ³ ≡ 1 (mod p)      λ³ ≡ 1 (mod n)      λ·(x, y) = (β·x, y)</code></pre><p>Which is what lets any 256-bit scalar split into two halves of about 128 bits:</p><pre><code>k  = 256 bits   →   k₁ ≈ 127 bits ,  k₂ ≈ 127 bits\nk·P = k₁·P + k₂·(β·x, y)</code></pre>"
+    }
+  },
+  {
     "id": "private-key",
     "tags": [
       "keys",
@@ -442,7 +485,8 @@
       "preimage-resistance",
       "nonce",
       "bit",
-      "ecdsa"
+      "ecdsa",
+      "secp256k1"
     ],
     "svg": [
       {
@@ -494,7 +538,8 @@
       "generator-point",
       "nonce",
       "sha-256",
-      "hash"
+      "hash",
+      "secp256k1"
     ],
     "svg": [
       {
