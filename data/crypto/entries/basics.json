@@ -44,7 +44,8 @@
       "hash",
       "keccak-256",
       "public-key-cryptography",
-      "sha-256"
+      "sha-256",
+      "ripemd-160"
     ],
     "svg": [
       {
@@ -109,7 +110,8 @@
       "keccak-256",
       "bit",
       "byte",
-      "sha-256"
+      "sha-256",
+      "ripemd-160"
     ],
     "fa": {
       "title": "هش",
@@ -139,7 +141,8 @@
       "bit",
       "byte",
       "proof-of-work",
-      "collision"
+      "collision",
+      "ripemd-160"
     ],
     "svg": [
       {
@@ -167,6 +170,48 @@
     }
   },
   {
+    "id": "ripemd-160",
+    "tags": [
+      "crypto",
+      "integrity",
+      "security",
+      "bitcoin"
+    ],
+    "related": [
+      "hash",
+      "sha-256",
+      "keccak-256",
+      "wallet",
+      "collision",
+      "preimage-resistance",
+      "byte"
+    ],
+    "svg": [
+      {
+        "svg": "<svg viewBox=\"0 0 380 176\" direction=\"ltr\" role=\"img\" aria-label=\"بیت‌کوین با SHA-256 و سپس RIPEMD-160 به بیست بایت می‌رسد، اتریوم با Keccak-256 و برداشتن بیست بایت آخر\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"366\" y=\"22\" text-anchor=\"start\" direction=\"rtl\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"0.75\">بیت‌کوین</text><rect x=\"266\" y=\"32\" width=\"100\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><text x=\"316\" y=\"52\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.8\">کلید عمومی</text><path d=\"M262 48 H216\" stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M210 48 l7 -4 v8 z\" fill=\"currentColor\"/><text x=\"236\" y=\"42\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.75\">SHA-256</text><text x=\"236\" y=\"62\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"7.5\" fill=\"currentColor\" opacity=\"0.5\">۳۳ بایت فشرده</text><rect x=\"150\" y=\"32\" width=\"56\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><text x=\"178\" y=\"52\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.8\">۳۲ بایت</text><path d=\"M146 48 H102\" stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M96 48 l7 -4 v8 z\" fill=\"currentColor\"/><text x=\"121\" y=\"42\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.75\">RIPEMD-160</text><rect x=\"26\" y=\"32\" width=\"66\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\"/><text x=\"59\" y=\"52\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">۲۰ بایت</text><text x=\"121\" y=\"62\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"7.5\" fill=\"currentColor\" opacity=\"0.5\">تابع دوم</text><path d=\"M14 104 H366\" stroke=\"currentColor\" stroke-width=\"0.7\" opacity=\"0.25\"/><text x=\"366\" y=\"110\" text-anchor=\"start\" direction=\"rtl\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"0.75\">اتریوم</text><rect x=\"266\" y=\"120\" width=\"100\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><text x=\"316\" y=\"140\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.8\">کلید عمومی</text><path d=\"M262 136 H216\" stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M210 136 l7 -4 v8 z\" fill=\"currentColor\"/><text x=\"236\" y=\"130\" text-anchor=\"middle\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.75\">Keccak-256</text><text x=\"236\" y=\"150\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"7.5\" fill=\"currentColor\" opacity=\"0.5\">۶۴ بایت کامل</text><rect x=\"150\" y=\"120\" width=\"56\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><text x=\"178\" y=\"140\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.8\">۳۲ بایت</text><path d=\"M146 136 H102\" stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M96 136 l7 -4 v8 z\" fill=\"currentColor\"/><text x=\"121\" y=\"130\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"7.5\" fill=\"currentColor\" opacity=\"0.75\">۲۰ بایت آخر</text><rect x=\"26\" y=\"120\" width=\"66\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\"/><text x=\"59\" y=\"140\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">۲۰ بایت</text></svg>",
+        "fa": "هر دو شبکه به ۲۰ بایت می‌رسند — یکی با تابع دوم، دیگری فقط با بریدن",
+        "en": "Both networks reach 20 bytes — one with a second function, the other by truncating"
+      },
+      {
+        "svg": "<svg viewBox=\"0 0 380 186\" direction=\"ltr\" role=\"img\" aria-label=\"RIPEMD-160 پیام را در دو خط مستقل با ثابت‌ها و چرخش‌های متفاوت پردازش می‌کند و در پایان دو نتیجه را ترکیب می‌کند\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"284\" y=\"70\" width=\"82\" height=\"30\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\"/><text x=\"325\" y=\"89\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"1.0\">پیام</text><path d=\"M284 85 H250 V38 H214\" stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M208 38 l7 -4 v8 z\" fill=\"currentColor\"/><path d=\"M284 85 H250 V132 H214\" stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M208 132 l7 -4 v8 z\" fill=\"currentColor\"/><rect x=\"120\" y=\"22\" width=\"88\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"164\" y=\"42\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">خط یکم</text><rect x=\"120\" y=\"116\" width=\"88\" height=\"32\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"164\" y=\"136\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">خط دوم</text><text x=\"164\" y=\"68\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"7.5\" fill=\"currentColor\" opacity=\"0.55\">ثابت‌ها، چرخش‌ها و توابع</text><text x=\"164\" y=\"108\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"7.5\" fill=\"currentColor\" opacity=\"0.55\">در دو خط عمداً فرق دارند</text><path d=\"M120 38 H86 V85 H62\" stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M120 132 H86 V85 H62\" stroke=\"currentColor\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M56 85 l7 -4 v8 z\" fill=\"currentColor\"/><rect x=\"8\" y=\"70\" width=\"48\" height=\"30\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\"/><text x=\"32\" y=\"89\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8\" fill=\"currentColor\" opacity=\"1.0\">۱۶۰ بیت</text><text x=\"190\" y=\"172\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.65\">اگر حمله‌ای یک خط را بشکند، آن یکی هنوز ایستاده است</text></svg>",
+        "fa": "دو خط با ثابت‌ها و چرخش‌های متفاوت، به‌عنوان بیمهٔ داخلی",
+        "en": "Two lines with different constants and rotations, as internal insurance"
+      }
+    ],
+    "fa": {
+      "title": "رایپ‌ام‌دی-۱۶۰",
+      "short": "هش ۱۶۰ بیتی که آدرس بیت‌کوین را می‌سازد — از خانواده‌ای دیگر، و عمداً",
+      "body": "<p><span dir=\"ltr\">RIPEMD-160</span> هم یک تابع هش است، با همان خواص آشنا. تفاوت فوری‌اش با <span dir=\"ltr\">SHA-256</span> اندازهٔ خروجی است: ۱۶۰ بیت به‌جای ۲۵۶، یعنی ۲۰ بایت و ۴۰ رقم هگز به‌جای ۳۲ بایت و ۶۴ رقم. و مهم‌ترین دلیل شهرتش این است که <strong>آدرس بیت‌کوین با همین ساخته می‌شود</strong>.</p><p><strong>از کجا آمد.</strong> نام کاملش <span dir=\"ltr\">RIPE Message Digest</span> است و <span dir=\"ltr\">RIPE</span> خودش نام پروژه‌ای اروپایی بود که در ۱۹۹۲ نسخهٔ اولش را ساخت، بر پایهٔ <span dir=\"ltr\">MD4</span>. وقتی نشانه‌های ضعف در آن خانواده پیدا شد، سه پژوهشگر — <span dir=\"ltr\">Dobbertin</span> و <span dir=\"ltr\">Bosselaers</span> و <span dir=\"ltr\">Preneel</span> — در ۱۹۹۶ در دانشگاه <span dir=\"ltr\">KU Leuven</span> بلژیک چهار نسخهٔ تقویت‌شده منتشر کردند: <span dir=\"ltr\">RIPEMD-128</span> و <span dir=\"ltr\">-160</span> و <span dir=\"ltr\">-256</span> و <span dir=\"ltr\">-320</span>. کارِ آکادمیک اروپایی بود، مستقل از <span dir=\"ltr\">NIST</span> و <span dir=\"ltr\">NSA</span> — و همین نکته برای فهمیدن انتخاب ساتوشی کلیدی است.</p><p><strong>معماری‌اش یک ویژگی متمایز دارد: دو خط موازی.</strong> پیام هم‌زمان در دو خط پردازشِ مستقل جلو می‌رود که ثابت‌ها و چرخش‌ها و توابع بولی‌شان <em>عمداً</em> با هم فرق دارند، و در پایان نتیجهٔ دو خط ترکیب می‌شود. منطقش بیمهٔ داخلی است: حمله‌ای که یک خط را بشکند، لزوماً آن یکی را نمی‌شکند. کل تابع ۸۰ گام دارد.</p><p><strong>و حالا نکتهٔ اصلی: چرا بیت‌کوین از هر دو استفاده می‌کند؟</strong> آدرس با هر دو تابع پشت سر هم ساخته می‌شود، و به این ترکیب <code>HASH160</code> می‌گویند:</p><pre><code>HASH160(x) = RIPEMD160(SHA256(x))</code></pre><p><strong>دلیل اول، کوتاه کردن آدرس.</strong> اگر فقط <span dir=\"ltr\">SHA-256</span> بود، آدرس‌ها ۳۲ بایت می‌شدند؛ با <span dir=\"ltr\">RIPEMD-160</span> به ۲۰ بایت می‌رسند، ۳۷٫۵ درصد کوتاه‌تر. این فقط زیبایی نیست: آدرس در هر تراکنش نوشته و روی زنجیره ذخیره می‌شود، و ۱۲ بایت صرفه‌جویی در هر خروجی، در مقیاس میلیون‌ها تراکنش، حجم بزرگی است.</p><p><strong>دلیل دوم، تنوع خانوادگی — و ظریف‌تر است.</strong> نگرانی آن دوره این بود که اگر معماری <span dir=\"ltr\">SHA</span> بشکند همه‌چیز با هم فرو بریزد. گذاشتن دو تابع از دو خانوادهٔ کاملاً متفاوت پشت سر هم یعنی مهاجم باید <em>هر دو</em> را بشکند، و چون طراحی‌شان هیچ اشتراکی ندارد بعید است یک حمله هر دو را با هم از کار بیندازد.</p><p><strong>ولی ۱۶۰ بیت کافی است؟</strong> سؤال درستی است: حملهٔ تولد امنیت تصادم را نصف می‌کند، پس ۱۶۰ بیت یعنی حدود <code>2<sup>80</sup></code> برای یافتن تصادم — عددی بزرگ، ولی نه هم‌اندازهٔ <code>2<sup>128</sup></code>. جوابش این است که <strong>تصادم اینجا به کار مهاجم نمی‌آید</strong>. او باید پیش‌تصویر دوم پیدا کند، یعنی کلید عمومیِ <em>دیگری</em> که به همان آدرس برسد، و آن <code>2<sup>160</sup></code> هزینه دارد نه <code>2<sup>80</sup></code>. بدتر برای او: حتی اگر چنین کلید عمومی‌ای پیدا کند، کلید خصوصی متناظرش را ندارد، پس نمی‌تواند امضا کند و پول را خرج کند.</p><p><strong>امروز کجا ایستاده؟ سالم.</strong> و مثل بقیه، این را می‌شود دقیق گفت. حمله‌ها روی نسخه‌های کم‌گام‌شده پیش رفته‌اند: بهترین تصادم شناخته‌شده به ۴۰ گام از ۸۰ گام رسیده و بهترین تصادمِ نیمه‌آزاد به ۴۳ گام. یعنی درست نیمی از تابع. نسخهٔ کامل ۸۰ گامی تا امروز نشکسته است — و توجه کن که <em>هر دو</em> نسخهٔ ۱۲۸ بیتی شکسته‌اند: هم <span dir=\"ltr\">RIPEMD</span>ی اصلی ۱۹۹۲، هم <span dir=\"ltr\">RIPEMD-128</span>ی تقویت‌شدهٔ ۱۹۹۶ که در ۲۰۱۳ تحلیل کاملش منتشر شد. آنچه ایستاده، همین ۱۶۰ بیتی است.</p><p><strong>و یک نکتهٔ عملی که داستان جالبی دارد.</strong> امروز <span dir=\"ltr\">RIPEMD-160</span> تقریباً فقط در بیت‌کوین و مشتقاتش به کار می‌رود، و همین باعث شد <span dir=\"ltr\">OpenSSL</span> در نسخهٔ ۳ آن را «از رواج افتاده» بداند و به ارائه‌دهندهٔ <span dir=\"ltr\">legacy</span> منتقلش کند، که پیش‌فرض بارگذاری نمی‌شود. ابزارهای بیت‌کوین شکستند. بعد کمیتهٔ مدیریت <span dir=\"ltr\">OpenSSL</span> استثنا قائل شد و برش گرداند به ارائه‌دهندهٔ پیش‌فرض، با این استدلال که این تابع «با بیت‌کوین استفاده می‌شود، که پایگاه کاربری عظیمی می‌سازد». پس اگر جایی دیدی <code>ripemd160</code> در دسترس نیست، دلیلش ناامن بودن نیست؛ محدود شدنِ کاربرد است.</p><p><strong>و در اتریوم؟</strong> آنجا خبری از <span dir=\"ltr\">RIPEMD-160</span> نیست: آدرس اتریوم ۲۰ بایت آخرِ <span dir=\"ltr\">Keccak-256</span>ِ کلید عمومی است. جالب اینکه هر دو شبکه به ۲۰ بایت می‌رسند ولی از دو راه کاملاً متفاوت — بیت‌کوین با یک تابع دوم از خانوادهٔ دیگر، و اتریوم فقط با <em>بریدن</em> خروجی. ورودی‌شان هم یکی نیست: بیت‌کوین کلید فشردهٔ ۳۳ بایتی را هش می‌کند و اتریوم شکل کامل ۶۴ بایتی را.</p>",
+      "example": "<p>دو نمونه، تا کوتاهی‌اش را ببینی — ۴۰ رقم به‌جای ۶۴ رقم:</p><pre><code>ripemd160(\"\")      = 9c1185a5c5e9fc54612808977ee8f548b2258d31\nripemd160(\"salam\") = 5bc54170923b948b42fb7203ddf6d23a0a533468</code></pre><p>و کل زنجیره، با اعداد واقعی. کلید عمومیِ فشردهٔ نقطهٔ پایه را برمی‌داریم و تا آدرس پیش می‌رویم:</p><pre><code>pubkey  0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\n   ↓ SHA-256\n        0f715baf5d4c2ed329785cef29e562f73488c8a2bb9dbc5700b361d54b9b0554\n   ↓ RIPEMD-160\n        751e76e8199196d454941c45d1b3a323f1433bd6            (20 bytes)\n   ↓ Base58Check\n        1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH</code></pre><p>و همان کلید در اتریوم، که از راه دیگری به همان ۲۰ بایت می‌رسد:</p><pre><code>keccak256(64-byte pubkey) → last 20 bytes\n        7e5f4552091a69125d5dfcb7b8c2659029395bdf</code></pre>"
+    },
+    "en": {
+      "title": "RIPEMD-160",
+      "short": "The 160-bit hash behind Bitcoin addresses — from a different family, deliberately",
+      "body": "<p>RIPEMD-160 is a hash function with the same familiar properties. Its immediate difference from SHA-256 is output size: 160 bits rather than 256, meaning 20 bytes and 40 hex digits instead of 32 bytes and 64. And the main reason for its fame is that <strong>Bitcoin addresses are built with it</strong>.</p><p><strong>Where it came from.</strong> Its full name is RIPE Message Digest, and RIPE was itself a European project that produced the first version in 1992, based on MD4. When signs of weakness appeared in that family, three researchers — Dobbertin, Bosselaers and Preneel — published four strengthened variants at KU Leuven in Belgium in 1996: RIPEMD-128, -160, -256 and -320. It was European academic work, independent of NIST and the NSA — and that point is the key to understanding Satoshi's choice.</p><p><strong>Its architecture has one distinguishing feature: two parallel lines.</strong> The message runs simultaneously through two independent processing lines whose constants, rotations and boolean functions <em>deliberately</em> differ, and the results of the two are combined at the end. The logic is internal insurance: an attack that breaks one line does not necessarily break the other. The whole function runs 80 steps.</p><p><strong>And now the main point: why does Bitcoin use both?</strong> An address is built with both functions in sequence, a combination called HASH160:</p><pre><code>HASH160(x) = RIPEMD160(SHA256(x))</code></pre><p><strong>The first reason is shortening the address.</strong> With SHA-256 alone, addresses would be 32 bytes; RIPEMD-160 brings them to 20, which is 37.5 per cent shorter. This is not mere elegance: an address is written into every transaction and stored on the chain, and 12 bytes saved per output, across millions of transactions, is a great deal of volume.</p><p><strong>The second reason is family diversity — and it is subtler.</strong> The worry of the period was that if the SHA architecture fell, everything would fall with it. Putting two functions from entirely different families in sequence means an attacker must break <em>both</em>, and since their designs share nothing, one attack is unlikely to disable both together.</p><p><strong>But are 160 bits enough?</strong> A fair question: the birthday attack halves collision security, so 160 bits means about <code>2<sup>80</sup></code> to find a collision — a large number, but not the size of <code>2<sup>128</sup></code>. The answer is that <strong>a collision is of no use to the attacker here</strong>. They need a second preimage: <em>another</em> public key reaching the same address, and that costs <code>2<sup>160</sup></code>, not <code>2<sup>80</sup></code>. Worse for them: even having found such a public key, they do not hold the matching private key, so they cannot sign and cannot spend.</p><p><strong>Where does it stand today? Sound.</strong> And as with the others, that can be said precisely. Attacks have advanced against step-reduced versions: the best known collision reaches 40 of the 80 steps, and the best semi-free-start collision 43. Exactly half the function. The full 80-step version remains unbroken — and note that <em>both</em> 128-bit versions have fallen: the original 1992 RIPEMD, and the strengthened 1996 RIPEMD-128 whose full cryptanalysis was published in 2013. What stands is this 160-bit one.</p><p><strong>And one practical note with a good story behind it.</strong> Today RIPEMD-160 is used almost only in Bitcoin and its derivatives, and that led OpenSSL 3 to judge it \"fallen out of favour\" and move it to the legacy provider, which is not loaded by default. Bitcoin tooling broke. The OpenSSL Management Committee then made an exception and returned it to the default provider, on the reasoning that the function \"is used with bitcoin, which makes for a huge user base\". So if you ever find <code>ripemd160</code> unavailable, the reason is not that it is insecure; it is that its use has narrowed.</p><p><strong>And in Ethereum?</strong> There is no RIPEMD-160 there: an Ethereum address is the last 20 bytes of the Keccak-256 of the public key. Both networks arrive at 20 bytes, but by entirely different routes — Bitcoin through a second function from another family, Ethereum by simply <em>truncating</em> the output. Their inputs differ too: Bitcoin hashes the 33-byte compressed key, Ethereum the full 64-byte form.</p>",
+      "example": "<p>Two samples, to see how much shorter it is — 40 digits instead of 64:</p><pre><code>ripemd160(\"\")      = 9c1185a5c5e9fc54612808977ee8f548b2258d31\nripemd160(\"salam\") = 5bc54170923b948b42fb7203ddf6d23a0a533468</code></pre><p>And the whole chain with real numbers. Taking the compressed public key of the generator point through to an address:</p><pre><code>pubkey  0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\n   ↓ SHA-256\n        0f715baf5d4c2ed329785cef29e562f73488c8a2bb9dbc5700b361d54b9b0554\n   ↓ RIPEMD-160\n        751e76e8199196d454941c45d1b3a323f1433bd6            (20 bytes)\n   ↓ Base58Check\n        1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH</code></pre><p>And the same key on Ethereum, reaching the same 20 bytes by another route:</p><pre><code>keccak256(64-byte pubkey) → last 20 bytes\n        7e5f4552091a69125d5dfcb7b8c2659029395bdf</code></pre>"
+    }
+  },
+  {
     "id": "keccak-256",
     "tags": [
       "crypto",
@@ -180,7 +225,8 @@
       "preimage-resistance",
       "public-key-cryptography",
       "byte",
-      "sha-256"
+      "sha-256",
+      "ripemd-160"
     ],
     "svg": [
       {
@@ -216,7 +262,8 @@
     "related": [
       "hash",
       "public-key-cryptography",
-      "private-key"
+      "private-key",
+      "ripemd-160"
     ],
     "fa": {
       "title": "کیف پول",
@@ -242,7 +289,8 @@
       "proof-of-work",
       "preimage-resistance",
       "keccak-256",
-      "sha-256"
+      "sha-256",
+      "ripemd-160"
     ],
     "svg": "<svg viewBox=\"0 0 380 170\" direction=\"ltr\" role=\"img\" aria-label=\"اصل لانه کبوتری: ورودی‌ها بی‌شمارند و خروجی‌ها محدود، پس دو ورودی ناچار در یک خانه می‌افتند\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"6\" y=\"16\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\"0.7\">inputs · بی‌شمار</text><text x=\"248\" y=\"16\" font-family=\"ui-monospace, Menlo, monospace\" font-size=\"11\" fill=\"currentColor\" opacity=\"0.7\">outputs · محدود</text><g font-family=\"ui-monospace, Menlo, monospace\" font-size=\"11\" fill=\"currentColor\"><text x=\"6\" y=\"42\">A</text><text x=\"6\" y=\"66\">B</text><text x=\"6\" y=\"90\">C</text><text x=\"6\" y=\"114\">D</text><text x=\"6\" y=\"138\">E</text><text x=\"6\" y=\"160\" opacity=\"0.55\">…</text></g><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><rect x=\"248\" y=\"30\" width=\"120\" height=\"26\" rx=\"6\"/><rect x=\"248\" y=\"66\" width=\"120\" height=\"26\" rx=\"6\"/><rect x=\"248\" y=\"102\" width=\"120\" height=\"26\" rx=\"6\"/></g><g font-family=\"ui-monospace, Menlo, monospace\" font-size=\"10\" fill=\"currentColor\" opacity=\"0.75\"><text x=\"258\" y=\"47\">0x1f…</text><text x=\"258\" y=\"83\">0x9c…</text><text x=\"258\" y=\"119\">0x4e…</text></g><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" opacity=\"0.55\"><path d=\"M24 38 H240 m-6-4 6 4-6 4\"/><path d=\"M24 62 Q140 62 240 78 m-7-3 7 3-5 5\"/><path d=\"M24 86 Q140 86 240 82 m-6-4 6 4-6 4\"/><path d=\"M24 110 H240 m-6-4 6 4-6 4\"/><path d=\"M24 134 Q140 134 240 118 m-4-6 4 6-7 2\"/></g><rect x=\"246\" y=\"64\" width=\"124\" height=\"30\" rx=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><text x=\"248\" y=\"150\" font-size=\"11\" fill=\"currentColor\" direction=\"rtl\">دو ورودی، یک خروجی — تصادم</text></svg>",
     "fa": {
@@ -271,7 +319,8 @@
       "proof-of-work",
       "wallet",
       "private-key",
-      "keccak-256"
+      "keccak-256",
+      "ripemd-160"
     ],
     "svg": "<svg viewBox=\"0 0 380 186\" direction=\"ltr\" role=\"img\" aria-label=\"مسیر رفت در میکروثانیه طی می‌شود ولی مسیر برگشت مسدود است؛ تنها راه، حدس زدن است\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><rect x=\"6\" y=\"36\" width=\"116\" height=\"54\" rx=\"10\"/><rect x=\"258\" y=\"36\" width=\"116\" height=\"54\" rx=\"10\"/></g><g font-size=\"12\" fill=\"currentColor\" text-anchor=\"middle\"><text x=\"64\" y=\"58\" direction=\"rtl\">ورودی</text><text x=\"316\" y=\"58\" direction=\"rtl\">هش</text></g><g font-family=\"ui-monospace, Menlo, monospace\" font-size=\"12\" fill=\"currentColor\" opacity=\"0.75\" text-anchor=\"middle\"><text x=\"64\" y=\"78\">salam</text><text x=\"316\" y=\"78\">0582bd2c…</text></g><path d=\"M126 52 H244\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"/><path d=\"M244 47 L252 52 L244 57 Z\" fill=\"currentColor\"/><text x=\"185\" y=\"40\" font-size=\"11\" fill=\"currentColor\" opacity=\"0.7\" text-anchor=\"middle\" direction=\"rtl\">میکروثانیه</text><path d=\"M254 76 H216\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"/><path d=\"M164 76 H134\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-dasharray=\"5 5\" opacity=\"0.5\"/><path d=\"M134 71 L126 76 L134 81 Z\" fill=\"currentColor\" opacity=\"0.5\"/><g stroke=\"currentColor\" stroke-width=\"2\" fill=\"none\"><rect x=\"172\" y=\"62\" width=\"30\" height=\"28\" rx=\"5\"/><path d=\"M179 69l16 14M195 69l-16 14\"/></g><g font-size=\"11\" fill=\"currentColor\" opacity=\"0.75\" text-anchor=\"middle\" direction=\"rtl\"><text x=\"190\" y=\"118\">مسیر برگشت وجود ندارد</text><text x=\"190\" y=\"140\">تنها راه: حدس زدن ۲ به توان ۲۵۶ حالت</text><text x=\"190\" y=\"166\">با یک تریلیون حدس در ثانیه ≈ ۱۰ به توان ۵۷ سال</text></g></svg>",
     "fa": {
