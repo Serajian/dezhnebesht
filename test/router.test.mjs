@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseHash } from '../assets/js/router.js';
+import { onThisPageSections } from '../assets/js/render.js';
 
 test('هش خالی به فهرست می‌رود', () => {
   assert.deepEqual(parseHash(''), { view: 'index', topic: '', tag: '' });
@@ -56,4 +57,25 @@ test('مسیر موضوع تجزیه می‌شود', () => {
 
 test('topic بدون مقدار به فهرست برمی‌گردد', () => {
   assert.deepEqual(parseHash('#/topic'), { view: 'index', topic: '', tag: '' });
+});
+
+// ── لنگرهای داخل صفحه در برابر مسیرها ───────────────────────────────
+// ریل «در این صفحه» به #entry-example و امثالش لینک می‌دهد، و مسیریابی
+// این سایت هم روی hash است. هیچ‌کدام از این شناسه‌ها مسیر معتبری نیستند،
+// پس اگر کلیک با preventDefault گرفته نشود، روتر آن‌ها را «مسیر ناشناخته»
+// می‌بیند و مدخل را با فهرست عوض می‌کند — دقیقاً همان چیزی که یک‌بار اتفاق
+// افتاد. این تست خطر را ثابت نگه می‌دارد: تا وقتی این شناسه‌ها به فهرست
+// می‌افتند، آن رهگیری در app.js واجب است و حذفش باگ برمی‌گرداند.
+
+test('هیچ لنگرِ ریلِ مدخل مسیر معتبری نیست — پس کلیکش باید رهگیری شود', () => {
+  const ids = onThisPageSections({ hasExample: true, diagramCount: 2, hasRelated: true })
+    .map((section) => section.id);
+  assert.deepEqual(ids, ['entry-title', 'entry-example', 'entry-diagram', 'entry-related']);
+  for (const id of ids) {
+    assert.deepEqual(
+      parseHash(`#${id}`),
+      { view: 'index', topic: '', tag: '' },
+      `${id} به فهرست می‌افتد`,
+    );
+  }
 });

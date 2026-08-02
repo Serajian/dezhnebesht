@@ -292,6 +292,20 @@ dom.main.addEventListener('click', (event) => {
   if (subnavLink) {
     event.preventDefault();
     openGroupFromRail(subnavLink.getAttribute('href').slice(1));
+    return;
+  }
+
+  // ریل «در این صفحه» به لنگرِ داخل صفحه اشاره می‌کند (#entry-example)، و
+  // مسیریابی این سایت هم روی hash است. اگر جلوی رفتار پیش‌فرض گرفته نشود،
+  // location.hash عوض می‌شود، روتر آن را مسیری ناشناخته می‌بیند و طبق
+  // قاعده‌ی «هر مسیر ناشناخته به فهرست» کل مدخل را با فهرست جایگزین
+  // می‌کند — یعنی کلیک روی «مثال» خواننده را از صفحه بیرون می‌انداخت.
+  // خودمان اسکرول می‌کنیم تا هش دست‌نخورده بماند و آدرسِ صفحه همان
+  // #/t/<id> باقی بماند؛ همان کاری که بالا برای ریل فهرست می‌شود.
+  const railLink = event.target.closest('.rail-list a');
+  if (railLink) {
+    event.preventDefault();
+    document.getElementById(railLink.getAttribute('href').slice(1))?.scrollIntoView();
   }
 });
 
