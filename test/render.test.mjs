@@ -69,6 +69,11 @@ test('کدِ بدون فاصله دست نمی‌خورد — جای شکستن�
   assert.equal(isShortFormula('secp256k1'), false);
 });
 
+test('بلندترین فرمولِ واقعیِ مدخل‌ها هم یکپارچه می‌ماند', () => {
+  // ۴۳ کاراکتر — از مدخل حمله‌ی تمدید طول
+  assert.equal(isShortFormula('hash(secret ‖ message ‖ padding ‖ anything)'), true);
+});
+
 test('hardenSpaces فقط فاصله‌ها را نشکن می‌کند و بقیه را دست نمی‌زند', () => {
   assert.equal(hardenSpaces('a = 0'), 'a\u00a0=\u00a00');
   assert.equal(hardenSpaces('secp256k1'), 'secp256k1');

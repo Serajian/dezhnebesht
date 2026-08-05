@@ -87,3 +87,29 @@ test('داده‌ی واقعی روی دیسک هیچ خطای اعتبارسن�
   const errors = validate(categories, entries, topics);
   assert.deepEqual(errors, [], errors.map((e) => `${e.file} › ${e.id} — ${e.message}`).join('\n'));
 });
+
+// ── فارسی هرگز در فونت مونواسپیس ────────────────────────────────────
+// خط فارسی متصل است و مونواسپیس اتصال حروف را پاره می‌کند، پس کلمه
+// دیگر به‌عنوان کلمه خوانده نمی‌شود. هم <pre> و هم <code> درون‌خطی با
+// همین فونت رندر می‌شوند. این را چند بار موقع نوشتن مدخل جا انداختم —
+// چشم نمی‌گیردش، چون متن همچنان «تقریباً» درست به نظر می‌رسد.
+
+const PERSIAN = /[\u0600-\u06FF]/;
+
+test('هیچ متن فارسی‌ای داخل <pre> یا <code> نیست', () => {
+  const offenders = [];
+  for (const entry of entries) {
+    for (const lang of ['fa', 'en']) {
+      for (const field of ['body', 'example']) {
+        const html = entry[lang]?.[field] ?? '';
+        for (const match of html.matchAll(/<(pre|code)\b[^>]*>([\s\S]*?)<\/\1>/g)) {
+          const text = match[2].replace(/<[^>]+>/g, '');
+          if (PERSIAN.test(text)) {
+            offenders.push(`${entry.id}.${lang}.${field}: ${text.slice(0, 40)}`);
+          }
+        }
+      }
+    }
+  }
+  assert.deepEqual(offenders, [], `فارسی در فونت مونواسپیس:\n${offenders.join('\n')}`);
+});

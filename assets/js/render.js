@@ -14,7 +14,10 @@ import { groupId, resolveGroupOpen } from './groups.js';
  * نه ویژگیِ یک مدخل — و نوشتنِ U+00A0 نامرئی در JSON چیزی است که
  * نویسنده‌ی مدخل بعدی فراموشش می‌کند.
  */
-const FORMULA_MAX = 32;
+// آستانه از خود داده آمده، نه از حدس: بلندترین فرمولِ فاصله‌دار در
+// مدخل‌ها ۴۳ کاراکتر است و کوتاه‌ترین رشته‌ی هگزِ درون‌خطی ۶۸، پس ۴۸
+// هر دو طرف حاشیه دارد. اگر روزی فرمول بلندتری آمد، همین‌جا بالا برود.
+const FORMULA_MAX = 48;
 
 export function isShortFormula(text) {
   return text.length <= FORMULA_MAX && text.includes(' ');
