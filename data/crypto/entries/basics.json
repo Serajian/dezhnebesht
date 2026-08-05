@@ -51,7 +51,8 @@
       "hex",
       "base58",
       "length-extension",
-      "utxo"
+      "utxo",
+      "transaction"
     ],
     "svg": [
       {
@@ -85,7 +86,8 @@
       "hash",
       "keccak-256",
       "nonce",
-      "base58"
+      "base58",
+      "transaction"
     ],
     "svg": [
       {
@@ -240,7 +242,8 @@
       "base58",
       "merkle-tree",
       "length-extension",
-      "hmac"
+      "hmac",
+      "transaction"
     ],
     "svg": [
       {
@@ -679,7 +682,8 @@
       "base58",
       "hmac",
       "rfc-6979",
-      "utxo"
+      "utxo",
+      "transaction"
     ],
     "svg": [
       {
@@ -734,7 +738,8 @@
       "hash",
       "secp256k1",
       "ed25519",
-      "rfc-6979"
+      "rfc-6979",
+      "transaction"
     ],
     "svg": [
       {
