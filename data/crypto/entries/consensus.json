@@ -43,7 +43,8 @@
       "ecdsa",
       "ed25519",
       "hex",
-      "merkle-tree"
+      "merkle-tree",
+      "rfc-6979"
     ],
     "fa": {
       "title": "نانس",

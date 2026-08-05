@@ -318,7 +318,8 @@
       "sha-256",
       "hash",
       "private-key",
-      "keccak-256"
+      "keccak-256",
+      "rfc-6979"
     ],
     "svg": [
       {
@@ -673,7 +674,8 @@
       "secp256k1",
       "ed25519",
       "base58",
-      "hmac"
+      "hmac",
+      "rfc-6979"
     ],
     "svg": [
       {
@@ -727,7 +729,8 @@
       "sha-256",
       "hash",
       "secp256k1",
-      "ed25519"
+      "ed25519",
+      "rfc-6979"
     ],
     "svg": [
       {
@@ -760,6 +763,46 @@
     }
   },
   {
+    "id": "rfc-6979",
+    "tags": [
+      "crypto",
+      "security",
+      "signatures",
+      "keys"
+    ],
+    "related": [
+      "ecdsa",
+      "nonce",
+      "hmac",
+      "ed25519",
+      "private-key"
+    ],
+    "svg": [
+      {
+        "svg": "<svg viewBox=\"0 0 380 226\" direction=\"ltr\" role=\"img\" aria-label=\"سه نسل ساخت نانس: تصادفی، قطعی، و ترکیبی که هر دو ضعف را می‌پوشاند\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"310\" y=\"24\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.5\">روش</text><text x=\"186\" y=\"24\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.5\">نانس از کجا می‌آید</text><text x=\"70\" y=\"24\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8\" fill=\"currentColor\" opacity=\"0.5\">کجا می‌شکند</text><path d=\"M14 32 H366\" stroke=\"currentColor\" stroke-width=\"0.8\" opacity=\"0.3\"/><rect x=\"264\" y=\"40\" width=\"96\" height=\"28\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><text x=\"312\" y=\"59\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"1.0\">تصادفی</text><text x=\"186\" y=\"59\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.8\">از مولد سیستم</text><text x=\"70\" y=\"59\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.75\">مولد خراب → کلید می‌رود</text><path d=\"M14 78 H366\" stroke=\"currentColor\" stroke-width=\"0.6\" opacity=\"0.2\"/><rect x=\"264\" y=\"84\" width=\"96\" height=\"28\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><text x=\"312\" y=\"103\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"1.0\">قطعی</text><text x=\"186\" y=\"103\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.8\">از کلید و پیام</text><text x=\"70\" y=\"103\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.75\">تزریق خطا → کلید می‌رود</text><path d=\"M14 122 H366\" stroke=\"currentColor\" stroke-width=\"0.6\" opacity=\"0.2\"/><rect x=\"264\" y=\"128\" width=\"96\" height=\"28\" rx=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\"/><text x=\"312\" y=\"147\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9.5\" fill=\"currentColor\" opacity=\"1.0\">ترکیبی</text><text x=\"186\" y=\"147\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"0.8\">کلید و پیام و کمی تصادفی</text><text x=\"70\" y=\"147\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"8.5\" fill=\"currentColor\" opacity=\"1\">هر دو پوشش داده می‌شود</text><text x=\"190\" y=\"206\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.65\">هر نسل، ضعف نسل قبل را بست و ضعف تازه‌ای باز کرد</text></svg>",
+        "fa": "سه نسل، و هر کدام ضعف قبلی را بست و ضعف تازه‌ای باز کرد",
+        "en": "Three generations, each closing the last weakness and opening a new one"
+      },
+      {
+        "svg": "<svg viewBox=\"0 0 380 236\" direction=\"ltr\" role=\"img\" aria-label=\"مراحل ساخت نانس قطعی با HMAC و بررسی بازه و تکرار در صورت لزوم\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"70\" y=\"22\" width=\"240\" height=\"32\" rx=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\"/><text x=\"190\" y=\"43\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">V و K را با مقادیر ثابت پر کن</text><path d=\"M190 54 V63\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M186 58 l4 6 4-6 z\" fill=\"currentColor\"/><rect x=\"70\" y=\"68\" width=\"240\" height=\"32\" rx=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\"/><text x=\"190\" y=\"89\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">کلید خصوصی و هش پیام را با <tspan direction=\"ltr\">HMAC</tspan> قاطی کن</text><path d=\"M190 100 V109\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M186 104 l4 6 4-6 z\" fill=\"currentColor\"/><rect x=\"70\" y=\"114\" width=\"240\" height=\"32\" rx=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\"/><text x=\"190\" y=\"135\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">از V، عدد k را بیرون بکش</text><path d=\"M190 146 V155\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M186 150 l4 6 4-6 z\" fill=\"currentColor\"/><rect x=\"70\" y=\"160\" width=\"240\" height=\"32\" rx=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\"/><text x=\"190\" y=\"181\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"1.0\">در بازهٔ ۱ تا n−۱ هست؟</text><path d=\"M70 176 H40 V38 H66\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-dasharray=\"4 3\" opacity=\"0.6\"/><path d=\"M70 38 l-7 -4 v8 z\" fill=\"currentColor\" opacity=\"0.6\"/><text x=\"34\" y=\"194\" text-anchor=\"end\" direction=\"rtl\" font-size=\"7.5\" fill=\"currentColor\" opacity=\"0.6\">اگر نه، دوباره</text><text x=\"190\" y=\"226\" text-anchor=\"middle\" direction=\"rtl\" font-size=\"9\" fill=\"currentColor\" opacity=\"0.7\">هیچ‌جای این مسیر، عدد تصادفی لازم نیست</text></svg>",
+        "fa": "همان HMAC، این بار برای ساختن چیزی که قرار بود تصادفی باشد",
+        "en": "The same HMAC, this time building what was supposed to be random"
+      }
+    ],
+    "fa": {
+      "title": "نانس قطعی",
+      "short": "حذف عدد تصادفی از امضا — k را از کلید خصوصی و پیام بساز، نه از مولد سیستم",
+      "body": "<p><span dir=\"ltr\">RFC 6979</span> جوابی است به خطرناک‌ترین ضعف <span dir=\"ltr\">ECDSA</span>. در مدخل نانس دیدیم که اگر <code>k</code> دو بار به کار برود، کلید خصوصی با دو معادله بیرون می‌افتد — و پلی‌استیشن ۳ و کیف‌پول‌های اندروید و <span dir=\"ltr\">Milk Sad</span> همه از همین‌جا شکستند. راه‌حلش رادیکال است: <strong>عدد تصادفی را حذف کن</strong>.</p><p><strong>ایده‌اش یک خط است:</strong> به‌جای گرفتن <code>k</code> از مولد تصادفی، از روی چیزهایی بسازش که از قبل داری — کلید خصوصی و هش پیام. هر دو موجودند و هیچ تصادفی‌ای لازم نیست.</p><p><strong>و چرا این امن است؟</strong> سؤال درستی است: مگر نگفتیم <code>k</code> باید غیرقابل پیش‌بینی باشد؟ جوابش این است که یکی از دو ورودی <em>کلید خصوصی</em> است. مهاجم هش پیام را دارد ولی کلید را ندارد، پس <code>k</code> برایش همچنان غیرقابل پیش‌بینی می‌ماند. <strong>قطعی بودن با قابل حدس بودن یکی نیست.</strong></p><p><strong>و مسئلهٔ تکرار؟</strong> اینجا اثر بهمنی کار را تمام می‌کند. دو پیامی که فقط یک کاراکتر فرق دارند، <code>k</code>های کاملاً بی‌ربط می‌گیرند — اندازه گرفتم: ۱۲۱ بیت از ۲۵۶ بیت، یعنی نزدیک نصف. پس دو پیام متفاوت هرگز به یک <code>k</code> نمی‌رسند.</p><p>و برای <em>همان</em> پیام، <code>k</code> یکسان می‌شود — که مشکلی نیست. آن معادلهٔ خطرناک وقتی کار می‌کند که دو پیام <em>متفاوت</em> با یک نانس امضا شوند؛ اگر پیام‌ها یکی باشند، مخرجِ <code>z₁ − z₂</code> صفر می‌شود و هیچ اطلاعاتی نشت نمی‌کند. امضای یکسان برای پیام یکسان، چیز تازه‌ای به مهاجم نمی‌دهد.</p><p><strong>و چطور ساخته می‌شود؟</strong> با <span dir=\"ltr\">HMAC</span> — همان چیزی که در مدخل خودش دیدیم. دو متغیر داخلی با مقادیر ثابت پر می‌شوند، کلید خصوصی و هش پیام با <span dir=\"ltr\">HMAC</span> در آن‌ها قاطی می‌شوند، <code>k</code> بیرون کشیده می‌شود، و اگر خارج از بازهٔ مجاز بود همه از نو تکرار می‌شود. چرا <span dir=\"ltr\">HMAC</span> و نه هش ساده؟ چون <span dir=\"ltr\">HMAC</span> دقیقاً برای ترکیب یک راز با داده ساخته شده و به حملهٔ تمدید طول ایمن است. همان درس، دوباره.</p><p><strong>و سه سود عملی دارد.</strong> اول اینکه یک نقطهٔ شکست کامل حذف می‌شود: دیگر مهم نیست دستگاه چقدر مولد تصادفی خوبی دارد، و یک دستگاه جاسازی‌شدهٔ ارزان هم امضای امن می‌سازد. دوم قابلیت تست: با نانس تصادفی هر اجرا امضای متفاوتی می‌دهد و نمی‌شود بردار آزمون نوشت، ولی با <span dir=\"ltr\">RFC 6979</span> می‌شود گفت «این ورودی باید دقیقاً این امضا را بدهد» — و خودِ <span dir=\"ltr\">RFC</span> بردارهای آزمون رسمی دارد. سوم بازتولید: اگر باگی گزارش شود، می‌شود دقیقاً همان نتیجه را دوباره ساخت.</p><p><strong>و ارتباطش با <span dir=\"ltr\">Ed25519</span>:</strong> آنجا همین ایده از اول در طراحی بود. تفاوت باقی‌مانده جای آن است، نه ماهیتش — در <span dir=\"ltr\">Ed25519</span> نانس قطعی <em>بخشی از تعریف الگوریتم</em> است و پیاده‌سازی چاره‌ای جز رعایتش ندارد، ولی در <span dir=\"ltr\">ECDSA</span> یک انتخاب پیاده‌سازی است و کتابخانه ممکن است رعایت نکند. پس <span dir=\"ltr\">RFC 6979</span> در واقع وصله‌ای برای <span dir=\"ltr\">ECDSA</span> است که همان خاصیتی را می‌دهد که <span dir=\"ltr\">Ed25519</span> از ابتدا داشت.</p><p><strong>و حالا نکته‌ای که ماجرا را کامل می‌کند: قطعی بودن خودش یک در تازه باز می‌کند.</strong> اگر مهاجم دسترسی فیزیکی داشته باشد و بتواند <em>خطا تزریق کند</em> — مثلاً با نوسان ولتاژ یا پالس لیزر، بعد از آنکه <code>k</code> حساب شد ولی پیش از پایان امضا — می‌تواند دو امضا با یک <code>k</code> و دو <code>z</code>ِ متفاوت بگیرد. و آن دقیقاً همان حالتی است که <span dir=\"ltr\">RFC 6979</span> قرار بود جلویش را بگیرد. اسمش حملهٔ خطای تفاضلی است.</p><p>راه‌حل امروزی «امضای پرچین‌شده» است: کمی تصادفیِ کمکی را <em>دوباره</em> به همان ورودی قطعی اضافه کن. <span dir=\"ltr\">BIP-340</span>ِ بیت‌کوین دقیقاً همین کار را می‌کند و منطقش هم دقیق است — هر مقدار تکرارنشونده‌ای در برابر تزریق خطا محافظت می‌کند، و اگر آن مقدار <em>غیرقابل پیش‌بینی</em> هم باشد در برابر بقیهٔ کانال‌های جانبی هم محافظت می‌کند. ولی چون بخش قطعی سر جایش می‌ماند، حتی اگر مولد تصادفی کاملاً خراب باشد نانس تکراری تولید نمی‌شود.</p><p>پس سه نسل داریم و هر کدام ضعف قبلی را بست و ضعف تازه‌ای باز کرد: تصادفی که با مولد خراب می‌شکست، قطعی که با تزریق خطا می‌شکند، و ترکیبی که هر دو را می‌پوشاند. و <span dir=\"ltr\">RFC 6979</span> همچنان لازم است — فقط دیگر کافی نیست.</p>",
+      "example": "<p>پیاده‌اش کردم و با بردارهای آزمون رسمی خودِ <span dir=\"ltr\">RFC</span> سنجیدم. روی منحنی <span dir=\"ltr\">P-256</span> با <span dir=\"ltr\">SHA-256</span> و پیام <span dir=\"ltr\">\"sample\"</span>:</p><pre><code>k = a6e3c57dd01abe90086538398355dd4c3b17aa873382b0f24d6129493d8aad60</code></pre><p>و حالا روی <span dir=\"ltr\">secp256k1</span>، با همان کلید خصوصی که در مدخل کلید خصوصی آمد. دو پیام که فقط در یک رقم فرق دارند:</p><pre><code>\"Send 1 BTC to Ali\"\n  k = 505663856769cd3448fb865a015f3fafb4d52ca43dfe04a4d0c135c994f52ede\n\n\"Send 2 BTC to Ali\"\n  k = 073c84d3c43901c353d03542ddbe8bafa9c185685b7c4143ed576e1996d7f29d</code></pre><p>۱۲۱ بیت از ۲۵۶ بیت فرق دارند — نزدیک نصف، همان چیزی که از یک هش سالم انتظار می‌رود. و امضای پیام اول، که هر بار اجرا کنی همین درمی‌آید:</p><pre><code>r = 772bf62844935ad5c870b0e098db3669821feeb3fbeed849d9e330ab94371229\ns = 3a15e58ca3e8d5f264307cbc8aa67ea7730371f44e6197fcac51b839af2dcce7</code></pre>"
+    },
+    "en": {
+      "title": "RFC 6979",
+      "short": "Removing the random number from signing — derive k from the key and message instead",
+      "body": "<p>RFC 6979 answers ECDSA's most dangerous weakness. The nonce entry showed that if <code>k</code> is used twice, two equations expose the private key — and the PlayStation 3, the Android wallets and Milk Sad all fell exactly there. Its remedy is radical: <strong>remove the random number</strong>.</p><p><strong>The idea is one line:</strong> instead of drawing <code>k</code> from a random source, build it from things you already have — the private key and the message hash. Both are present, and no randomness is needed.</p><p><strong>And why is that secure?</strong> A fair question: did we not say <code>k</code> must be unpredictable? The answer is that one of the two inputs is the <em>private key</em>. An attacker has the message hash but not the key, so <code>k</code> stays unpredictable to them. <strong>Deterministic is not the same as guessable.</strong></p><p><strong>And the repetition problem?</strong> Here the avalanche effect finishes the job. Two messages differing by a single character get entirely unrelated <code>k</code> values — I measured it: 121 bits of 256, close to half. So two different messages never land on the same <code>k</code>.</p><p>And for the <em>same</em> message the <code>k</code> is identical — which is fine. That dangerous equation works when two <em>different</em> messages are signed under one nonce; if the messages are the same, the denominator <code>z₁ − z₂</code> is zero and nothing leaks. An identical signature for an identical message tells an attacker nothing new.</p><p><strong>And how is it built?</strong> With HMAC — the very thing covered in its own entry. Two internal variables are filled with fixed values, the private key and message hash are stirred into them with HMAC, <code>k</code> is drawn out, and if it falls outside the permitted range the whole thing repeats. Why HMAC rather than a plain hash? Because HMAC is built precisely for combining a secret with data, and is immune to length extension. The same lesson again.</p><p><strong>And it brings three practical gains.</strong> First, a whole point of failure disappears: it no longer matters how good the device's random generator is, and a cheap embedded device signs just as securely. Second, testability: with a random nonce every run gives a different signature and no test vector can be written, while with RFC 6979 one can say \"this input must give exactly this signature\" — and the RFC ships official test vectors. Third, reproduction: when a bug is reported, the exact result can be produced again.</p><p><strong>And its relation to Ed25519:</strong> there the same idea was in the design from the start. The remaining difference is where it lives, not what it is — in Ed25519 the deterministic nonce is <em>part of the algorithm's definition</em> and an implementation has no choice, while in ECDSA it is an implementation decision a library may simply not make. So RFC 6979 is really a patch giving ECDSA the property Ed25519 had from the beginning.</p><p><strong>And now the point that completes the story: determinism opens a new door of its own.</strong> An attacker with physical access who can <em>inject a fault</em> — a voltage glitch or a laser pulse, after <code>k</code> is computed but before the signature finishes — can obtain two signatures sharing one <code>k</code> with two different <code>z</code> values. Which is precisely the situation RFC 6979 existed to prevent. It is called a differential fault attack.</p><p>The modern answer is a \"hedged\" signature: add a little auxiliary randomness back into the otherwise deterministic input. Bitcoin's BIP-340 does exactly this, and its reasoning is precise — any non-repeating value protects against fault injection, and if that value is also <em>unpredictable</em> it protects against other side channels too. But because the deterministic part remains, even a completely broken random generator cannot produce a repeated nonce.</p><p>So there are three generations, each closing the previous weakness and opening a new one: random, which broke on a bad generator; deterministic, which breaks under fault injection; and hedged, which covers both. RFC 6979 is still necessary — it is simply no longer sufficient.</p>",
+      "example": "<p>I implemented it and checked it against the RFC's own official test vectors. On P-256 with SHA-256 and the message <code>\"sample\"</code>:</p><pre><code>k = a6e3c57dd01abe90086538398355dd4c3b17aa873382b0f24d6129493d8aad60</code></pre><p>And now on secp256k1, with the same private key used in the private-key entry. Two messages differing in a single digit:</p><pre><code>\"Send 1 BTC to Ali\"\n  k = 505663856769cd3448fb865a015f3fafb4d52ca43dfe04a4d0c135c994f52ede\n\n\"Send 2 BTC to Ali\"\n  k = 073c84d3c43901c353d03542ddbe8bafa9c185685b7c4143ed576e1996d7f29d</code></pre><p>121 of 256 bits differ — close to half, which is what a sound hash should give. And the signature of the first message, which comes out the same on every run:</p><pre><code>r = 772bf62844935ad5c870b0e098db3669821feeb3fbeed849d9e330ab94371229\ns = 3a15e58ca3e8d5f264307cbc8aa67ea7730371f44e6197fcac51b839af2dcce7</code></pre>"
+    }
+  },
+  {
     "id": "ed25519",
     "tags": [
       "crypto",
@@ -773,7 +816,8 @@
       "public-key-cryptography",
       "private-key",
       "nonce",
-      "sha-256"
+      "sha-256",
+      "rfc-6979"
     ],
     "svg": [
       {
