@@ -248,7 +248,8 @@
       "length-extension",
       "hmac",
       "transaction",
-      "block"
+      "block",
+      "miner"
     ],
     "svg": [
       {
