@@ -52,7 +52,8 @@
       "utxo",
       "block",
       "transaction",
-      "miner"
+      "miner",
+      "bls"
     ],
     "fa": {
       "title": "نانس",
@@ -403,7 +404,8 @@
       "proof-of-work",
       "block",
       "node",
-      "ecdsa"
+      "ecdsa",
+      "bls"
     ],
     "svg": [
       {
