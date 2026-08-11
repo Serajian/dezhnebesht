@@ -750,7 +750,8 @@
       "ed25519",
       "rfc-6979",
       "transaction",
-      "scalar-multiplication"
+      "scalar-multiplication",
+      "validator"
     ],
     "svg": [
       {
