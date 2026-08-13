@@ -849,7 +849,8 @@
       "sha-256",
       "rfc-6979",
       "bls",
-      "solana"
+      "solana",
+      "cardano"
     ],
     "svg": [
       {
