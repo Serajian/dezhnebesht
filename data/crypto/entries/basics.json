@@ -129,7 +129,8 @@
       "wallet",
       "private-key",
       "ripemd-160",
-      "sha-256"
+      "sha-256",
+      "solana"
     ],
     "svg": [
       {
@@ -845,7 +846,8 @@
       "nonce",
       "sha-256",
       "rfc-6979",
-      "bls"
+      "bls",
+      "solana"
     ],
     "svg": [
       {
