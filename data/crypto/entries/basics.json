@@ -463,7 +463,8 @@
       "private-key",
       "ripemd-160",
       "base58",
-      "utxo"
+      "utxo",
+      "account-model"
     ],
     "fa": {
       "title": "کیف پول",
