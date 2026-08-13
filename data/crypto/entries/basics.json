@@ -421,7 +421,8 @@
       "ripemd-160",
       "hex",
       "length-extension",
-      "hmac"
+      "hmac",
+      "ethereum"
     ],
     "svg": [
       {
