@@ -130,7 +130,8 @@
       "private-key",
       "ripemd-160",
       "sha-256",
-      "solana"
+      "solana",
+      "cosmos"
     ],
     "svg": [
       {
@@ -942,7 +943,8 @@
       "validator",
       "scalar-multiplication",
       "nonce",
-      "public-key-cryptography"
+      "public-key-cryptography",
+      "cosmos"
     ],
     "svg": [
       {
