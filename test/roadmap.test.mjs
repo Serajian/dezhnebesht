@@ -127,3 +127,42 @@ test('faDigits رقم لاتین را فارسی می‌کند و بقیه را 
   assert.equal(faDigits('3 of 5'), '۳ of ۵');
   assert.equal(faDigits(0), '۰');
 });
+
+test('serializeProgress ورودی خراب را تحمل می‌کند', () => {
+  // readSet باید Set باشد؛ اگر نیست، خالی فرض می‌کنیم
+  assert.equal(serializeProgress(null), '[]');
+  assert.equal(serializeProgress(undefined), '[]');
+  assert.equal(serializeProgress({}), '[]');
+  assert.equal(serializeProgress(42), '[]');
+  assert.equal(serializeProgress(true), '[]');
+});
+
+test('stageProgress readSet خراب را تحمل می‌کند', () => {
+  const stage = { entries: ['bit', 'byte'] };
+  // readSet نیست؟ done صفر، total همان تعداد entries
+  assert.deepEqual(stageProgress(stage, null), { done: 0, total: 2 });
+  assert.deepEqual(stageProgress(stage, undefined), { done: 0, total: 2 });
+  assert.deepEqual(stageProgress(stage, {}), { done: 0, total: 2 });
+  assert.deepEqual(stageProgress(stage, 42), { done: 0, total: 2 });
+  assert.deepEqual(stageProgress(stage, []), { done: 0, total: 2 });
+});
+
+test('nextUnreadId readSet خراب را تحمل می‌کند', () => {
+  const roadmap = { stages: [{ entries: ['bit', 'byte'] }] };
+  // readSet نیست؟ اولین مدخل را برمی‌دهد
+  assert.equal(nextUnreadId(roadmap, null), 'bit');
+  assert.equal(nextUnreadId(roadmap, undefined), 'bit');
+  assert.equal(nextUnreadId(roadmap, {}), 'bit');
+  assert.equal(nextUnreadId(roadmap, 42), 'bit');
+  assert.equal(nextUnreadId(roadmap, []), 'bit');
+});
+
+test('entriesMissingFromRoadmap entries خراب را تحمل می‌کند', () => {
+  const roadmap = { stages: [{ entries: ['bit'] }] };
+  // entries باید آرایه باشد؛ اگر نیست، خالی فرض می‌کنیم
+  assert.deepEqual(entriesMissingFromRoadmap(roadmap, null, 'crypto'), []);
+  assert.deepEqual(entriesMissingFromRoadmap(roadmap, undefined, 'crypto'), []);
+  assert.deepEqual(entriesMissingFromRoadmap(roadmap, {}, 'crypto'), []);
+  assert.deepEqual(entriesMissingFromRoadmap(roadmap, 42, 'crypto'), []);
+  assert.deepEqual(entriesMissingFromRoadmap(roadmap, true, 'crypto'), []);
+});

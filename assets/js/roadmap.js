@@ -89,17 +89,26 @@ export function parseProgress(raw) {
 }
 
 export function serializeProgress(readSet) {
+  // اگر readSet Set نیست، خالی فرض می‌کنیم تا هیچ readSet خراب
+  // سایت را نشکند.
+  if (!(readSet instanceof Set)) return JSON.stringify([]);
   return JSON.stringify([...readSet]);
 }
 
 /** شمارش یک مرحله. مرحله‌ی بی‌شکل صفر می‌دهد، نه استثنا. */
 export function stageProgress(stage, readSet) {
   const ids = Array.isArray(stage?.entries) ? stage.entries : [];
+  // اگر readSet Set نیست، خالی فرض می‌کنیم تا هیچ readSet خراب
+  // سایت را نشکند.
+  if (!(readSet instanceof Set)) return { done: 0, total: ids.length };
   return { done: ids.filter((id) => readSet.has(id)).length, total: ids.length };
 }
 
 /** اولین قدمِ خوانده‌نشده — همان که نشان «اینجایی» می‌گیرد. */
 export function nextUnreadId(roadmap, readSet) {
+  // اگر readSet Set نیست، خالی فرض می‌کنیم تا هیچ readSet خراب
+  // سایت را نشکند.
+  if (!(readSet instanceof Set)) readSet = new Set();
   return roadmapEntryIds(roadmap).find((id) => !readSet.has(id)) ?? null;
 }
 
@@ -109,6 +118,9 @@ export function nextUnreadId(roadmap, readSet) {
  * از مسیر جا می‌ماند.
  */
 export function entriesMissingFromRoadmap(roadmap, entries, topicId) {
+  // اگر entries آرایه نیست، خالی فرض می‌کنیم تا هیچ entries خراب
+  // سایت را نشکند.
+  if (!Array.isArray(entries)) return [];
   const inRoadmap = new Set(roadmapEntryIds(roadmap));
   return entries
     .filter((entry) => entry.topic === topicId && !inRoadmap.has(entry.id))
