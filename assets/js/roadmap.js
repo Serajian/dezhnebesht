@@ -64,3 +64,63 @@ export function validateRoadmap(roadmap, entries, topicId) {
   }
   return errors;
 }
+
+const PROGRESS_PREFIX = 'dezhnebesht:roadmap:';
+
+/** کلید به‌ازای هر موضوع، چون هر موضوع مسیر جداگانه‌ای دارد. */
+export function progressKey(topicId) {
+  return `${PROGRESS_PREFIX}${topicId}`;
+}
+
+/**
+ * پیشرفتِ ذخیره‌شده را می‌خواند. آرایه‌ی شناسه ذخیره می‌شود نه ایندکس:
+ * ترتیب نقشه ممکن است عوض شود، شناسه‌ها نه. هر چیز دیگری «هیچ پیشرفتی»
+ * است، نه استثنا.
+ */
+export function parseProgress(raw) {
+  if (!raw) return new Set();
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return new Set();
+    return new Set(parsed.filter((id) => typeof id === 'string'));
+  } catch {
+    return new Set();
+  }
+}
+
+export function serializeProgress(readSet) {
+  return JSON.stringify([...readSet]);
+}
+
+/** شمارش یک مرحله. مرحله‌ی بی‌شکل صفر می‌دهد، نه استثنا. */
+export function stageProgress(stage, readSet) {
+  const ids = Array.isArray(stage?.entries) ? stage.entries : [];
+  return { done: ids.filter((id) => readSet.has(id)).length, total: ids.length };
+}
+
+/** اولین قدمِ خوانده‌نشده — همان که نشان «اینجایی» می‌گیرد. */
+export function nextUnreadId(roadmap, readSet) {
+  return roadmapEntryIds(roadmap).find((id) => !readSet.has(id)) ?? null;
+}
+
+/**
+ * مدخل‌هایی که در هیچ مرحله‌ای نیستند. این خطا نیست — افزودن مدخل تازه
+ * نباید سایت را بشکند — ولی باید در خودآزمایی دیده شود، وگرنه بی‌صدا
+ * از مسیر جا می‌ماند.
+ */
+export function entriesMissingFromRoadmap(roadmap, entries, topicId) {
+  const inRoadmap = new Set(roadmapEntryIds(roadmap));
+  return entries
+    .filter((entry) => entry.topic === topicId && !inRoadmap.has(entry.id))
+    .map((entry) => entry.id);
+}
+
+const FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+
+/**
+ * درج مستقیم عدد جاوااسکریپت در متن فارسی رقم لاتین می‌دهد و کنار متن
+ * فارسی غلط به نظر می‌رسد. این تابع فقط رقم‌ها را عوض می‌کند.
+ */
+export function faDigits(value) {
+  return String(value).replace(/[0-9]/g, (digit) => FA_DIGITS[Number(digit)]);
+}
