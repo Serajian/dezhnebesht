@@ -240,7 +240,7 @@ function render() {
       dom.main.append(view.renderNotFound(state.route.topic || 'roadmap'));
     }
   } else if (state.route.view === 'self-test') {
-    dom.main.append(view.renderSelfTest(state.entries, state.categories, state.errors, state.entriesById, state.topics));
+    dom.main.append(view.renderSelfTest(state.entries, state.categories, state.errors, state.entriesById, state.topics, state.roadmaps));
   }
 }
 

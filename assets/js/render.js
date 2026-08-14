@@ -1,7 +1,7 @@
 import { localized } from './data.js';
 import { t, dirFor, current, LANGS } from './i18n.js';
 import { groupId, resolveGroupOpen } from './groups.js';
-import { stageProgress, nextUnreadId, faDigits } from './roadmap.js';
+import { stageProgress, nextUnreadId, faDigits, entriesMissingFromRoadmap } from './roadmap.js';
 
 /**
  * یک فرمول کوتاه داخل <code> نباید وسطش بشکند: «p − y» که سرِ سطر دو
@@ -477,7 +477,7 @@ function reportSection(title, items) {
  * هر مدخل را در هر دو زبان واقعاً رندر می‌کند تا خطاهای رندری که
  * فقط روی یک زبان یا یک شکل داده رخ می‌دهند بیرون بیفتند.
  */
-export function renderSelfTest(entries, categories, errors, entriesById, topics = []) {
+export function renderSelfTest(entries, categories, errors, entriesById, topics = [], roadmaps = new Map()) {
   const renderFailures = [];
   const untranslated = [];
 
@@ -490,6 +490,18 @@ export function renderSelfTest(entries, categories, errors, entriesById, topics 
       }
     }
     if (!entry.en) untranslated.push(entry.id);
+  }
+
+  // مدخلی که به هیچ نقشه‌ای اضافه نشده خطای اعتبارسنجی نیست — ولی اگر
+  // اینجا دیده نشود، تا کسی به‌طور اتفاقی نقشه را باز نکند بی‌صدا از
+  // مسیر جا می‌ماند. موضوعی که اصلاً نقشه ندارد رد می‌شود، نه خطا.
+  const notInRoadmap = [];
+  for (const topic of topics) {
+    const roadmap = roadmaps.get(topic.id);
+    if (!roadmap) continue;
+    for (const id of entriesMissingFromRoadmap(roadmap, entries, topic.id)) {
+      notInRoadmap.push(topics.length > 1 ? `${topic.id}/${id}` : id);
+    }
   }
 
   const lang = current();
@@ -513,6 +525,7 @@ export function renderSelfTest(entries, categories, errors, entriesById, topics 
     reportSection(t('selftest.renderErrors'), renderFailures),
     reportSection(t('selftest.validation'), errors.map((e) => `${e.file} › ${e.id} — ${e.message}`)),
     reportSection(t('selftest.untranslated'), untranslated),
+    reportSection(t('selftest.notInRoadmap'), notInRoadmap),
     el(
       'div',
       { class: 'group' },
