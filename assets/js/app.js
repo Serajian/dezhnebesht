@@ -4,6 +4,7 @@ import { filterEntries } from './search.js';
 import * as router from './router.js';
 import * as view from './render.js';
 import { resolveActiveTopicId, parseGroupState } from './groups.js';
+import { progressKey, parseProgress, serializeProgress } from './roadmap.js';
 
 const VIEW_KEY = 'glossary:index-view';
 const THEME_KEY = 'glossary:theme';
@@ -32,6 +33,7 @@ const state = {
   categories: [],
   entries: [],
   entriesById: new Map(),
+  roadmaps: new Map(),
   errors: [],
   route: { view: 'index', topic: '', tag: '' },
   query: '',
@@ -61,6 +63,26 @@ function readGroupState() {
     return parseGroupState(localStorage.getItem(GROUPS_KEY));
   } catch {
     return {};
+  }
+}
+
+/**
+ * پیشرفت به‌ازای هر موضوع، در try/catch چون حالت خصوصی می‌تواند
+ * localStorage را ممنوع کند و نقشه باید بدون حافظه هم دیده شود.
+ */
+function readProgress(topicId) {
+  try {
+    return parseProgress(localStorage.getItem(progressKey(topicId)));
+  } catch {
+    return new Set();
+  }
+}
+
+function saveProgress(topicId, readSet) {
+  try {
+    localStorage.setItem(progressKey(topicId), serializeProgress(readSet));
+  } catch {
+    // نوشتن ممکن نشد؛ تیک‌ها در همین نشست کار می‌کنند و بس.
   }
 }
 
@@ -138,6 +160,11 @@ function buildBreadcrumb(lang) {
   if (state.route.view === 'self-test') {
     return view.renderBreadcrumb({ lang, topic: null, category: null, current: i18n.t('selftest.title') });
   }
+  if (state.route.view === 'roadmap') {
+    const topicId = resolveActiveTopicId(state.topics, state.route.topic);
+    const topic = state.topics.find((item) => item.id === topicId) ?? null;
+    return view.renderBreadcrumb({ lang, topic, category: null, current: i18n.t('roadmap.title') });
+  }
   return null;
 }
 
@@ -146,6 +173,8 @@ function render() {
   dom.main.replaceChildren();
 
   const isIndex = state.route.view === 'index';
+  const isRoadmap = state.route.view === 'roadmap';
+  const roadmapTopicId = isRoadmap ? resolveActiveTopicId(state.topics, state.route.topic) : '';
   dom.searchbar.hidden = !isIndex;
   dom.viewToggle.hidden = !isIndex;
   dom.chromeStart.hidden = !isIndex;
@@ -187,6 +216,7 @@ function render() {
       topicTotals: state.topicTotals,
       categoryTotals: state.categoryTotals,
       storedGroupState: groupState,
+      roadmaps: state.roadmaps,
     }));
 
     markProgrammaticGroups();
@@ -197,6 +227,18 @@ function render() {
         ? view.renderEntry(entry, { lang, categories: state.categories, entriesById: state.entriesById, topics: state.topics })
         : view.renderNotFound(state.route.id),
     );
+  } else if (isRoadmap) {
+    const roadmap = state.roadmaps.get(roadmapTopicId);
+    if (roadmap) {
+      dom.main.append(view.renderRoadmap(roadmap, {
+        lang,
+        entriesById: state.entriesById,
+        readSet: readProgress(roadmapTopicId),
+      }));
+    } else {
+      // موضوعی بدون نقشه: به فهرست برگرد، نه صفحه‌ی خالی.
+      dom.main.append(view.renderNotFound(state.route.topic || 'roadmap'));
+    }
   } else if (state.route.view === 'self-test') {
     dom.main.append(view.renderSelfTest(state.entries, state.categories, state.errors, state.entriesById, state.topics));
   }
@@ -309,6 +351,38 @@ dom.main.addEventListener('click', (event) => {
   }
 });
 
+// شنونده‌ی جدا برای نمای نقشه‌ی راه — روی dom.main چون فرزندانش با هر
+// رندر جایگزین می‌شوند، ولی خودِ dom.main هرگز عوض نمی‌شود.
+dom.main.addEventListener('click', (event) => {
+  const node = event.target.closest('.node');
+  if (node) {
+    const topicId = resolveActiveTopicId(state.topics, state.route.topic);
+    const readSet = readProgress(topicId);
+    const id = node.dataset.entryId;
+    if (readSet.has(id)) readSet.delete(id);
+    else readSet.add(id);
+    saveProgress(topicId, readSet);
+    render();
+    return;
+  }
+
+  const reset = event.target.closest('.roadmap-reset');
+  if (reset) {
+    // برگشت‌ناپذیر است، پس تأیید می‌گیرد.
+    if (!window.confirm(i18n.t('roadmap.resetConfirm'))) return;
+    saveProgress(resolveActiveTopicId(state.topics, state.route.topic), new Set());
+    render();
+    return;
+  }
+
+  const seg = event.target.closest('.seg');
+  if (seg) {
+    document
+      .getElementById(`roadmap-stage-${seg.dataset.stageIndex}`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
 function clearSearch() {
   state.query = '';
   dom.search.value = '';
@@ -364,11 +438,13 @@ document.addEventListener('keydown', (event) => {
 async function init() {
   i18n.applyToDocument();
 
-  const { topics, categories, entries, errors } = await loadAll();
+  const result = await loadAll();
+  const { topics, categories, entries, errors } = result;
   state.topics = topics;
   state.categories = categories;
   state.entries = entries;
   state.entriesById = new Map(entries.map((entry) => [entry.id, entry]));
+  state.roadmaps = result.roadmaps ?? new Map();
   state.errors = errors;
 
   // شمار کل هر موضوع/دسته، مستقل از جستجو — رِیل ناوبری پایدار است،

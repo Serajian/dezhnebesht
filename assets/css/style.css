@@ -542,6 +542,13 @@ body {
 }
 .rail-subnav a:hover { background: var(--bg-press); color: var(--text); }
 
+.rail-roadmap {
+  display: block; margin-top: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 8px;
+  font-size: var(--fs-subhead); color: var(--accent); text-decoration: none;
+  border: 1px solid var(--separator);
+}
+.rail-roadmap:hover { background: var(--accent-tint); }
+
 /* ---------- گروه‌ها (نمای فهرست) ---------- */
 .group { margin-block-end: 1.75rem; scroll-margin-top: calc(var(--chrome-h) + 1rem); }
 .group[hidden] { display: none; }
