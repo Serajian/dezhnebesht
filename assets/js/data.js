@@ -1,3 +1,5 @@
+import { validateRoadmap } from './roadmap.js';
+
 const REQUIRED_FIELDS = ['title', 'short', 'body'];
 
 /**
@@ -166,6 +168,26 @@ async function fetchJson(path) {
 }
 
 /**
+ * نقشه اختیاری است: نبودنش یعنی آن موضوع مسیر مطالعه ندارد، نه اینکه
+ * چیزی خراب است. پس ۴۰۴ به «غایب» ترجمه می‌شود و بقیه‌ی شکست‌ها به خطا.
+ */
+async function fetchRoadmap(path) {
+  let response;
+  try {
+    response = await fetch(path, { cache: 'no-store' });
+  } catch (error) {
+    return { error: error.message };
+  }
+  if (response.status === 404) return { absent: true };
+  if (!response.ok) return { error: `خوانده نشد (HTTP ${response.status})` };
+  try {
+    return { roadmap: await response.json() };
+  } catch {
+    return { error: 'JSON نامعتبر است' };
+  }
+}
+
+/**
  * همه‌ی دسته‌ها و مدخل‌ها را لود می‌کند. هرگز throw نمی‌کند —
  * هر شکستی به صورت یک خطا در آرایه‌ی errors برمی‌گردد تا سایت بالا بیاید.
  */
@@ -180,6 +202,7 @@ export async function loadAll(basePath = 'data') {
       categories: [],
       entries: [],
       errors: [{ file: 'topics.json', id: '', message: error.message }],
+      roadmaps: new Map(),
     };
   }
 
@@ -240,6 +263,25 @@ export async function loadAll(basePath = 'data') {
     }
   }
 
+  // نقشه‌ها بعد از مدخل‌ها لود می‌شوند چون اعتبارسنجی‌شان به فهرست
+  // مدخل‌های همان موضوع نیاز دارد.
+  const roadmaps = new Map();
+  const roadmapResults = await Promise.all(
+    topics.map(async (topic) => ({ topic, result: await fetchRoadmap(`${basePath}/${topic.id}/roadmap.json`) })),
+  );
+  for (const { topic, result } of roadmapResults) {
+    if (result.absent) continue;
+    if (result.error) {
+      errors.push({ file: `${topic.id}/roadmap.json`, id: '', message: result.error });
+      continue;
+    }
+    const roadmapErrors = validateRoadmap(result.roadmap, entries, topic.id);
+    errors.push(...roadmapErrors);
+    // نقشه‌ی خراب اصلاً وارد نمی‌شود؛ نیمه‌کاره رندر کردنش بدتر از
+    // نداشتنش است و خطایش همین حالا در بنر آمد.
+    if (roadmapErrors.length === 0) roadmaps.set(topic.id, result.roadmap);
+  }
+
   errors.push(...validate(categories, entries, topics));
-  return { topics, categories, entries: entries.filter(canRender), errors };
+  return { topics, categories, entries: entries.filter(canRender), errors, roadmaps };
 }
