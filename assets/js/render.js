@@ -1,6 +1,7 @@
 import { localized } from './data.js';
 import { t, dirFor, current, LANGS } from './i18n.js';
 import { groupId, resolveGroupOpen } from './groups.js';
+import { stageProgress, nextUnreadId, faDigits } from './roadmap.js';
 
 /**
  * یک فرمول کوتاه داخل <code> نباید وسطش بشکند: «p − y» که سرِ سطر دو
@@ -508,6 +509,159 @@ export function renderSelfTest(entries, categories, errors, entriesById, topics 
     ),
   );
   return el('div', { class: 'layout' }, column);
+}
+
+/* ---------- نمای نقشه ---------- */
+
+const PER_ROW = 4;
+
+/**
+ * قطعه‌ی مارپیچ برای یک مرحله. نسبت پیشرفت روی CSS variable می‌رود تا
+ * انیمیشن در CSS بماند و اینجا فقط داده باشد.
+ */
+function roadmapSegment(stage, index, content, progress) {
+  const ratio = progress.total === 0 ? 0 : progress.done / progress.total;
+  const button = el(
+    'button',
+    {
+      class: progress.total > 0 && progress.done === progress.total ? 'seg is-done' : 'seg',
+      type: 'button',
+      'data-stage-index': String(index),
+      style: `--p:${ratio.toFixed(3)}`,
+    },
+    el('span', { class: 'seg-fill', 'aria-hidden': 'true' }),
+    el(
+      'span',
+      { class: 'seg-in' },
+      el('span', { class: 'seg-num' }, `${t('roadmap.stageLabel')} ${faDigits(index + 1)}`),
+      el('span', { class: 'seg-t' }, content.title),
+      el('span', { class: 'seg-c' }, `${faDigits(progress.done)} ${t('roadmap.of')} ${faDigits(progress.total)}`),
+    ),
+  );
+  return button;
+}
+
+/**
+ * نوار مارپیچ: سطرها یکی‌درمیان جهتشان عوض می‌شود و انتهای هر سطر با یک
+ * قوس به سطر بعد وصل است.
+ */
+function roadmapSnake(stages, lang, readSet) {
+  const rows = [];
+  for (let i = 0; i < stages.length; i += PER_ROW) rows.push(stages.slice(i, i + PER_ROW));
+
+  let index = 0;
+  const rowNodes = rows.map((row, rowIndex) => {
+    const children = [];
+    if (rowIndex === 0) children.push(el('span', { class: 'cap start' }, t('roadmap.start')));
+    for (const stage of row) {
+      const content = stage[lang] ?? stage.fa ?? {};
+      children.push(roadmapSegment(stage, index, content, stageProgress(stage, readSet)));
+      index += 1;
+    }
+    if (rowIndex === rows.length - 1) children.push(el('span', { class: 'cap finish' }, t('roadmap.finish')));
+    if (rowIndex < rows.length - 1) children.push(el('span', { class: 'turn', 'aria-hidden': 'true' }));
+    return el('div', { class: rowIndex % 2 === 0 ? 'srow r1' : 'srow r2' }, children);
+  });
+
+  return el('div', { class: 'snake' }, rowNodes);
+}
+
+/** یک قدم: گره‌ی تیک‌خور + عنوان و توضیح کوتاه که به مدخل لینک است. */
+function roadmapStep(entry, lang, readSet, nextId) {
+  const content = localized(entry, lang);
+  const isRead = readSet.has(entry.id);
+  const classes = ['step'];
+  if (isRead) classes.push('read');
+  if (entry.id === nextId) classes.push('next');
+
+  return el(
+    'div',
+    { class: classes.join(' '), 'data-entry-id': entry.id },
+    el(
+      'button',
+      {
+        class: 'node',
+        type: 'button',
+        'data-entry-id': entry.id,
+        'aria-pressed': String(isRead),
+      },
+      // گره متن دیدنی ندارد، پس بدون این برچسب برای صفحه‌خوان بی‌معناست.
+      el('span', { class: 'sr-only' }, t('roadmap.markRead').replace('{title}', content.title)),
+    ),
+    el(
+      'a',
+      { class: 'step-body', href: `#/t/${encodeURIComponent(entry.id)}` },
+      el('span', { class: 'step-title' }, content.title),
+      el('span', { class: 'step-short' }, content.short ?? ''),
+    ),
+    el('span', { class: 'here' }, t('roadmap.here')),
+  );
+}
+
+export function renderRoadmap(roadmap, { lang, entriesById, readSet }) {
+  const stages = Array.isArray(roadmap?.stages) ? roadmap.stages : [];
+  const total = stages.reduce((sum, stage) => sum + stageProgress(stage, readSet).total, 0);
+  const done = stages.reduce((sum, stage) => sum + stageProgress(stage, readSet).done, 0);
+  const nextId = nextUnreadId(roadmap, readSet);
+
+  const column = el('div', { class: 'column roadmap' });
+  column.append(el('h1', { class: 'display-title' }, t('roadmap.title')));
+  column.append(el('p', { class: 'roadmap-lede' }, t('roadmap.lede')));
+  column.append(roadmapSnake(stages, lang, readSet));
+
+  const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+  column.append(
+    el(
+      'div',
+      { class: 'pbar' },
+      el(
+        'div',
+        { class: 'prow' },
+        el('b', { class: 'pbar-done' }, faDigits(done)),
+        el('span', {}, t('roadmap.progress').replace('{total}', faDigits(total))),
+        el('span', { class: 'pbar-spacer' }),
+        el('button', { class: 'roadmap-reset', type: 'button' }, t('roadmap.reset')),
+      ),
+      el(
+        'div',
+        { class: 'track' },
+        el('div', { class: 'fill', style: `width:${percent}%` }),
+      ),
+    ),
+  );
+
+  const road = el('div', { class: 'road' });
+  stages.forEach((stage, index) => {
+    const content = stage[lang] ?? stage.fa ?? {};
+    const progress = stageProgress(stage, readSet);
+    const section = el('section', {
+      class: progress.total > 0 && progress.done === progress.total ? 'stage is-done' : 'stage',
+      id: `roadmap-stage-${index}`,
+    });
+    section.append(
+      el(
+        'div',
+        { class: 'milestone' },
+        el('span', { class: 'm-node' }, faDigits(index + 1)),
+        el(
+          'div',
+          { class: 'm-text' },
+          el('h2', {}, content.title ?? ''),
+          el('p', { class: 'why' }, content.why ?? ''),
+        ),
+        el('span', { class: 'm-count' }, `${faDigits(progress.done)} ${t('roadmap.of')} ${faDigits(progress.total)}`),
+      ),
+    );
+    for (const id of Array.isArray(stage.entries) ? stage.entries : []) {
+      const entry = entriesById.get(id);
+      // مدخلی که در نقشه هست ولی مدخلش نیست در اعتبارسنجی خطا داده و
+      // نقشه اصلاً وارد نشده؛ این فقط محافظ آخر است.
+      if (entry) section.append(roadmapStep(entry, lang, readSet, nextId));
+    }
+    road.append(section);
+  });
+  column.append(road);
+  return column;
 }
 
 export function renderErrorBanner(errors) {

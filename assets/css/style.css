@@ -986,3 +986,171 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
   color: var(--text-tertiary);
   text-align: center;
 }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ---------- نقشهٔ راه ---------- */
+.roadmap-lede { color: var(--text-prose); margin-top: 0.5rem; }
+
+/* مارپیچ: سطرها یکی‌درمیان جهت عوض می‌کنند و با یک قوس به هم می‌رسند */
+.snake { margin: 2rem 0 0.5rem; }
+.srow { display: flex; align-items: stretch; position: relative; margin-top: 1.5rem; }
+.srow:first-child { margin-top: 0; }
+.srow.r2 { direction: ltr; }
+.srow.r1 { margin-inline-end: 2.4rem; }
+.srow.r2 { margin-inline-start: 2.4rem; }
+
+.seg {
+  position: relative; flex: 1; min-width: 0; height: 4.5rem; border: 0; padding: 0;
+  cursor: pointer; font-family: inherit; background: var(--bg-elevated);
+  border-block: 1px solid var(--separator); overflow: hidden; transition: filter var(--dur-fast);
+}
+.srow.r1 .seg { clip-path: polygon(100% 0, 14px 0, 0 50%, 14px 100%, 100% 100%, calc(100% - 14px) 50%); }
+.srow.r2 .seg { clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%, 14px 50%); }
+.srow.r1 .seg:first-of-type { clip-path: polygon(100% 0, 14px 0, 0 50%, 14px 100%, 100% 100%); }
+.seg:hover { filter: brightness(1.14); }
+.seg:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+
+.seg-fill {
+  position: absolute; inset: 0; background: var(--accent); opacity: 0.16;
+  transform-origin: right center; transform: scaleX(var(--p, 0));
+  transition: transform var(--dur-med) var(--ease);
+}
+.srow.r2 .seg-fill { transform-origin: left center; }
+.seg-in {
+  position: relative; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; height: 100%; gap: 0.05rem; padding: 0 1.35rem; direction: rtl;
+}
+.seg-num { font-size: 0.625rem; color: var(--text-tertiary); }
+.seg-t {
+  font-size: 0.875rem; font-weight: 650; letter-spacing: -0.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+.seg-c { font-size: 0.6875rem; color: var(--text-secondary); }
+.seg.is-done .seg-t { color: var(--accent); }
+
+.cap {
+  flex: none; width: 4.5rem; height: 4.5rem; border-radius: 50%; display: grid;
+  place-items: center; font-size: 0.8125rem; font-weight: 650; z-index: 2;
+  border: 2px solid var(--separator); background: var(--bg-elevated); color: var(--text-secondary);
+}
+.cap.start { margin-inline-end: -1.1rem; }
+.cap.finish { margin-inline-start: -1.1rem; direction: rtl; }
+.srow.r2 .cap.finish { margin-inline-start: 0; margin-inline-end: -1.1rem; }
+
+.turn {
+  position: absolute; top: 0.6rem; width: 2.6rem; height: calc(100% + 1.5rem);
+  border: 2px solid var(--separator); pointer-events: none;
+}
+.srow.r1 .turn {
+  inset-inline-end: -1.6rem; border-inline-start: 0;
+  border-start-end-radius: 2.2rem; border-end-end-radius: 2.2rem;
+}
+.srow.r2 .turn {
+  inset-inline-start: -1.6rem; border-inline-end: 0;
+  border-start-start-radius: 2.2rem; border-end-start-radius: 2.2rem;
+}
+
+/* نوار پیشرفت */
+.pbar {
+  position: sticky; top: var(--chrome-h); z-index: 3; margin: 1.75rem 0 2rem;
+  padding: 0.85rem 1.1rem; border: 1px solid var(--separator); border-radius: 14px;
+  background: var(--chrome-bg); backdrop-filter: blur(var(--blur-amt)) saturate(var(--sat-amt));
+  box-shadow: var(--shadow-1);
+}
+.prow { display: flex; align-items: baseline; gap: 0.5rem; font-size: var(--fs-subhead); color: var(--text-secondary); }
+.prow b { color: var(--text); font-size: var(--fs-title); font-weight: 700; }
+.pbar-spacer { flex: 1; }
+.roadmap-reset {
+  font-size: var(--fs-caption); color: var(--text-tertiary); background: none;
+  border: 0; cursor: pointer; font-family: inherit; padding: 0.3rem 0.55rem; border-radius: 7px;
+}
+.roadmap-reset:hover { color: var(--accent); background: var(--bg-press); }
+.track { margin-top: 0.6rem; height: 6px; border-radius: 99px; background: var(--bg-press); overflow: hidden; }
+.fill { height: 100%; border-radius: 99px; background: var(--accent); transition: width var(--dur-med) var(--ease); }
+
+/* مسیر عمودی. inset-inline-start در راست‌به‌چپ لبه‌ی راست است — همان‌جا
+   که گره‌ها هستند. */
+.road { position: relative; }
+.road::before {
+  content: ''; position: absolute; top: 0.6rem; bottom: 1rem; inset-inline-start: 0.92rem;
+  width: 2px; background: var(--separator); border-radius: 2px;
+}
+.roadmap .stage { position: relative; scroll-margin-top: calc(var(--chrome-h) + 5rem); }
+.milestone { display: flex; align-items: center; gap: 0.9rem; margin: 1.9rem 0 0.6rem; position: relative; z-index: 2; }
+.m-node {
+  flex: none; width: 1.9rem; height: 1.9rem; margin-inline-start: -0.06rem; border-radius: 50%;
+  border: 2px solid var(--separator); background: var(--bg); display: grid; place-items: center;
+  font-size: 0.8125rem; font-weight: 650; color: var(--text-secondary); transition: all var(--dur-med);
+}
+.roadmap .stage.is-done .m-node { background: var(--accent); border-color: var(--accent); color: #fff; }
+.m-text { flex: 1; min-width: 0; }
+.m-text h2 { font-size: var(--fs-title); font-weight: 650; letter-spacing: -0.01em; line-height: 1.5; }
+.why { font-size: var(--fs-subhead); color: var(--text-tertiary); line-height: 1.55; }
+.m-count {
+  flex: none; font-size: var(--fs-caption); color: var(--text-tertiary);
+  background: var(--bg-press); border-radius: 99px; padding: 0.1rem 0.55rem; white-space: nowrap;
+}
+
+.roadmap .step { display: flex; align-items: center; gap: 0.9rem; padding: 0.28rem 0; position: relative; z-index: 2; }
+.node {
+  flex: none; width: 1.9rem; height: 1.9rem; margin-inline-start: -0.06rem; border-radius: 50%;
+  cursor: pointer; border: 2px solid var(--separator); background: var(--bg);
+  display: grid; place-items: center; padding: 0; transition: all var(--dur-fast);
+}
+.node::after {
+  content: ''; width: 0.42rem; height: 0.42rem; border-radius: 50%;
+  background: var(--text-tertiary); opacity: 0.55; transition: all var(--dur-fast);
+}
+.node:hover { border-color: var(--accent); transform: scale(1.08); }
+.node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.roadmap .step.read .node { background: var(--accent); border-color: var(--accent); }
+.roadmap .step.read .node::after {
+  width: 1.05rem; height: 1.05rem; border-radius: 0; opacity: 1; background: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.4l3 3 6-6' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 100%;
+}
+.roadmap .step.next .node { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-tint); }
+.roadmap .step.next .node::after { background: var(--accent); opacity: 1; }
+.step-body {
+  flex: 1; min-width: 0; text-decoration: none; color: inherit; display: flex;
+  flex-direction: column; padding: 0.35rem 0.6rem; border-radius: 9px; transition: background var(--dur-fast);
+}
+.step-body:hover { background: var(--bg-press); }
+.step-title { font-size: var(--fs-body); font-weight: 550; line-height: 1.5; }
+.step-short {
+  font-size: var(--fs-subhead); color: var(--text-tertiary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.step-body:hover .step-title { color: var(--accent); }
+.roadmap .step.read .step-title { color: var(--text-tertiary); font-weight: 450; }
+.roadmap .step.read .step-short { opacity: 0.45; }
+.here {
+  display: none; flex: none; font-size: 0.6875rem; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 99px; padding: 0.08rem 0.5rem; white-space: nowrap;
+}
+.roadmap .step.next .here { display: block; }
+
+/* زیر ۷۰۴ پیکسل مارپیچ به یک ستون تبدیل می‌شود و قوس‌ها می‌روند */
+@media (max-width: 44rem) {
+  .srow, .srow.r2 { flex-direction: column; direction: rtl; margin: 0; }
+  .seg,
+  .srow.r1 .seg,
+  .srow.r2 .seg,
+  .srow.r1 .seg:first-of-type {
+    clip-path: none; height: 3.4rem; border: 1px solid var(--separator);
+    border-radius: 10px; margin-bottom: 0.4rem;
+  }
+  .seg-in { flex-direction: row; gap: 0.6rem; justify-content: flex-start; }
+  .seg-c { margin-inline-start: auto; }
+  .turn { display: none; }
+  .cap { width: auto; height: 2.2rem; border-radius: 99px; padding: 0 1rem; margin: 0 0 0.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seg-fill, .fill { transition: none; }
+  .node:hover { transform: none; }
+}
