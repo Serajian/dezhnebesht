@@ -79,3 +79,15 @@ test('هیچ لنگرِ ریلِ مدخل مسیر معتبری نیست — پ�
     );
   }
 });
+
+test('مسیر نقشهٔ راه با موضوع', () => {
+  assert.deepEqual(parseHash('#/roadmap/crypto'), { view: 'roadmap', topic: 'crypto' });
+});
+
+test('مسیر نقشهٔ راه بدون موضوع، موضوع خالی می‌دهد', () => {
+  assert.deepEqual(parseHash('#/roadmap'), { view: 'roadmap', topic: '' });
+});
+
+test('شناسه‌ی موضوع در مسیر نقشه دیکد می‌شود', () => {
+  assert.deepEqual(parseHash('#/roadmap/%D8%A7%D9%84%D9%81'), { view: 'roadmap', topic: 'الف' });
+});

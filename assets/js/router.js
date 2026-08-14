@@ -16,6 +16,7 @@ export function parseHash(hash) {
 
   if (parts[0] === 'self-test') return { view: 'self-test' };
   if (parts[0] === 't' && parts[1]) return { view: 'entry', id: parts[1] };
+  if (parts[0] === 'roadmap') return { view: 'roadmap', topic: parts[1] ?? '' };
   if (parts[0] === 'tag' && parts[1]) return { view: 'index', topic: '', tag: parts[1] };
   if (parts[0] === 'topic' && parts[1]) return { view: 'index', topic: parts[1], tag: '' };
   return { view: 'index', topic: '', tag: '' };
