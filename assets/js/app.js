@@ -38,6 +38,11 @@ const state = {
   route: { view: 'index', topic: '', tag: '' },
   query: '',
   indexView: readIndexView(),
+  // موضوعِ نقشه‌ی راهی که آخرین render() واقعاً بارگذاری کرد — نه لزوماً
+  // state.route.topic، چون موضوعِ نامعتبر رد می‌شود (پایین‌تر توضیح
+  // داده شده). شنونده‌های تیک/ریست همین را می‌خوانند تا با نقشه‌ی
+  // نمایش‌داده‌شده هم‌جهت بمانند و از هم جدا نیفتند.
+  roadmapTopicId: '',
   // شمار کل مدخل‌ها به تفکیک موضوع/دسته — یک‌بار در init() از روی کل
   // داده محاسبه می‌شود، نه از روی نتیجه‌ی فیلترشده؛ رِیل ناوبری پایدار
   // است و نباید با هر ضربه‌کلید جستجو کوچک/بزرگ شود.
@@ -138,6 +143,20 @@ dom.main.addEventListener(
 );
 
 /**
+ * ریل (resolveActiveTopicId) و نقشه‌ی راه دو سؤال متفاوتند: ریل می‌پرسد
+ * «کدام موضوع پررنگ شود» — برای مسیر بی‌موضوع یا نامعتبر، افتادن روی
+ * موضوع اول یک تصمیم ناوبری بی‌ضرر است. اینجا اما می‌پرسیم «کدام محتوا
+ * بارگذاری شود» و آن باید صادق بماند: مسیر بی‌موضوع (#/roadmap) باز هم
+ * به موضوع اول می‌افتد، ولی موضوعِ نامعتبرِ صریح (#/roadmap/ناشناخته)
+ * دست‌نخورده می‌ماند تا state.roadmaps.get آن را پیدا نکند و شاخه‌ی
+ * renderNotFound — که با بازنویسیِ resolveActiveTopicId هرگز اجرا
+ * نمی‌شد — واقعاً اجرا شود.
+ */
+function resolveRoadmapTopicId(topics, routeTopicId) {
+  return routeTopicId ? routeTopicId : resolveActiveTopicId(topics, routeTopicId);
+}
+
+/**
  * breadcrumb داخل چروم فقط برای نمای مدخل/خودآزمایی لازم است. render.js
  * فقط DOM محضِ آن را می‌سازد (renderBreadcrumb)؛ اینکه کدام مسیر به
  * کدام breadcrumb می‌رسد منطق مسیریابی است، پس اینجا زندگی می‌کند.
@@ -161,8 +180,10 @@ function buildBreadcrumb(lang) {
     return view.renderBreadcrumb({ lang, topic: null, category: null, current: i18n.t('selftest.title') });
   }
   if (state.route.view === 'roadmap') {
-    const topicId = resolveActiveTopicId(state.topics, state.route.topic);
-    const topic = state.topics.find((item) => item.id === topicId) ?? null;
+    // همان موضوعی که render() برای همین ضربه بارگذاری کرد، نه یک
+    // resolveActiveTopicId جداگانه — وگرنه موضوعِ نامعتبر در breadcrumb
+    // یک موضوعِ واقعی نشان می‌داد در حالی که محتوا «یافت نشد» است.
+    const topic = state.topics.find((item) => item.id === state.roadmapTopicId) ?? null;
     return view.renderBreadcrumb({ lang, topic, category: null, current: i18n.t('roadmap.title') });
   }
   return null;
@@ -174,7 +195,12 @@ function render() {
 
   const isIndex = state.route.view === 'index';
   const isRoadmap = state.route.view === 'roadmap';
-  const roadmapTopicId = isRoadmap ? resolveActiveTopicId(state.topics, state.route.topic) : '';
+  // در state ذخیره می‌شود (نه فقط متغیر محلی) تا buildBreadcrumb پایین‌تر
+  // و شنونده‌های تیک/ریست خارج از render() همان موضوعی را ببینند که
+  // همین render واقعاً بارگذاری کرد — سه‌بار جدا صدا زدنِ تابع resolve
+  // می‌توانست از هم جدا بیفتد.
+  state.roadmapTopicId = isRoadmap ? resolveRoadmapTopicId(state.topics, state.route.topic) : '';
+  const roadmapTopicId = state.roadmapTopicId;
   dom.searchbar.hidden = !isIndex;
   dom.viewToggle.hidden = !isIndex;
   dom.chromeStart.hidden = !isIndex;
@@ -356,7 +382,10 @@ dom.main.addEventListener('click', (event) => {
 dom.main.addEventListener('click', (event) => {
   const node = event.target.closest('.node');
   if (node) {
-    const topicId = resolveActiveTopicId(state.topics, state.route.topic);
+    // همان موضوعی که render() برای نقشه‌ی الان‌نمایش‌داده‌شده حل کرد —
+    // نه یک resolveActiveTopicId جداگانه، وگرنه اگر این‌جا فرمول دیگری
+    // بدهد، تیک روی کلید ذخیره‌ی موضوعِ دیگری می‌نشیند.
+    const topicId = state.roadmapTopicId;
     const readSet = readProgress(topicId);
     const id = node.dataset.entryId;
     if (readSet.has(id)) readSet.delete(id);
@@ -370,7 +399,7 @@ dom.main.addEventListener('click', (event) => {
   if (reset) {
     // برگشت‌ناپذیر است، پس تأیید می‌گیرد.
     if (!window.confirm(i18n.t('roadmap.resetConfirm'))) return;
-    saveProgress(resolveActiveTopicId(state.topics, state.route.topic), new Set());
+    saveProgress(state.roadmapTopicId, new Set());
     render();
     return;
   }
