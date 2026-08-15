@@ -1038,9 +1038,11 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
    تبدیل می‌کرد. بقیه‌ی هندسه با ویژگی‌های منطقی نوشته شده و خودش با
    زبان برمی‌گردد. */
 .roadmap .snake { margin: 2rem 0 0.5rem; }
-.roadmap .srow { display: flex; align-items: stretch; position: relative; margin-top: 1.5rem; }
+.roadmap .srow {
+  display: flex; align-items: stretch; position: relative;
+  margin-top: 1.5rem; margin-inline-end: 2.4rem;  /* جای قوس، در لبه‌ی پایانِ سطر */
+}
 .roadmap .srow:first-child { margin-top: 0; }
-.roadmap .srow { margin-inline-end: 2.4rem; }   /* جای قوس، در لبه‌ی پایانِ سطر */
 .roadmap .srow.is-reverse { flex-direction: row-reverse; margin-inline: 2.4rem 0; }
 
 .roadmap .seg {
