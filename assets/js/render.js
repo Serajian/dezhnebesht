@@ -252,6 +252,27 @@ function railTopics(topics, categories, activeTopicId, topicTotals, categoryTota
   );
 }
 
+/**
+ * ورودی نقشه در خودِ ستون فهرست. لینکِ رِیل تنها راه رسیدن به نقشه بود و
+ * رِیل زیر ۱۰۲۴px اصلاً رندر نمی‌شود (display:none)، یعنی نقشه — با آن
+ * چیدمان موبایلِ کامل — برای خواننده‌ی موبایل دست‌نیافتنی بود. این کارت
+ * از ۱۰۲۴px به بعد با CSS برداشته می‌شود تا یک صفحه دو لینک به یک جا
+ * ندهد. رشته‌ی تازه‌ای لازم ندارد: همان عنوان و لیدِ خودِ نقشه.
+ */
+function roadmapCta(topicId) {
+  return el(
+    'a',
+    { class: 'row roadmap-cta', href: `#/roadmap/${encodeURIComponent(topicId)}` },
+    el(
+      'span',
+      { class: 'row-main' },
+      el('span', { class: 'row-title' }, t('roadmap.title')),
+      el('span', { class: 'row-desc' }, t('roadmap.lede')),
+    ),
+    el('span', { class: 'row-chevron', 'aria-hidden': 'true' }, '‹'),
+  );
+}
+
 function tagBanner(tag) {
   return el(
     'p',
@@ -278,6 +299,11 @@ export function renderIndex(entries, categories, {
   const column = el('div', { class: 'column' });
 
   if (tag) column.append(tagBanner(tag));
+
+  // فقط وقتی خواننده دارد مرور می‌کند: وسط جستجو یا فیلتر هشتگ، ستون
+  // نتیجه است و کارتِ نقشه سر راه می‌ایستد. موضوعی که نقشه ندارد هم
+  // مثل رِیل کارت نمی‌گیرد.
+  if (!filtered && roadmaps.has(activeTopicId)) column.append(roadmapCta(activeTopicId));
 
   if (entries.length === 0) {
     column.append(el('p', { class: 'empty-state' }, t('search.empty')));

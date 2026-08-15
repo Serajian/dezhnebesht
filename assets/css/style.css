@@ -638,6 +638,21 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 }
 .row-chevron { flex: none; color: var(--text-tertiary); font-size: 1.125rem; line-height: 1; }
 
+/* کارت ورودی نقشه در بالای ستون فهرست. زیر ۱۰۲۴px تنها راه رسیدن به
+   نقشه است، چون رِیل — که لینک دسکتاپ را دارد — همان‌جا display:none
+   می‌شود؛ از ۱۰۲۴px به بعد خودش کنار می‌رود تا لینک تکراری نشود. */
+.roadmap-cta {
+  display: flex;
+  margin-block-end: 1.5rem;
+  border: 1px solid var(--separator);
+  border-radius: 12px;
+  background: var(--bg-structural);
+}
+.roadmap-cta .row-title { color: var(--accent); }
+@media (min-width: 1024px) {
+  .roadmap-cta { display: none; }
+}
+
 .empty-state {
   text-align: center;
   color: var(--text-tertiary);
