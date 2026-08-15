@@ -1,7 +1,7 @@
 import { localized } from './data.js';
 import { t, dirFor, current, LANGS } from './i18n.js';
 import { groupId, resolveGroupOpen } from './groups.js';
-import { stageProgress, nextUnreadId, faDigits, entriesMissingFromRoadmap } from './roadmap.js';
+import { stageProgress, nextUnreadId, entriesMissingFromRoadmap } from './roadmap.js';
 
 /**
  * یک فرمول کوتاه داخل <code> نباید وسطش بشکند: «p − y» که سرِ سطر دو
@@ -541,15 +541,12 @@ export function renderSelfTest(entries, categories, errors, entriesById, topics 
 const PER_ROW = 4;
 
 /**
- * دوزبانه یعنی رقم هم زبان دارد: مثل بقیهٔ سایت (شمارندهٔ ریل، صفحهٔ
- * خودآزمایی) که در انگلیسی رقم لاتین می‌دهند، اینجا هم فقط وقتی زبان
- * جاری فارسی است رقم فارسی می‌آید؛ وگرنه رقم لاتین کنار کلمهٔ انگلیسی
- * می‌ماند. faDigits خودش زبان نمی‌شناسد (تابعی محض در roadmap.js است)،
- * پس این تصمیم اینجا، در لایهٔ رندر، گرفته می‌شود.
+ * رقم‌ها لاتین‌اند، در هر دو زبان — نه تصمیمِ این نما، بلکه قاعده‌ی
+ * موجودِ سایت: شمارنده‌ی ریل، شمارنده‌ی گروه‌ها و صفحه‌ی خودآزمایی هم در
+ * فارسی رقم لاتین می‌دهند. اگر نقشه تنها جایی می‌شد که رقم فارسی دارد،
+ * دو شیوه‌ی عددنویسی در یک صفحه دیده می‌شد. یکدست‌کردنِ کل سایت با رقم
+ * فارسی تصمیم جداگانه‌ای است، نه اثر جانبی این نما.
  */
-function roadmapDigits(value) {
-  return current() === 'fa' ? faDigits(value) : String(value);
-}
 
 /**
  * قطعه‌ی مارپیچ برای یک مرحله. نسبت پیشرفت روی CSS variable می‌رود تا
@@ -569,9 +566,9 @@ function roadmapSegment(stage, index, content, progress) {
     el(
       'span',
       { class: 'seg-in' },
-      el('span', { class: 'seg-num' }, `${t('roadmap.stageLabel')} ${roadmapDigits(index + 1)}`),
+      el('span', { class: 'seg-num' }, `${t('roadmap.stageLabel')} ${index + 1}`),
       el('span', { class: 'seg-t' }, content.title),
-      el('span', { class: 'seg-c' }, `${roadmapDigits(progress.done)} ${t('roadmap.of')} ${roadmapDigits(progress.total)}`),
+      el('span', { class: 'seg-c' }, `${progress.done} ${t('roadmap.of')} ${progress.total}`),
     ),
   );
   return button;
@@ -653,8 +650,8 @@ export function renderRoadmap(roadmap, { lang, entriesById, readSet }) {
       el(
         'div',
         { class: 'prow' },
-        el('b', { class: 'pbar-done' }, roadmapDigits(done)),
-        el('span', {}, t('roadmap.progress').replace('{total}', roadmapDigits(total))),
+        el('b', { class: 'pbar-done' }, String(done)),
+        el('span', {}, t('roadmap.progress').replace('{total}', String(total))),
         el('span', { class: 'pbar-spacer' }),
         el('button', { class: 'roadmap-reset', type: 'button' }, t('roadmap.reset')),
       ),
@@ -678,14 +675,14 @@ export function renderRoadmap(roadmap, { lang, entriesById, readSet }) {
       el(
         'div',
         { class: 'milestone' },
-        el('span', { class: 'm-node' }, roadmapDigits(index + 1)),
+        el('span', { class: 'm-node' }, String(index + 1)),
         el(
           'div',
           { class: 'm-text' },
           el('h2', {}, content.title ?? ''),
           el('p', { class: 'why' }, content.why ?? ''),
         ),
-        el('span', { class: 'm-count' }, `${roadmapDigits(progress.done)} ${t('roadmap.of')} ${roadmapDigits(progress.total)}`),
+        el('span', { class: 'm-count' }, `${progress.done} ${t('roadmap.of')} ${progress.total}`),
       ),
     );
     for (const id of Array.isArray(stage.entries) ? stage.entries : []) {

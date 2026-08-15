@@ -126,13 +126,3 @@ export function entriesMissingFromRoadmap(roadmap, entries, topicId) {
     .filter((entry) => entry.topic === topicId && !inRoadmap.has(entry.id))
     .map((entry) => entry.id);
 }
-
-const FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-
-/**
- * درج مستقیم عدد جاوااسکریپت در متن فارسی رقم لاتین می‌دهد و کنار متن
- * فارسی غلط به نظر می‌رسد. این تابع فقط رقم‌ها را عوض می‌کند.
- */
-export function faDigits(value) {
-  return String(value).replace(/[0-9]/g, (digit) => FA_DIGITS[Number(digit)]);
-}

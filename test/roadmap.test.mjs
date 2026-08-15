@@ -9,7 +9,6 @@ import {
   stageProgress,
   nextUnreadId,
   entriesMissingFromRoadmap,
-  faDigits,
 } from '../assets/js/roadmap.js';
 
 const entries = [
@@ -120,12 +119,6 @@ test('entriesMissingFromRoadmap مدخل‌های جامانده را می‌د�
     { id: 'other', topic: 'elsewhere' },
   ];
   assert.deepEqual(entriesMissingFromRoadmap(roadmap, entries, 'crypto'), ['byte']);
-});
-
-test('faDigits رقم لاتین را فارسی می‌کند و بقیه را دست نمی‌زند', () => {
-  assert.equal(faDigits(46), '۴۶');
-  assert.equal(faDigits('3 of 5'), '۳ of ۵');
-  assert.equal(faDigits(0), '۰');
 });
 
 test('serializeProgress ورودی خراب را تحمل می‌کند', () => {
