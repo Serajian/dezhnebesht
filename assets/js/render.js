@@ -577,6 +577,11 @@ function roadmapSegment(stage, index, content, progress) {
 /**
  * نوار مارپیچ: سطرها یکی‌درمیان جهتشان عوض می‌شود و انتهای هر سطر با یک
  * قوس به سطر بعد وصل است.
+ *
+ * is-reverse یعنی «برخلافِ جهتِ صفحه»، نه «چپ‌به‌راست». سطر زوج همیشه از
+ * لبه‌ی شروعِ خودِ صفحه راه می‌افتد (در فارسی راست، در انگلیسی چپ) و سطر
+ * فرد برعکسش؛ پس مارپیچ در هر دو زبان مارپیچ می‌ماند. کلاس فقط همین
+ * تناوب را می‌گوید و جهت واقعی را CSS از جهت سند می‌گیرد.
  */
 function roadmapSnake(stages, lang, readSet) {
   const rows = [];
@@ -593,7 +598,7 @@ function roadmapSnake(stages, lang, readSet) {
     }
     if (rowIndex === rows.length - 1) children.push(el('span', { class: 'cap finish' }, t('roadmap.finish')));
     if (rowIndex < rows.length - 1) children.push(el('span', { class: 'turn', 'aria-hidden': 'true' }));
-    return el('div', { class: rowIndex % 2 === 0 ? 'srow r1' : 'srow r2' }, children);
+    return el('div', { class: rowIndex % 2 === 0 ? 'srow' : 'srow is-reverse' }, children);
   });
 
   return el('div', { class: 'snake' }, rowNodes);

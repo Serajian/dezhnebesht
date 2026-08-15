@@ -1010,36 +1010,62 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 
 .roadmap-lede { color: var(--text-prose); margin-top: 0.5rem; }
 
-/* مارپیچ: سطرها یکی‌درمیان جهت عوض می‌کنند و با یک قوس به هم می‌رسند */
+/* مارپیچ: سطرها یکی‌درمیان جهت عوض می‌کنند و با یک قوس به هم می‌رسند.
+   «برعکس» یعنی برخلاف جهتِ صفحه، نه چپ‌به‌راست: سطر عادی همیشه از لبه‌ی
+   شروعِ صفحه راه می‌افتد (فارسی: راست، انگلیسی: چپ). این کار با
+   row-reverse انجام می‌شود و نه با direction، چون direction متنِ داخل
+   قطعه‌ها را هم برمی‌گرداند — همان چیزی که «۰ از ۳» را به «از ۳ ۰»
+   تبدیل می‌کرد. بقیه‌ی هندسه با ویژگی‌های منطقی نوشته شده و خودش با
+   زبان برمی‌گردد. */
 .snake { margin: 2rem 0 0.5rem; }
 .srow { display: flex; align-items: stretch; position: relative; margin-top: 1.5rem; }
 .srow:first-child { margin-top: 0; }
-.srow.r2 { direction: ltr; }
-.srow.r1 { margin-inline-end: 2.4rem; }
-.srow.r2 { margin-inline-start: 2.4rem; }
+.srow { margin-inline-end: 2.4rem; }          /* جای قوس، در لبه‌ی پایانِ سطر */
+.srow.is-reverse { flex-direction: row-reverse; margin-inline: 2.4rem 0; }
 
 .seg {
   position: relative; flex: 1; min-width: 0; height: 4.5rem; border: 0; padding: 0;
   cursor: pointer; font-family: inherit; background: var(--bg-elevated);
   border-block: 1px solid var(--separator); overflow: hidden; transition: filter var(--dur-fast);
 }
-.srow.r1 .seg { clip-path: polygon(100% 0, 14px 0, 0 50%, 14px 100%, 100% 100%, calc(100% - 14px) 50%); }
-.srow.r2 .seg { clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%, 14px 50%); }
-.srow.r1 .seg:first-of-type { clip-path: polygon(100% 0, 14px 0, 0 50%, 14px 100%, 100% 100%); }
+
+/* تنها جای جهت‌آگاهِ مارپیچ. polygon نسخه‌ی منطقی ندارد (نه left منطقی
+   دارد نه right)، پس همین‌جا یک‌بار «جهت صفحه × تناوب سطر» به «پیکان به
+   کدام سو» ترجمه می‌شود: پیکان همیشه رو به جایی است که مسیر می‌رود.
+   قطعه‌ی اولِ هر سطر پشتِ صاف دارد، چون آن لبه یا به دایره‌ی «شروع»
+   می‌رسد یا به قوس، نه به قطعه‌ی دیگری که در بریدگی‌اش بنشیند. */
+.snake {
+  --seg-to-left: polygon(100% 0, 14px 0, 0 50%, 14px 100%, 100% 100%, calc(100% - 14px) 50%);
+  --seg-to-right: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%, 14px 50%);
+  --head-to-left: polygon(100% 0, 14px 0, 0 50%, 14px 100%, 100% 100%);
+  --head-to-right: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
+}
+:dir(rtl) .srow { --seg-shape: var(--seg-to-left); --head-shape: var(--head-to-left); }
+:dir(rtl) .srow.is-reverse { --seg-shape: var(--seg-to-right); --head-shape: var(--head-to-right); }
+:dir(ltr) .srow { --seg-shape: var(--seg-to-right); --head-shape: var(--head-to-right); }
+:dir(ltr) .srow.is-reverse { --seg-shape: var(--seg-to-left); --head-shape: var(--head-to-left); }
+.srow .seg { clip-path: var(--seg-shape); }
+.srow .seg:first-of-type { clip-path: var(--head-shape); }
+
 .seg:hover { filter: brightness(1.14); }
 .seg:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
 
+/* پرشدن از لبه‌ای که مسیر از آن وارد قطعه می‌شود. با inset منطقی نوشته
+   شده، نه transform-origin: چپ/راستِ transform-origin فیزیکی است و در
+   انگلیسی از سر دیگر پر می‌شد. */
 .seg-fill {
-  position: absolute; inset: 0; background: var(--accent); opacity: 0.16;
-  transform-origin: right center; transform: scaleX(var(--p, 0));
-  transition: transform var(--dur-med) var(--ease);
+  position: absolute; inset-block: 0; inset-inline-start: 0;
+  width: calc(var(--p, 0) * 100%); background: var(--accent); opacity: 0.16;
+  transition: width var(--dur-med) var(--ease);
 }
-.srow.r2 .seg-fill { transform-origin: left center; }
+.srow.is-reverse .seg-fill { inset-inline-start: auto; inset-inline-end: 0; }
 .seg-in {
   position: relative; display: flex; flex-direction: column; align-items: center;
-  justify-content: center; height: 100%; gap: 0.05rem; padding: 0 1.35rem; direction: rtl;
+  justify-content: center; height: 100%; gap: 0.05rem; padding: 0 1.35rem;
 }
-.seg-num { font-size: 0.625rem; color: var(--text-tertiary); }
+/* «مرحلهٔ ۲» / «Stage 2» هرگز نباید دو سطر شود؛ در تک‌ستونه که عنوان
+   کنارش می‌نشیند، بدون این قید همان دو کلمه از هم جدا می‌افتادند. */
+.seg-num { font-size: 0.625rem; color: var(--text-tertiary); white-space: nowrap; }
 /* دو سطر، نه یک سطر با سه‌نقطه. در سطری که چهار قطعه دارد، عنوان بلندِ
    انگلیسی («Hash functions and their properties») در هیچ عرض معقولی
    یک‌سطری جا نمی‌شود، و عنوانِ بریده در نمای کلیِ مسیر بی‌فایده است.
@@ -1049,7 +1075,8 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
   overflow: hidden; max-width: 100%;
 }
-.seg-c { font-size: 0.6875rem; color: var(--text-secondary); }
+/* «۲ از ۳» هم مثل شماره‌ی مرحله یک واحد است و نباید بشکند */
+.seg-c { font-size: 0.6875rem; color: var(--text-secondary); white-space: nowrap; }
 .seg.is-done .seg-t { color: var(--accent); }
 
 .cap {
@@ -1057,20 +1084,25 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
   place-items: center; font-size: 0.8125rem; font-weight: 650; z-index: 2;
   border: 2px solid var(--separator); background: var(--bg-elevated); color: var(--text-secondary);
 }
+/* دایره‌ها روی سرِ مسیر می‌نشینند، پس همپوشانی‌شان رو به قطعه‌ی کناری
+   است: در سطر برعکس آن قطعه سمت دیگر است. */
 .cap.start { margin-inline-end: -1.1rem; }
-.cap.finish { margin-inline-start: -1.1rem; direction: rtl; }
-.srow.r2 .cap.finish { margin-inline-start: 0; margin-inline-end: -1.1rem; }
+.cap.finish { margin-inline-start: -1.1rem; }
+.srow.is-reverse .cap.finish { margin-inline: 0 -1.1rem; }
 
 .turn {
   position: absolute; top: 0.6rem; width: 2.6rem; height: calc(100% + 1.5rem);
   border: 2px solid var(--separator); pointer-events: none;
 }
-.srow.r1 .turn {
+/* قوس روی لبه‌ای می‌نشیند که سطر آنجا تمام می‌شود و به سطر بعد می‌رسد */
+.srow .turn {
   inset-inline-end: -1.6rem; border-inline-start: 0;
   border-start-end-radius: 2.2rem; border-end-end-radius: 2.2rem;
 }
-.srow.r2 .turn {
-  inset-inline-start: -1.6rem; border-inline-end: 0;
+.srow.is-reverse .turn {
+  inset-inline-end: auto; inset-inline-start: -1.6rem;
+  border-inline-start: 2px solid var(--separator); border-inline-end: 0;
+  border-start-end-radius: 0; border-end-end-radius: 0;
   border-start-start-radius: 2.2rem; border-end-start-radius: 2.2rem;
 }
 
@@ -1156,18 +1188,26 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 
 /* زیر ۷۰۴ پیکسل مارپیچ به یک ستون تبدیل می‌شود و قوس‌ها می‌روند */
 @media (max-width: 44rem) {
-  .srow, .srow.r2 { flex-direction: column; direction: rtl; margin: 0; }
-  .seg,
-  .srow.r1 .seg,
-  .srow.r2 .seg,
-  .srow.r1 .seg:first-of-type {
+  .srow, .srow.is-reverse { flex-direction: column; margin: 0; }
+  .srow .seg,
+  .srow .seg:first-of-type {
     clip-path: none; height: 3.4rem; border: 1px solid var(--separator);
     border-radius: 10px; margin-bottom: 0.4rem;
   }
+  /* تک‌ستونه یعنی همه‌ی سطرها یک‌جور خوانده می‌شوند، پس پرشدن هم از یک لبه */
+  .srow.is-reverse .seg-fill { inset-inline-start: 0; inset-inline-end: auto; }
   .seg-in { flex-direction: row; gap: 0.6rem; justify-content: flex-start; }
   .seg-c { margin-inline-start: auto; }
   .turn { display: none; }
-  .cap { width: auto; height: 2.2rem; border-radius: 99px; padding: 0 1rem; margin: 0 0 0.5rem; }
+  /* بدون قوس، همپوشانیِ دایره با قطعه هم بی‌معنی است: هر دو سر مسیر یک
+     قرصِ تمام‌عرض‌اند. سلکتورها به‌اندازه‌ی همتای دسکتاپشان مشخص‌اند،
+     وگرنه margin منفیِ آن‌ها این‌جا هم برنده می‌شد. */
+  .cap,
+  .cap.start,
+  .cap.finish,
+  .srow.is-reverse .cap.finish {
+    width: auto; height: 2.2rem; border-radius: 99px; padding: 0 1rem; margin: 0 0 0.5rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
