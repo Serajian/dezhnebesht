@@ -377,6 +377,21 @@ dom.main.addEventListener('click', (event) => {
   }
 });
 
+/**
+ * render() کل dom.main را با replaceChildren از نو می‌سازد، پس دکمه‌ای
+ * که همین الان فعال شد دیگر در سند نیست و فوکوس روی <body> می‌افتد —
+ * یعنی کاربر کیبورد برای هر کدام از ۴۶ قدم باید از سر صفحه Tab بزند و
+ * آن <button> با aria-pressed که spec خواسته بی‌فایده می‌شود.
+ *
+ * به‌جای به‌روزرسانیِ دستیِ همان چند نقطه (کلاس گره، aria-pressed، دو
+ * شمارنده، --p، نشان «اینجایی»)، که منطق رندر را دوباره‌نویسی می‌کرد و
+ * روزی از خودِ نما جا می‌ماند، همان دکمه بعد از رندر دوباره پیدا و
+ * فوکوس می‌شود. preventScroll چون صفحه سر جای خودش است و نباید بپرد.
+ */
+function refocus(selector) {
+  dom.main.querySelector(selector)?.focus({ preventScroll: true });
+}
+
 // شنونده‌ی جدا برای نمای نقشه‌ی راه — روی dom.main چون فرزندانش با هر
 // رندر جایگزین می‌شوند، ولی خودِ dom.main هرگز عوض نمی‌شود.
 dom.main.addEventListener('click', (event) => {
@@ -392,6 +407,7 @@ dom.main.addEventListener('click', (event) => {
     else readSet.add(id);
     saveProgress(topicId, readSet);
     render();
+    refocus(`.node[data-entry-id="${CSS.escape(id)}"]`);
     return;
   }
 
@@ -401,6 +417,7 @@ dom.main.addEventListener('click', (event) => {
     if (!window.confirm(i18n.t('roadmap.resetConfirm'))) return;
     saveProgress(state.roadmapTopicId, new Set());
     render();
+    refocus('.roadmap-reset');
     return;
   }
 
