@@ -29,7 +29,7 @@ node --test
 
 Pass no path argument. `node --test test/` fails on Node 22 with `MODULE_NOT_FOUND` because it loads the directory as a module; explicit *file* paths work.
 
-Before publishing, open `#/self-test` — it renders every entry in both languages and reports validation errors, render failures, and entries missing an English translation.
+Before publishing, open `#/self-test` — it renders every entry in both languages and reports validation errors, render failures, entries missing an English translation, and entries that are not on their topic's roadmap.
 
 ## Constraints
 
@@ -47,6 +47,8 @@ Before publishing, open `#/self-test` — it renders every entry in both languag
 Data lives in `data/`, code in `assets/js/`, and the two never mix: `data.js` does not touch the DOM, `render.js` does not load data.
 
 Entries are the whole point of the project — everything else is derived. The index, categories, search, hashtag filters, and related-term links are all built from the data at load time. **Adding an entry must never require touching a JS file.**
+
+It does require a second data file, though: every entry must also be placed in a stage of `data/<topic>/roadmap.json`, after everything that entry cites. `test/roadmap-order.test.mjs` reads those citations straight out of the Persian body and example — every `مدخل ‹عنوان›` is a real prerequisite — and fails both on an entry missing from the roadmap and on one placed before something it leans on, so a new entry turns `node --test` red until it is on the path. The roadmap stays data like everything else: `roadmap.js` is pure logic over it and never needs editing to add an entry.
 
 An entry's **topic** comes from which directory under `data/` it lives in and its **category** from which file under that topic's `entries/`. Neither is a field on the entry. Language-neutral fields (`id`, `tags`, `related`, `svg`) sit outside the `fa`/`en` blocks so the two languages can't drift apart. Hashtags are stored as lowercase English slugs without `#`, so one tag is shared across both languages.
 
