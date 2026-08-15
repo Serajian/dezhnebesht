@@ -1010,6 +1010,11 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 
 .roadmap-lede { color: var(--text-prose); margin-top: 0.5rem; }
 
+/* از این‌جا به بعد همه چیز زیر .roadmap است. نام‌هایی مثل node، seg،
+   cap، turn، fill، track، here و road آن‌قدر عام‌اند که در یک شیت
+   مشترک دیر یا زود کسی دوباره از آن‌ها استفاده می‌کند — و seg تنها یک
+   حرف با .seg-btn و .seg-thumb (کلید بخش‌بندی چروم) فاصله دارد. */
+
 /* مارپیچ: سطرها یکی‌درمیان جهت عوض می‌کنند و با یک قوس به هم می‌رسند.
    «برعکس» یعنی برخلاف جهتِ صفحه، نه چپ‌به‌راست: سطر عادی همیشه از لبه‌ی
    شروعِ صفحه راه می‌افتد (فارسی: راست، انگلیسی: چپ). این کار با
@@ -1017,13 +1022,13 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
    قطعه‌ها را هم برمی‌گرداند — همان چیزی که «۰ از ۳» را به «از ۳ ۰»
    تبدیل می‌کرد. بقیه‌ی هندسه با ویژگی‌های منطقی نوشته شده و خودش با
    زبان برمی‌گردد. */
-.snake { margin: 2rem 0 0.5rem; }
-.srow { display: flex; align-items: stretch; position: relative; margin-top: 1.5rem; }
-.srow:first-child { margin-top: 0; }
-.srow { margin-inline-end: 2.4rem; }          /* جای قوس، در لبه‌ی پایانِ سطر */
-.srow.is-reverse { flex-direction: row-reverse; margin-inline: 2.4rem 0; }
+.roadmap .snake { margin: 2rem 0 0.5rem; }
+.roadmap .srow { display: flex; align-items: stretch; position: relative; margin-top: 1.5rem; }
+.roadmap .srow:first-child { margin-top: 0; }
+.roadmap .srow { margin-inline-end: 2.4rem; }   /* جای قوس، در لبه‌ی پایانِ سطر */
+.roadmap .srow.is-reverse { flex-direction: row-reverse; margin-inline: 2.4rem 0; }
 
-.seg {
+.roadmap .seg {
   position: relative; flex: 1; min-width: 0; height: 4.5rem; border: 0; padding: 0;
   cursor: pointer; font-family: inherit; background: var(--bg-elevated);
   border-block: 1px solid var(--separator); overflow: hidden; transition: filter var(--dur-fast);
@@ -1034,72 +1039,72 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
    کدام سو» ترجمه می‌شود: پیکان همیشه رو به جایی است که مسیر می‌رود.
    قطعه‌ی اولِ هر سطر پشتِ صاف دارد، چون آن لبه یا به دایره‌ی «شروع»
    می‌رسد یا به قوس، نه به قطعه‌ی دیگری که در بریدگی‌اش بنشیند. */
-.snake {
+.roadmap .snake {
   --seg-to-left: polygon(100% 0, 14px 0, 0 50%, 14px 100%, 100% 100%, calc(100% - 14px) 50%);
   --seg-to-right: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%, 14px 50%);
   --head-to-left: polygon(100% 0, 14px 0, 0 50%, 14px 100%, 100% 100%);
   --head-to-right: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
 }
-:dir(rtl) .srow { --seg-shape: var(--seg-to-left); --head-shape: var(--head-to-left); }
-:dir(rtl) .srow.is-reverse { --seg-shape: var(--seg-to-right); --head-shape: var(--head-to-right); }
-:dir(ltr) .srow { --seg-shape: var(--seg-to-right); --head-shape: var(--head-to-right); }
-:dir(ltr) .srow.is-reverse { --seg-shape: var(--seg-to-left); --head-shape: var(--head-to-left); }
-.srow .seg { clip-path: var(--seg-shape); }
-.srow .seg:first-of-type { clip-path: var(--head-shape); }
+:dir(rtl) .roadmap .srow { --seg-shape: var(--seg-to-left); --head-shape: var(--head-to-left); }
+:dir(rtl) .roadmap .srow.is-reverse { --seg-shape: var(--seg-to-right); --head-shape: var(--head-to-right); }
+:dir(ltr) .roadmap .srow { --seg-shape: var(--seg-to-right); --head-shape: var(--head-to-right); }
+:dir(ltr) .roadmap .srow.is-reverse { --seg-shape: var(--seg-to-left); --head-shape: var(--head-to-left); }
+.roadmap .srow .seg { clip-path: var(--seg-shape); }
+.roadmap .srow .seg:first-of-type { clip-path: var(--head-shape); }
 
-.seg:hover { filter: brightness(1.14); }
-.seg:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+.roadmap .seg:hover { filter: brightness(1.14); }
+.roadmap .seg:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
 
 /* پرشدن از لبه‌ای که مسیر از آن وارد قطعه می‌شود. با inset منطقی نوشته
    شده، نه transform-origin: چپ/راستِ transform-origin فیزیکی است و در
    انگلیسی از سر دیگر پر می‌شد. */
-.seg-fill {
+.roadmap .seg-fill {
   position: absolute; inset-block: 0; inset-inline-start: 0;
   width: calc(var(--p, 0) * 100%); background: var(--accent); opacity: 0.16;
   transition: width var(--dur-med) var(--ease);
 }
-.srow.is-reverse .seg-fill { inset-inline-start: auto; inset-inline-end: 0; }
-.seg-in {
+.roadmap .srow.is-reverse .seg-fill { inset-inline-start: auto; inset-inline-end: 0; }
+.roadmap .seg-in {
   position: relative; display: flex; flex-direction: column; align-items: center;
   justify-content: center; height: 100%; gap: 0.05rem; padding: 0 1.35rem;
 }
 /* «مرحلهٔ ۲» / «Stage 2» هرگز نباید دو سطر شود؛ در تک‌ستونه که عنوان
    کنارش می‌نشیند، بدون این قید همان دو کلمه از هم جدا می‌افتادند. */
-.seg-num { font-size: 0.625rem; color: var(--text-tertiary); white-space: nowrap; }
+.roadmap .seg-num { font-size: 0.625rem; color: var(--text-tertiary); white-space: nowrap; }
 /* دو سطر، نه یک سطر با سه‌نقطه. در سطری که چهار قطعه دارد، عنوان بلندِ
    انگلیسی («Hash functions and their properties») در هیچ عرض معقولی
    یک‌سطری جا نمی‌شود، و عنوانِ بریده در نمای کلیِ مسیر بی‌فایده است.
    -webkit-box تنها راهِ «حداکثر دو سطر» در CSS امروز است. */
-.seg-t {
+.roadmap .seg-t {
   font-size: 0.875rem; font-weight: 650; line-height: 1.3; text-align: center;
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
   overflow: hidden; max-width: 100%;
 }
 /* «۲ از ۳» هم مثل شماره‌ی مرحله یک واحد است و نباید بشکند */
-.seg-c { font-size: 0.6875rem; color: var(--text-secondary); white-space: nowrap; }
-.seg.is-done .seg-t { color: var(--accent); }
+.roadmap .seg-c { font-size: 0.6875rem; color: var(--text-secondary); white-space: nowrap; }
+.roadmap .seg.is-done .seg-t { color: var(--accent); }
 
-.cap {
+.roadmap .cap {
   flex: none; width: 4.5rem; height: 4.5rem; border-radius: 50%; display: grid;
   place-items: center; font-size: 0.8125rem; font-weight: 650; z-index: 2;
   border: 2px solid var(--separator); background: var(--bg-elevated); color: var(--text-secondary);
 }
 /* دایره‌ها روی سرِ مسیر می‌نشینند، پس همپوشانی‌شان رو به قطعه‌ی کناری
    است: در سطر برعکس آن قطعه سمت دیگر است. */
-.cap.start { margin-inline-end: -1.1rem; }
-.cap.finish { margin-inline-start: -1.1rem; }
-.srow.is-reverse .cap.finish { margin-inline: 0 -1.1rem; }
+.roadmap .cap.start { margin-inline-end: -1.1rem; }
+.roadmap .cap.finish { margin-inline-start: -1.1rem; }
+.roadmap .srow.is-reverse .cap.finish { margin-inline: 0 -1.1rem; }
 
-.turn {
+.roadmap .turn {
   position: absolute; top: 0.6rem; width: 2.6rem; height: calc(100% + 1.5rem);
   border: 2px solid var(--separator); pointer-events: none;
 }
 /* قوس روی لبه‌ای می‌نشیند که سطر آنجا تمام می‌شود و به سطر بعد می‌رسد */
-.srow .turn {
+.roadmap .srow .turn {
   inset-inline-end: -1.6rem; border-inline-start: 0;
   border-start-end-radius: 2.2rem; border-end-end-radius: 2.2rem;
 }
-.srow.is-reverse .turn {
+.roadmap .srow.is-reverse .turn {
   inset-inline-end: auto; inset-inline-start: -1.6rem;
   border-inline-start: 2px solid var(--separator); border-inline-end: 0;
   border-start-end-radius: 0; border-end-end-radius: 0;
@@ -1107,61 +1112,61 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 }
 
 /* نوار پیشرفت */
-.pbar {
+.roadmap .pbar {
   position: sticky; top: var(--chrome-h); z-index: 3; margin: 1.75rem 0 2rem;
   padding: 0.85rem 1.1rem; border: 1px solid var(--separator); border-radius: 14px;
   background: var(--chrome-bg); backdrop-filter: blur(var(--blur-amt)) saturate(var(--sat-amt));
   box-shadow: var(--shadow-1);
 }
-.prow { display: flex; align-items: baseline; gap: 0.5rem; font-size: var(--fs-subhead); color: var(--text-secondary); }
-.prow b { color: var(--text); font-size: var(--fs-title); font-weight: 700; }
-.pbar-spacer { flex: 1; }
+.roadmap .prow { display: flex; align-items: baseline; gap: 0.5rem; font-size: var(--fs-subhead); color: var(--text-secondary); }
+.roadmap .prow b { color: var(--text); font-size: var(--fs-title); font-weight: 700; }
+.roadmap .pbar-spacer { flex: 1; }
 .roadmap-reset {
   font-size: var(--fs-caption); color: var(--text-tertiary); background: none;
   border: 0; cursor: pointer; font-family: inherit; padding: 0.3rem 0.55rem; border-radius: 7px;
 }
 .roadmap-reset:hover { color: var(--accent); background: var(--bg-press); }
-.track { margin-top: 0.6rem; height: 6px; border-radius: 99px; background: var(--bg-press); overflow: hidden; }
-.fill { height: 100%; border-radius: 99px; background: var(--accent); transition: width var(--dur-med) var(--ease); }
+.roadmap .track { margin-top: 0.6rem; height: 6px; border-radius: 99px; background: var(--bg-press); overflow: hidden; }
+.roadmap .fill { height: 100%; border-radius: 99px; background: var(--accent); transition: width var(--dur-med) var(--ease); }
 
 /* مسیر عمودی. inset-inline-start در راست‌به‌چپ لبه‌ی راست است — همان‌جا
    که گره‌ها هستند. */
-.road { position: relative; }
-.road::before {
+.roadmap .road { position: relative; }
+.roadmap .road::before {
   content: ''; position: absolute; top: 0.6rem; bottom: 1rem; inset-inline-start: 0.92rem;
   width: 2px; background: var(--separator); border-radius: 2px;
 }
 .roadmap .stage { position: relative; scroll-margin-top: calc(var(--chrome-h) + 5rem); }
-.milestone { display: flex; align-items: center; gap: 0.9rem; margin: 1.9rem 0 0.6rem; position: relative; z-index: 2; }
-.m-node {
+.roadmap .milestone { display: flex; align-items: center; gap: 0.9rem; margin: 1.9rem 0 0.6rem; position: relative; z-index: 2; }
+.roadmap .m-node {
   flex: none; width: 1.9rem; height: 1.9rem; margin-inline-start: -0.06rem; border-radius: 50%;
   border: 2px solid var(--separator); background: var(--bg); display: grid; place-items: center;
   font-size: 0.8125rem; font-weight: 650; color: var(--text-secondary); transition: all var(--dur-med);
 }
 .roadmap .stage.is-done .m-node { background: var(--accent); border-color: var(--accent); color: #fff; }
-.m-text { flex: 1; min-width: 0; }
+.roadmap .m-text { flex: 1; min-width: 0; }
 /* بدون letter-spacing: این تیتر عنوان مرحله است و در فارسی حروفِ چسبانش
    با فاصله‌ی منفی از هم می‌افتند. گاردِ :lang(fa) بالای فایل دقیقاً برای
    همین هست، ولی سلکتور مشخص‌تر از آن رد می‌شد. */
-.m-text h2 { font-size: var(--fs-title); font-weight: 650; line-height: 1.5; }
-.why { font-size: var(--fs-subhead); color: var(--text-tertiary); line-height: 1.55; }
-.m-count {
+.roadmap .m-text h2 { font-size: var(--fs-title); font-weight: 650; line-height: 1.5; }
+.roadmap .why { font-size: var(--fs-subhead); color: var(--text-tertiary); line-height: 1.55; }
+.roadmap .m-count {
   flex: none; font-size: var(--fs-caption); color: var(--text-tertiary);
   background: var(--bg-press); border-radius: 99px; padding: 0.1rem 0.55rem; white-space: nowrap;
 }
 
 .roadmap .step { display: flex; align-items: center; gap: 0.9rem; padding: 0.28rem 0; position: relative; z-index: 2; }
-.node {
+.roadmap .node {
   flex: none; width: 1.9rem; height: 1.9rem; margin-inline-start: -0.06rem; border-radius: 50%;
   cursor: pointer; border: 2px solid var(--separator); background: var(--bg);
   display: grid; place-items: center; padding: 0; transition: all var(--dur-fast);
 }
-.node::after {
+.roadmap .node::after {
   content: ''; width: 0.42rem; height: 0.42rem; border-radius: 50%;
   background: var(--text-tertiary); opacity: 0.55; transition: all var(--dur-fast);
 }
-.node:hover { border-color: var(--accent); transform: scale(1.08); }
-.node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.roadmap .node:hover { border-color: var(--accent); transform: scale(1.08); }
+.roadmap .node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .roadmap .step.read .node { background: var(--accent); border-color: var(--accent); }
 .roadmap .step.read .node::after {
   width: 1.05rem; height: 1.05rem; border-radius: 0; opacity: 1; background: transparent;
@@ -1170,20 +1175,20 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 }
 .roadmap .step.next .node { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-tint); }
 .roadmap .step.next .node::after { background: var(--accent); opacity: 1; }
-.step-body {
+.roadmap .step-body {
   flex: 1; min-width: 0; text-decoration: none; color: inherit; display: flex;
   flex-direction: column; padding: 0.35rem 0.6rem; border-radius: 9px; transition: background var(--dur-fast);
 }
-.step-body:hover { background: var(--bg-press); }
-.step-title { font-size: var(--fs-body); font-weight: 550; line-height: 1.5; }
-.step-short {
+.roadmap .step-body:hover { background: var(--bg-press); }
+.roadmap .step-title { font-size: var(--fs-body); font-weight: 550; line-height: 1.5; }
+.roadmap .step-short {
   font-size: var(--fs-subhead); color: var(--text-tertiary);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.step-body:hover .step-title { color: var(--accent); }
+.roadmap .step-body:hover .step-title { color: var(--accent); }
 .roadmap .step.read .step-title { color: var(--text-tertiary); font-weight: 450; }
 .roadmap .step.read .step-short { opacity: 0.45; }
-.here {
+.roadmap .here {
   display: none; flex: none; font-size: 0.6875rem; color: var(--accent);
   border: 1px solid var(--accent); border-radius: 99px; padding: 0.08rem 0.5rem; white-space: nowrap;
 }
@@ -1191,29 +1196,29 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 
 /* زیر ۷۰۴ پیکسل مارپیچ به یک ستون تبدیل می‌شود و قوس‌ها می‌روند */
 @media (max-width: 44rem) {
-  .srow, .srow.is-reverse { flex-direction: column; margin: 0; }
-  .srow .seg,
-  .srow .seg:first-of-type {
+  .roadmap .srow, .roadmap .srow.is-reverse { flex-direction: column; margin: 0; }
+  .roadmap .srow .seg,
+  .roadmap .srow .seg:first-of-type {
     clip-path: none; height: 3.4rem; border: 1px solid var(--separator);
     border-radius: 10px; margin-bottom: 0.4rem;
   }
   /* تک‌ستونه یعنی همه‌ی سطرها یک‌جور خوانده می‌شوند، پس پرشدن هم از یک لبه */
-  .srow.is-reverse .seg-fill { inset-inline-start: 0; inset-inline-end: auto; }
-  .seg-in { flex-direction: row; gap: 0.6rem; justify-content: flex-start; }
-  .seg-c { margin-inline-start: auto; }
-  .turn { display: none; }
+  .roadmap .srow.is-reverse .seg-fill { inset-inline-start: 0; inset-inline-end: auto; }
+  .roadmap .seg-in { flex-direction: row; gap: 0.6rem; justify-content: flex-start; }
+  .roadmap .seg-c { margin-inline-start: auto; }
+  .roadmap .turn { display: none; }
   /* بدون قوس، همپوشانیِ دایره با قطعه هم بی‌معنی است: هر دو سر مسیر یک
      قرصِ تمام‌عرض‌اند. سلکتورها به‌اندازه‌ی همتای دسکتاپشان مشخص‌اند،
      وگرنه margin منفیِ آن‌ها این‌جا هم برنده می‌شد. */
-  .cap,
-  .cap.start,
-  .cap.finish,
-  .srow.is-reverse .cap.finish {
+  .roadmap .cap,
+  .roadmap .cap.start,
+  .roadmap .cap.finish,
+  .roadmap .srow.is-reverse .cap.finish {
     width: auto; height: 2.2rem; border-radius: 99px; padding: 0 1rem; margin: 0 0 0.5rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .seg-fill, .fill { transition: none; }
-  .node:hover { transform: none; }
+  .roadmap .seg-fill, .roadmap .fill { transition: none; }
+  .roadmap .node:hover { transform: none; }
 }

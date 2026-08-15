@@ -395,6 +395,12 @@ function refocus(selector) {
 // شنونده‌ی جدا برای نمای نقشه‌ی راه — روی dom.main چون فرزندانش با هر
 // رندر جایگزین می‌شوند، ولی خودِ dom.main هرگز عوض نمی‌شود.
 dom.main.addEventListener('click', (event) => {
+  // شنونده روی کل dom.main است ولی فقط در نمای نقشه معنی دارد. بدون این
+  // گارد، هر عنصر آینده‌ای با کلاسِ عامِ node/seg در نمای دیگری این کد را
+  // بیدار می‌کرد و پیشرفت روی کلیدِ dezhnebesht:roadmap: (با موضوعِ خالی،
+  // چون state.roadmapTopicId بیرون از نقشه '' است) نوشته می‌شد.
+  if (state.route.view !== 'roadmap') return;
+
   const node = event.target.closest('.node');
   if (node) {
     // همان موضوعی که render() برای نقشه‌ی الان‌نمایش‌داده‌شده حل کرد —
