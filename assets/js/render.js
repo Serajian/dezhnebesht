@@ -694,7 +694,11 @@ export function renderRoadmap(roadmap, { lang, entriesById, readSet }) {
     road.append(section);
   });
   column.append(road);
-  return column;
+  // مثل بقیه‌ی نماها داخل .layout — همان چیزی که وسط‌چین‌کردن ستون را
+  // انجام می‌دهد (`.column` از ۱۰۲۴px به بعد margin خودش را از دست
+  // می‌دهد چون .layout آن را برعهده می‌گیرد). بدون این پوشش، نقشه به
+  // لبه‌ی شروع می‌چسبید و بقیه‌ی عرض صفحه خالی می‌ماند.
+  return el('div', { class: 'layout' }, column);
 }
 
 export function renderErrorBanner(errors) {

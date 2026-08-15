@@ -1000,6 +1000,14 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 }
 
 /* ---------- نقشهٔ راه ---------- */
+
+/* ستونِ نقشه از ستون خواندنی (۳۴rem) پهن‌تر است و این استثنا عمدی است:
+   نوار مارپیچ یک نمودار است نه پاراگراف، و در ۳۴rem هر قطعه‌اش کمتر از
+   ۸۰ پیکسل جا برای عنوان می‌گرفت. margin-inline صریح است چون .layout از
+   ۱۰۲۴px به بعد margin ستون را صفر می‌کند و نقشه ریلی ندارد که فضای
+   کنارش را پر کند. */
+.column.roadmap { flex: 1; max-width: 60rem; margin-inline: auto; }
+
 .roadmap-lede { color: var(--text-prose); margin-top: 0.5rem; }
 
 /* مارپیچ: سطرها یکی‌درمیان جهت عوض می‌کنند و با یک قوس به هم می‌رسند */
@@ -1032,9 +1040,14 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
   justify-content: center; height: 100%; gap: 0.05rem; padding: 0 1.35rem; direction: rtl;
 }
 .seg-num { font-size: 0.625rem; color: var(--text-tertiary); }
+/* دو سطر، نه یک سطر با سه‌نقطه. در سطری که چهار قطعه دارد، عنوان بلندِ
+   انگلیسی («Hash functions and their properties») در هیچ عرض معقولی
+   یک‌سطری جا نمی‌شود، و عنوانِ بریده در نمای کلیِ مسیر بی‌فایده است.
+   -webkit-box تنها راهِ «حداکثر دو سطر» در CSS امروز است. */
 .seg-t {
-  font-size: 0.875rem; font-weight: 650; letter-spacing: -0.01em;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  font-size: 0.875rem; font-weight: 650; line-height: 1.3; text-align: center;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; max-width: 100%;
 }
 .seg-c { font-size: 0.6875rem; color: var(--text-secondary); }
 .seg.is-done .seg-t { color: var(--accent); }
