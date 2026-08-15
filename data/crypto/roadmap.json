@@ -2,69 +2,192 @@
   "stages": [
     {
       "id": "repr",
-      "fa": { "title": "بازنمایی داده", "why": "پیش‌نیازی که کتاب‌های درسی فرض می‌گیرند: داده اصلاً چطور نوشته می‌شود" },
-      "en": { "title": "Representing data", "why": "The prerequisite the textbooks assume: how data gets written down at all" },
-      "entries": ["bit", "byte", "hex"]
+      "fa": {
+        "title": "بازنمایی داده",
+        "why": "پیش‌نیازی که کتاب‌های درسی فرض می‌گیرند: داده اصلاً چطور نوشته می‌شود"
+      },
+      "en": {
+        "title": "Representing data",
+        "why": "The prerequisite the textbooks assume: how data gets written down at all"
+      },
+      "entries": [
+        "bit",
+        "byte",
+        "hex"
+      ]
     },
     {
       "id": "hash",
-      "fa": { "title": "تابع هش و خواصش", "why": "اولین ابزار رمزنگاری — پرینستون هم دقیقاً از همین‌جا شروع می‌کند" },
-      "en": { "title": "Hash functions and their properties", "why": "The first cryptographic tool — exactly where the Princeton textbook begins" },
-      "entries": ["hash", "collision", "preimage-resistance", "length-extension"]
+      "fa": {
+        "title": "تابع هش و خواصش",
+        "why": "اولین ابزار رمزنگاری — پرینستون هم دقیقاً از همین‌جا شروع می‌کند"
+      },
+      "en": {
+        "title": "Hash functions and their properties",
+        "why": "The first cryptographic tool — exactly where the Princeton textbook begins"
+      },
+      "entries": [
+        "hash",
+        "collision",
+        "preimage-resistance"
+      ]
     },
     {
       "id": "hash-real",
-      "fa": { "title": "هش‌های واقعی", "why": "همان خواص، این بار در توابعی که واقعاً به کار می‌روند" },
-      "en": { "title": "Hash functions in practice", "why": "The same properties, now in the functions actually used" },
-      "entries": ["sha-256", "keccak-256", "ripemd-160", "hmac"]
+      "fa": {
+        "title": "هش‌های واقعی",
+        "why": "همان خواص، این بار در توابعی که واقعاً به کار می‌روند"
+      },
+      "en": {
+        "title": "Hash functions in practice",
+        "why": "The same properties, now in the functions actually used"
+      },
+      "entries": [
+        "sha-256",
+        "length-extension",
+        "hmac",
+        "keccak-256",
+        "ripemd-160"
+      ]
     },
     {
       "id": "structures",
-      "fa": { "title": "ساختارهای هش‌محور", "why": "هش را به هش وصل کن: درخت مرکل و زنجیره — بخش ۱٫۲ پرینستون" },
-      "en": { "title": "Hash-linked structures", "why": "Link hash to hash: Merkle trees and the chain — Princeton section 1.2" },
-      "entries": ["merkle-tree", "blockchain"]
+      "fa": {
+        "title": "ساختارهای هش‌محور",
+        "why": "هش را به هش وصل کن: درخت مرکل و زنجیره — بخش ۱٫۲ پرینستون"
+      },
+      "en": {
+        "title": "Hash-linked structures",
+        "why": "Link hash to hash: Merkle trees and the chain — Princeton section 1.2"
+      },
+      "entries": [
+        "merkle-tree",
+        "blockchain"
+      ]
     },
     {
       "id": "keys",
-      "fa": { "title": "کلید عمومی و ریاضیاتش", "why": "ابزار دوم: چیزی که فقط تو می‌سازی و همه می‌سنجند" },
-      "en": { "title": "Public keys and their mathematics", "why": "The second tool: something only you can produce and anyone can check" },
-      "entries": ["public-key-cryptography", "private-key", "generator-point", "scalar-multiplication", "secp256k1"]
+      "fa": {
+        "title": "کلید عمومی و ریاضیاتش",
+        "why": "ابزار دوم: چیزی که فقط تو می‌سازی و همه می‌سنجند"
+      },
+      "en": {
+        "title": "Public keys and their mathematics",
+        "why": "The second tool: something only you can produce and anyone can check"
+      },
+      "entries": [
+        "public-key-cryptography",
+        "private-key",
+        "generator-point",
+        "scalar-multiplication",
+        "secp256k1"
+      ]
     },
     {
       "id": "signatures",
-      "fa": { "title": "امضا و هویت", "why": "کلید عمومی همان هویت است — عنوان بخش ۱٫۴ پرینستون" },
-      "en": { "title": "Signatures and identity", "why": "A public key is an identity — the title of Princeton section 1.4" },
-      "entries": ["ecdsa", "ed25519", "base58", "wallet"]
+      "fa": {
+        "title": "امضا و هویت",
+        "why": "کلید عمومی همان هویت است — عنوان بخش ۱٫۴ پرینستون"
+      },
+      "en": {
+        "title": "Signatures and identity",
+        "why": "A public key is an identity — the title of Princeton section 1.4"
+      },
+      "entries": [
+        "ecdsa",
+        "ed25519",
+        "base58",
+        "wallet"
+      ]
     },
     {
       "id": "ledger",
-      "fa": { "title": "تراکنش و نانس", "why": "حالا با هش و امضا می‌شود پول ساخت — «یک ارز ساده»" },
-      "en": { "title": "Transactions and the nonce", "why": "With hashes and signatures you can now build money — \"a simple cryptocurrency\"" },
-      "entries": ["transaction", "utxo", "nonce", "rfc-6979"]
+      "fa": {
+        "title": "تراکنش و نانس",
+        "why": "حالا با هش و امضا می‌شود پول ساخت — «یک ارز ساده»"
+      },
+      "en": {
+        "title": "Transactions and the nonce",
+        "why": "With hashes and signatures you can now build money — \"a simple cryptocurrency\""
+      },
+      "entries": [
+        "transaction",
+        "utxo",
+        "nonce",
+        "rfc-6979"
+      ]
     },
     {
       "id": "block-network",
-      "fa": { "title": "بلاک و شبکه", "why": "دفتر روی یک کامپیوتر نیست: چه کسی نگهش می‌دارد و چه چیزی در صف است" },
-      "en": { "title": "Blocks and the network", "why": "The ledger does not live on one computer: who keeps it and what is queued" },
-      "entries": ["block", "node", "miner", "mempool"]
+      "fa": {
+        "title": "ساختن بلاک و رساندنش",
+        "why": "بلاک چیست، چه کسی می‌سازدش، و چه چیزی در صف مانده"
+      },
+      "en": {
+        "title": "Making a block and getting it out",
+        "why": "What a block is, who makes it, and what is waiting in line"
+      },
+      "entries": [
+        "block",
+        "node",
+        "proof-of-work",
+        "miner",
+        "mempool"
+      ]
     },
     {
       "id": "consensus",
-      "fa": { "title": "اجماع", "why": "سخت‌ترین بخش — و جایی که استنفورد سه جلسه رویش می‌گذارد" },
-      "en": { "title": "Consensus", "why": "The hardest part — and where Stanford spends three lectures" },
-      "entries": ["proof-of-work", "validator", "consensus", "bft", "bls", "fork"]
+      "fa": {
+        "title": "اجماع",
+        "why": "سخت‌ترین بخش — و جایی که استنفورد سه جلسه رویش می‌گذارد"
+      },
+      "en": {
+        "title": "Consensus",
+        "why": "The hardest part — and where Stanford spends three lectures"
+      },
+      "entries": [
+        "validator",
+        "consensus",
+        "bft",
+        "bls",
+        "fork"
+      ]
     },
     {
-      "id": "programmability",
-      "fa": { "title": "برنامه‌پذیری", "why": "وقتی دفتر بتواند کد اجرا کند، چه چیزهایی لازم می‌شود" },
-      "en": { "title": "Programmability", "why": "What becomes necessary once the ledger can run code" },
-      "entries": ["gas", "state", "genesis"]
+      "id": "state-and-cost",
+      "fa": {
+        "title": "وضعیت و هزینهٔ تغییرش",
+        "why": "دفتر چه چیزی را نگه می‌دارد، عوض کردنش چه می‌ارزد، و از کجا شروع شد"
+      },
+      "en": {
+        "title": "State and what it costs to change",
+        "why": "What the ledger holds, what changing it costs, and where it started"
+      },
+      "entries": [
+        "gas",
+        "state",
+        "genesis"
+      ]
     },
     {
       "id": "networks",
-      "fa": { "title": "شبکه‌های واقعی", "why": "حالا هر کدام را می‌فهمی، چون قطعه‌هایش را جدا دیده‌ای" },
-      "en": { "title": "Real networks", "why": "Now each one makes sense, because you have seen its pieces separately" },
-      "entries": ["bitcoin", "ethereum", "scalability", "solana", "account-model", "cosmos", "cardano"]
+      "fa": {
+        "title": "شبکه‌های واقعی",
+        "why": "حالا هر کدام را می‌فهمی، چون قطعه‌هایش را جدا دیده‌ای"
+      },
+      "en": {
+        "title": "Real networks",
+        "why": "Now each one makes sense, because you have seen its pieces separately"
+      },
+      "entries": [
+        "bitcoin",
+        "ethereum",
+        "scalability",
+        "solana",
+        "account-model",
+        "cosmos",
+        "cardano"
+      ]
     }
   ]
 }
