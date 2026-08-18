@@ -850,7 +850,8 @@
       "rfc-6979",
       "bls",
       "solana",
-      "cardano"
+      "cardano",
+      "algorand"
     ],
     "svg": [
       {
