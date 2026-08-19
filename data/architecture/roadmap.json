@@ -1,0 +1,23 @@
+{
+  "stages": [
+    {
+      "id": "problem",
+      "fa": {
+        "title": "مسئله چیست",
+        "why": "پیش از هر سبک و الگویی: معماری اصلاً دارد چه چیزی را حل می‌کند"
+      },
+      "en": {
+        "title": "What the problem is",
+        "why": "Before any style or pattern: what architecture is actually solving"
+      },
+      "entries": [
+        "software-architecture",
+        "complexity",
+        "accidental-complexity",
+        "coupling",
+        "cohesion",
+        "separation-of-concerns"
+      ]
+    }
+  ]
+}

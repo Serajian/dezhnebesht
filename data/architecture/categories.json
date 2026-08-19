@@ -1,0 +1,4 @@
+[
+  { "id": "foundations", "file": "foundations.json", "fa": "مبانی",        "en": "Fundamentals" },
+  { "id": "principles",  "file": "principles.json",  "fa": "اصول و تزریق", "en": "Principles & Injection" }
+]
