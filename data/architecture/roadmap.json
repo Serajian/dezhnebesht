@@ -37,6 +37,25 @@
         "layer",
         "boundary"
       ]
+    },
+    {
+      "id": "direction",
+      "fa": {
+        "title": "وابستگی و جهتش",
+        "why": "مهم‌ترین سؤال معماری: فلش رو به کدام طرف است"
+      },
+      "en": {
+        "title": "Dependency and its direction",
+        "why": "The one architectural question that matters most: which way the arrow points"
+      },
+      "entries": [
+        "dependency",
+        "interface",
+        "circular-dependency",
+        "dependency-direction",
+        "dependency-inversion",
+        "leaky-abstraction"
+      ]
     }
   ]
 }
