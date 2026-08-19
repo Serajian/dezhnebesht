@@ -1239,3 +1239,31 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
   .roadmap .seg-fill, .roadmap .fill { transition: none; }
   .roadmap .node:hover { transform: none; }
 }
+
+/* ---------- دکمه‌ی هم‌رسانی مدخل ---------- */
+.entry-actions { margin: 1rem 0 0.25rem; }
+.share-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.35rem 0.85rem; border-radius: 99px; cursor: pointer;
+  font-family: inherit; font-size: var(--fs-subhead); color: var(--text-secondary);
+  background: var(--bg-elevated); border: 1px solid var(--separator);
+  transition: color var(--dur-fast), border-color var(--dur-fast), background var(--dur-fast);
+}
+/* آیکون داخل خودِ دکمه است تا کلیک روی آن هم به دکمه برسد */
+.share-btn::before {
+  content: ''; width: 0.95rem; height: 0.95rem; flex: none;
+  background: currentColor;
+  -webkit-mask: var(--share-icon) center / contain no-repeat;
+  mask: var(--share-icon) center / contain no-repeat;
+}
+:root {
+  --share-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7'/%3E%3Cpath d='M12 15V3'/%3E%3Cpath d='m8 7 4-4 4 4'/%3E%3C/svg%3E");
+}
+.share-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-tint); }
+.share-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.share-btn.is-flashing { color: var(--accent); border-color: var(--accent); }
+/* وقتی «کپی شد» نشان می‌دهد، آیکون تیک می‌شود تا بازخورد فقط متنی نباشد */
+.share-btn.is-flashing::before {
+  --share-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 13 4 4L19 7'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: reduce) { .share-btn { transition: none; } }

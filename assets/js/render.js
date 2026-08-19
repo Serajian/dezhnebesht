@@ -432,6 +432,27 @@ export function renderEntry(entry, { lang, categories, entriesById, topics = [] 
 
   if (entry.tags?.length) contentWrap.append(entryHashtags(entry.tags));
 
+  // دکمه‌ی هم‌رسانی بعد از هشتگ‌هاست و نه ته مدخل: تصمیم به هم‌رسانی
+  // معمولاً بعد از خواندن چند خط اول گرفته می‌شود، نه بعد از تمام‌کردن.
+  // خودِ کار (کلیپ‌بورد/برگه‌ی سیستم) در app.js است، چون تنها جایی است
+  // که رویداد بسته می‌شود و اینجا فقط DOM ساخته می‌شود.
+  contentWrap.append(
+    el(
+      'div',
+      { class: 'entry-actions' },
+      el(
+        'button',
+        {
+          class: 'share-btn',
+          type: 'button',
+          'data-share-id': entry.id,
+          'aria-label': t('entry.shareLabel'),
+        },
+        el('span', { class: 'share-label' }, t('entry.share')),
+      ),
+    ),
+  );
+
   contentWrap.append(el('div', { class: 'prose', html: content.body }));
 
   if (content.example) {

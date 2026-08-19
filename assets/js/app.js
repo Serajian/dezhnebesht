@@ -392,6 +392,82 @@ function refocus(selector) {
   dom.main.querySelector(selector)?.focus({ preventScroll: true });
 }
 
+/**
+ * هم‌رسانی یک مدخل. سه مسیر، به ترتیبِ چیزی که مرورگر واقعاً دارد:
+ * برگه‌ی سیستم (موبایل)، کلیپ‌بورد، و در آخر ترفند قدیمیِ textarea.
+ * آن آخری لازم است چون navigator.clipboard فقط در بستر امن کار می‌کند —
+ * روی https و localhost هست، ولی اگر سایت را با آی‌پی محلی و http روی
+ * گوشی باز کنی نیست، و بدون این مسیر دکمه بی‌صدا هیچ‌کاری نمی‌کرد.
+ */
+function legacyCopy(text) {
+  const area = document.createElement('textarea');
+  area.value = text;
+  area.setAttribute('readonly', '');
+  // خارج از دید ولی داخل صفحه: display:none انتخاب‌شدنی نیست.
+  area.style.cssText = 'position:fixed;top:-9999px;opacity:0';
+  document.body.append(area);
+  area.select();
+  try {
+    return document.execCommand('copy');
+  } catch {
+    return false;
+  } finally {
+    area.remove();
+  }
+}
+
+function flashShare(button, key) {
+  const label = button.querySelector('.share-label');
+  if (!label) return;
+  // اگر دوبار پشت سر هم بزنی، متن اصلی نباید گم شود.
+  const original = button.dataset.shareLabel ?? label.textContent;
+  button.dataset.shareLabel = original;
+  clearTimeout(Number(button.dataset.shareTimer));
+  label.textContent = i18n.t(key);
+  button.classList.add('is-flashing');
+  button.dataset.shareTimer = String(setTimeout(() => {
+    label.textContent = button.dataset.shareLabel ?? original;
+    button.classList.remove('is-flashing');
+  }, 2000));
+}
+
+async function shareEntry(button) {
+  const entry = state.entriesById.get(button.dataset.shareId);
+  if (!entry) return;
+  const content = localized(entry, i18n.current());
+  const url = window.location.href;
+  const title = content.title;
+  const short = content.short ?? '';
+
+  // برگه‌ی سیستم عنوان و توضیح را جدا می‌گیرد و خودش می‌چیند؛ کلیپ‌بورد
+  // یک رشته می‌خواهد، پس همان‌جا سه‌تکه به هم چسبانده می‌شود.
+  if (navigator.share) {
+    try {
+      await navigator.share({ title, text: short, url });
+      return;
+    } catch (error) {
+      // انصراف کاربر خطا نیست و نباید «کپی نشد» نشان بدهد.
+      if (error?.name === 'AbortError') return;
+      // هر شکست دیگری: بیفت روی کلیپ‌بورد.
+    }
+  }
+
+  const text = [title, short, url].filter(Boolean).join('\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    flashShare(button, 'entry.shareCopied');
+  } catch {
+    flashShare(button, legacyCopy(text) ? 'entry.shareCopied' : 'entry.shareFailed');
+  }
+}
+
+// دکمه‌ی هم‌رسانی فقط در نمای مدخل وجود دارد، ولی شنونده روی dom.main
+// است چون فرزندانش با هر رندر جایگزین می‌شوند.
+dom.main.addEventListener('click', (event) => {
+  const button = event.target.closest('.share-btn');
+  if (button) shareEntry(button);
+});
+
 // شنونده‌ی جدا برای نمای نقشه‌ی راه — روی dom.main چون فرزندانش با هر
 // رندر جایگزین می‌شوند، ولی خودِ dom.main هرگز عوض نمی‌شود.
 dom.main.addEventListener('click', (event) => {
