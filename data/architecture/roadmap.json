@@ -74,6 +74,22 @@
         "liskov-substitution",
         "interface-segregation"
       ]
+    },
+    {
+      "id": "wiring",
+      "fa": {
+        "title": "سیم‌کشی",
+        "why": "قرارداد را نوشتی؛ حالا چه کسی تصمیم می‌گیرد کدام پیاده‌سازی وصل شود"
+      },
+      "en": {
+        "title": "Wiring it up",
+        "why": "The contract exists; now who decides which implementation gets plugged in"
+      },
+      "entries": [
+        "dependency-injection",
+        "composition-root",
+        "testability"
+      ]
     }
   ]
 }
