@@ -56,6 +56,24 @@
         "dependency-inversion",
         "leaky-abstraction"
       ]
+    },
+    {
+      "id": "solid",
+      "fa": {
+        "title": "اصول SOLID",
+        "why": "پنج پیش‌فرض پرتکرار — و اینکه هرکدام کجا کمک می‌کند و کجا زیاده‌روی است"
+      },
+      "en": {
+        "title": "The SOLID principles",
+        "why": "Five common defaults — and where each helps rather than overshoots"
+      },
+      "entries": [
+        "solid",
+        "single-responsibility",
+        "open-closed",
+        "liskov-substitution",
+        "interface-segregation"
+      ]
     }
   ]
 }
