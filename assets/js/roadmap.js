@@ -126,3 +126,25 @@ export function entriesMissingFromRoadmap(roadmap, entries, topicId) {
     .filter((entry) => entry.topic === topicId && !inRoadmap.has(entry.id))
     .map((entry) => entry.id);
 }
+
+/**
+ * مدخل‌هایی را که اصلاً رندر نمی‌شوند از مسیر برمی‌دارد.
+ *
+ * loadAll مدخلِ بدون fa.title را از فهرست خروجی می‌اندازد (چون در هیچ
+ * نمایی رندرشدنی نیست) ولی خطایش را نگه می‌دارد. بدون این تابع، نقشه
+ * همچنان آن شناسه را می‌شمرد و رندر نمی‌کرد: مجموع می‌شد یکی بیشتر از
+ * چیزی که روی صفحه هست، و «۴۶ از ۴۷» تا ابد کامل نمی‌شد — بی‌آنکه
+ * جایی گفته شود چرا. حالا مسیر همان چیزی را می‌شمرد که نشان می‌دهد؛
+ * دلیلِ اصلی (نبودِ عنوان) را همان بنر اعتبارسنجی می‌گوید.
+ */
+export function pruneRoadmap(roadmap, availableIds) {
+  if (!Array.isArray(roadmap?.stages)) return roadmap;
+  const have = availableIds instanceof Set ? availableIds : new Set(availableIds ?? []);
+  return {
+    ...roadmap,
+    stages: roadmap.stages.map((stage) => ({
+      ...stage,
+      entries: (Array.isArray(stage?.entries) ? stage.entries : []).filter((id) => have.has(id)),
+    })),
+  };
+}

@@ -1,4 +1,4 @@
-import { validateRoadmap } from './roadmap.js';
+import { validateRoadmap, pruneRoadmap } from './roadmap.js';
 
 const REQUIRED_FIELDS = ['title', 'short', 'body'];
 
@@ -265,6 +265,10 @@ export async function loadAll(basePath = 'data') {
 
   // نقشه‌ها بعد از مدخل‌ها لود می‌شوند چون اعتبارسنجی‌شان به فهرست
   // مدخل‌های همان موضوع نیاز دارد.
+  // همان فهرستی که در انتها برگردانده می‌شود — مدخلِ بدون fa.title در
+  // هیچ نمایی رندر نمی‌شود، پس نباید در مسیر هم شمرده شود.
+  const renderableIds = new Set(entries.filter(canRender).map((entry) => entry.id));
+
   const roadmaps = new Map();
   const roadmapResults = await Promise.all(
     topics.map(async (topic) => ({ topic, result: await fetchRoadmap(`${basePath}/${topic.id}/roadmap.json`) })),
@@ -275,11 +279,18 @@ export async function loadAll(basePath = 'data') {
       errors.push({ file: `${topic.id}/roadmap.json`, id: '', message: result.error });
       continue;
     }
+    // اعتبارسنجی روی فهرست کاملِ مدخل‌ها انجام می‌شود، نه فهرست
+    // رندرشدنی‌ها: شناسه‌ی غلط در roadmap.json باید خطا بدهد، حتی اگر
+    // مدخلِ متناظرش به دلیل دیگری از خروجی افتاده باشد.
     const roadmapErrors = validateRoadmap(result.roadmap, entries, topic.id);
     errors.push(...roadmapErrors);
     // نقشه‌ی خراب اصلاً وارد نمی‌شود؛ نیمه‌کاره رندر کردنش بدتر از
     // نداشتنش است و خطایش همین حالا در بنر آمد.
-    if (roadmapErrors.length === 0) roadmaps.set(topic.id, result.roadmap);
+    if (roadmapErrors.length === 0) {
+      // ولی مدخلی که رندر نمی‌شود باید از مسیر برداشته شود، وگرنه مسیر
+      // چیزی را می‌شمرد که هرگز روی صفحه نمی‌آید و درصد به صد نمی‌رسد.
+      roadmaps.set(topic.id, pruneRoadmap(result.roadmap, renderableIds));
+    }
   }
 
   errors.push(...validate(categories, entries, topics));

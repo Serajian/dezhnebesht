@@ -9,6 +9,7 @@ import {
   stageProgress,
   nextUnreadId,
   entriesMissingFromRoadmap,
+  pruneRoadmap,
 } from '../assets/js/roadmap.js';
 
 const entries = [
@@ -158,4 +159,58 @@ test('entriesMissingFromRoadmap entries خراب را تحمل می‌کند', (
   assert.deepEqual(entriesMissingFromRoadmap(roadmap, {}, 'crypto'), []);
   assert.deepEqual(entriesMissingFromRoadmap(roadmap, 42, 'crypto'), []);
   assert.deepEqual(entriesMissingFromRoadmap(roadmap, true, 'crypto'), []);
+});
+
+test('pruneRoadmap مدخل رندرنشدنی را از مسیر برمی‌دارد', () => {
+  const roadmap = {
+    stages: [
+      { id: 's1', entries: ['bit', 'ghost', 'byte'] },
+      { id: 's2', entries: ['ghost'] },
+    ],
+  };
+  const pruned = pruneRoadmap(roadmap, new Set(['bit', 'byte']));
+  assert.deepEqual(pruned.stages[0].entries, ['bit', 'byte']);
+  assert.deepEqual(pruned.stages[1].entries, []);
+});
+
+test('pruneRoadmap ترتیب و بقیه‌ی فیلدهای مرحله را دست نمی‌زند', () => {
+  const roadmap = {
+    stages: [{ id: 's1', fa: { title: 'یک' }, en: { title: 'One' }, entries: ['b', 'a', 'x'] }],
+  };
+  const pruned = pruneRoadmap(roadmap, ['a', 'b']);
+  assert.deepEqual(pruned.stages[0].entries, ['b', 'a']);
+  assert.equal(pruned.stages[0].fa.title, 'یک');
+  assert.equal(pruned.stages[0].id, 's1');
+});
+
+test('pruneRoadmap نقشه‌ی اصلی را تغییر نمی‌دهد', () => {
+  const roadmap = { stages: [{ id: 's1', entries: ['a', 'gone'] }] };
+  pruneRoadmap(roadmap, ['a']);
+  assert.deepEqual(roadmap.stages[0].entries, ['a', 'gone']);
+});
+
+test('pruneRoadmap روی ورودی خراب پرتاب نمی‌کند', () => {
+  assert.equal(pruneRoadmap(null, ['a']), null);
+  assert.deepEqual(pruneRoadmap({ stages: [{ id: 's' }] }, ['a']).stages[0].entries, []);
+  assert.deepEqual(pruneRoadmap({ stages: [{ id: 's', entries: ['a'] }] }, null).stages[0].entries, []);
+});
+
+test('شمار مسیر با شمار رندرشدنی‌ها یکی می‌شود', () => {
+  // همان باگ خفته. مدخلِ بدون fa.title از فهرست رندرشدنی‌ها می‌افتد ولی
+  // در roadmap.json می‌ماند. تست هر دو حالت را می‌سنجد تا خودِ باگ را
+  // ثبت کند، نه فقط رفعش را.
+  const roadmap = { stages: [{ id: 's1', entries: ['a', 'titleless', 'b'] }] };
+  const renderable = new Set(['a', 'b']);
+  const totalOf = (rm) => rm.stages.reduce((n, s) => n + stageProgress(s, new Set()).total, 0);
+
+  // پیش از هرس: مسیر سه قدم می‌شمرد ولی فقط دو تا رندر می‌شد —
+  // «۲ از ۳» که هرگز کامل نمی‌شد.
+  assert.equal(totalOf(roadmap), 3);
+  assert.notEqual(totalOf(roadmap), renderable.size);
+
+  const pruned = pruneRoadmap(roadmap, renderable);
+  assert.equal(totalOf(pruned), renderable.size);
+  // و قدم بعدی هم دیگر روی مدخلِ رندرنشدنی گیر نمی‌کند.
+  assert.equal(nextUnreadId(roadmap, new Set(['a'])), 'titleless');
+  assert.equal(nextUnreadId(pruned, new Set(['a'])), 'b');
 });
