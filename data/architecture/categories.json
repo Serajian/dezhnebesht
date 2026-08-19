@@ -1,4 +1,6 @@
 [
-  { "id": "foundations", "file": "foundations.json", "fa": "مبانی",        "en": "Fundamentals" },
-  { "id": "principles",  "file": "principles.json",  "fa": "اصول و تزریق", "en": "Principles & Injection" }
+  { "id": "foundations", "file": "foundations.json", "fa": "مبانی",         "en": "Fundamentals" },
+  { "id": "principles",  "file": "principles.json",  "fa": "اصول و تزریق",  "en": "Principles & Injection" },
+  { "id": "styles",      "file": "styles.json",      "fa": "سبک‌های معماری", "en": "Architectural Styles" },
+  { "id": "domain",      "file": "domain.json",      "fa": "دامنه و DDD",   "en": "Domain & DDD" }
 ]

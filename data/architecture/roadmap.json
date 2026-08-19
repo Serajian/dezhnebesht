@@ -90,6 +90,22 @@
         "composition-root",
         "testability"
       ]
+    },
+    {
+      "id": "first-style",
+      "fa": {
+        "title": "اولین سبک",
+        "why": "لایه‌بندی، و دو چیزی که بدون آن‌ها هیچ سبکی توضیح‌دادنی نیست"
+      },
+      "en": {
+        "title": "The first style",
+        "why": "Layering, and the two things without which no style can be explained"
+      },
+      "entries": [
+        "layered-architecture",
+        "use-case",
+        "business-rule"
+      ]
     }
   ]
 }
