@@ -18,6 +18,25 @@
         "cohesion",
         "separation-of-concerns"
       ]
+    },
+    {
+      "id": "units",
+      "fa": {
+        "title": "واحدهای ساختار",
+        "why": "کلمه‌هایی که همه به کار می‌برند و کمتر کسی دقیق تعریفشان می‌کند"
+      },
+      "en": {
+        "title": "The units of structure",
+        "why": "The words everyone uses and few define precisely"
+      },
+      "entries": [
+        "module",
+        "information-hiding",
+        "package",
+        "component",
+        "layer",
+        "boundary"
+      ]
     }
   ]
 }
