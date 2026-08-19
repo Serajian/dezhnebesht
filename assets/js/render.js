@@ -183,7 +183,7 @@ function renderAlphabetical(entries, categories, lang) {
  * نه بازتاب لحظه‌ای جستجو (و اگر با جستجو کوچک می‌شد، لینک زیردسته‌ای که
  * موقتاً صفر نتیجه دارد باید ناپدید می‌شد و همین باعث بن‌بست کلیک می‌شد).
  */
-function railTopics(topics, categories, activeTopicId, topicTotals, categoryTotals, lang, roadmaps = new Map()) {
+function railTopics(topics, categories, activeTopicId, topicTotals, categoryTotals, lang) {
   const items = topics.map((topic) => {
     const isActive = topic.id === activeTopicId;
     const linkChildren = [
@@ -229,16 +229,6 @@ function railTopics(topics, categories, activeTopicId, topicTotals, categoryTota
         li.append(el('ul', { class: 'rail-subnav' }, subnavItems));
       }
 
-      // موضوعی که نقشه ندارد دکمه هم نمی‌گیرد.
-      if (roadmaps.has(topic.id)) {
-        li.append(
-          el(
-            'a',
-            { class: 'rail-roadmap', href: `#/roadmap/${encodeURIComponent(topic.id)}` },
-            t('roadmap.railLink'),
-          ),
-        );
-      }
     }
 
     return li;
@@ -315,7 +305,7 @@ export function renderIndex(entries, categories, {
 
   const layout = el('div', { class: 'layout' });
   if (topics.length > 0) {
-    layout.append(railTopics(topics, categories, activeTopicId, topicTotals, categoryTotals, lang, roadmaps));
+    layout.append(railTopics(topics, categories, activeTopicId, topicTotals, categoryTotals, lang));
   }
   layout.append(column);
   return layout;

@@ -542,13 +542,6 @@ body {
 }
 .rail-subnav a:hover { background: var(--bg-press); color: var(--text); }
 
-.rail-roadmap {
-  display: block; margin-top: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 8px;
-  font-size: var(--fs-subhead); color: var(--accent); text-decoration: none;
-  border: 1px solid var(--separator);
-}
-.rail-roadmap:hover { background: var(--accent-tint); }
-
 /* ---------- گروه‌ها (نمای فهرست) ---------- */
 .group { margin-block-end: 1.75rem; scroll-margin-top: calc(var(--chrome-h) + 1rem); }
 .group[hidden] { display: none; }
@@ -641,17 +634,19 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 /* کارت ورودی نقشه در بالای ستون فهرست. زیر ۱۰۲۴px تنها راه رسیدن به
    نقشه است، چون رِیل — که لینک دسکتاپ را دارد — همان‌جا display:none
    می‌شود؛ از ۱۰۲۴px به بعد خودش کنار می‌رود تا لینک تکراری نشود. */
+/* تنها راه ورود به نقشه، در هر عرضی. پیش‌تر زیر ۱۰۲۴ این کارت بود و
+   بالای آن یک لینک کوچک در ریل — و لینکِ ریل آن‌قدر کم‌رنگ بود که روی
+   دسکتاپ پیدا نمی‌شد. حالا یک ورودی است، همه‌جا یکسان. */
 .roadmap-cta {
   display: flex;
   margin-block-end: 1.5rem;
-  border: 1px solid var(--separator);
+  border: 1px solid var(--accent);
   border-radius: 12px;
-  background: var(--bg-structural);
+  background: var(--accent-tint);
 }
-.roadmap-cta .row-title { color: var(--accent); }
-@media (min-width: 1024px) {
-  .roadmap-cta { display: none; }
-}
+.roadmap-cta .row-title { color: var(--accent); font-weight: 650; }
+.roadmap-cta .row-chevron { color: var(--accent); }
+.roadmap-cta:hover { background: color-mix(in srgb, var(--accent-tint) 70%, var(--bg-elevated)); }
 
 .empty-state {
   text-align: center;
