@@ -106,6 +106,25 @@
         "use-case",
         "business-rule"
       ]
+    },
+    {
+      "id": "boundaries",
+      "fa": {
+        "title": "سبک‌های مرزمحور",
+        "why": "سه سبکی که همه یک حرف می‌زنند: هسته نباید بیرون را بشناسد"
+      },
+      "en": {
+        "title": "Boundary-driven styles",
+        "why": "Three styles making one argument: the core must not know the outside"
+      },
+      "entries": [
+        "port",
+        "adapter",
+        "hexagonal-architecture",
+        "dependency-rule",
+        "clean-architecture",
+        "onion-architecture"
+      ]
     }
   ]
 }
