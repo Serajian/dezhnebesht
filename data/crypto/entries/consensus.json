@@ -358,7 +358,8 @@
       "fork",
       "genesis",
       "bft",
-      "scalability"
+      "scalability",
+      "replication"
     ],
     "svg": [
       {
@@ -467,7 +468,8 @@
       "solana",
       "cosmos",
       "cardano",
-      "algorand"
+      "algorand",
+      "leader-election"
     ],
     "svg": [
       {
@@ -519,7 +521,9 @@
       "solana",
       "cosmos",
       "cardano",
-      "algorand"
+      "algorand",
+      "eventual-consistency",
+      "leader-election"
     ],
     "svg": [
       {
@@ -713,7 +717,8 @@
       "genesis",
       "bft",
       "scalability",
-      "ordering"
+      "ordering",
+      "eventual-consistency"
     ],
     "svg": [
       {
@@ -803,7 +808,8 @@
       "block",
       "fork",
       "cosmos",
-      "algorand"
+      "algorand",
+      "leader-election"
     ],
     "svg": [
       {

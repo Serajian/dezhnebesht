@@ -219,6 +219,32 @@
         "dead-letter-queue",
         "ordering"
       ]
+    },
+    {
+      "id": "consistency",
+      "fa": {
+        "title": "سازگاری",
+        "why": "وقتی داده در چند جاست، «درست» یعنی چه — و تراکنش تا کجا می‌رسد"
+      },
+      "en": {
+        "title": "Consistency",
+        "why": "When data lives in several places, what \"correct\" means — and how far a transaction reaches"
+      },
+      "entries": [
+        "consistency",
+        "strong-consistency",
+        "eventual-consistency",
+        "replication",
+        "partitioning",
+        "leader-election",
+        "cap-theorem",
+        "distributed-transaction",
+        "two-phase-commit",
+        "outbox-pattern",
+        "saga",
+        "choreography",
+        "orchestration"
+      ]
     }
   ]
 }
