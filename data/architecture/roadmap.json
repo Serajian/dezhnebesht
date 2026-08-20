@@ -125,6 +125,31 @@
         "clean-architecture",
         "onion-architecture"
       ]
+    },
+    {
+      "id": "domain",
+      "fa": {
+        "title": "دامنه",
+        "why": "کد را از روی کسب‌وکار مدل کن، نه از روی جدول‌ها"
+      },
+      "en": {
+        "title": "The domain",
+        "why": "Model the code on the business, not on the tables"
+      },
+      "entries": [
+        "domain",
+        "domain-model",
+        "entity",
+        "value-object",
+        "invariant",
+        "aggregate",
+        "repository",
+        "anemic-domain-model",
+        "bounded-context",
+        "anti-corruption-layer",
+        "ubiquitous-language",
+        "domain-driven-design"
+      ]
     }
   ]
 }
