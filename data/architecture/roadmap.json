@@ -1,0 +1,130 @@
+{
+  "stages": [
+    {
+      "id": "problem",
+      "fa": {
+        "title": "مسئله چیست",
+        "why": "پیش از هر سبک و الگویی: معماری اصلاً دارد چه چیزی را حل می‌کند"
+      },
+      "en": {
+        "title": "What the problem is",
+        "why": "Before any style or pattern: what architecture is actually solving"
+      },
+      "entries": [
+        "software-architecture",
+        "complexity",
+        "accidental-complexity",
+        "coupling",
+        "cohesion",
+        "separation-of-concerns"
+      ]
+    },
+    {
+      "id": "units",
+      "fa": {
+        "title": "واحدهای ساختار",
+        "why": "کلمه‌هایی که همه به کار می‌برند و کمتر کسی دقیق تعریفشان می‌کند"
+      },
+      "en": {
+        "title": "The units of structure",
+        "why": "The words everyone uses and few define precisely"
+      },
+      "entries": [
+        "module",
+        "information-hiding",
+        "package",
+        "component",
+        "layer",
+        "boundary"
+      ]
+    },
+    {
+      "id": "direction",
+      "fa": {
+        "title": "وابستگی و جهتش",
+        "why": "مهم‌ترین سؤال معماری: فلش رو به کدام طرف است"
+      },
+      "en": {
+        "title": "Dependency and its direction",
+        "why": "The one architectural question that matters most: which way the arrow points"
+      },
+      "entries": [
+        "dependency",
+        "interface",
+        "circular-dependency",
+        "dependency-direction",
+        "dependency-inversion",
+        "leaky-abstraction"
+      ]
+    },
+    {
+      "id": "solid",
+      "fa": {
+        "title": "اصول SOLID",
+        "why": "پنج پیش‌فرض پرتکرار — و اینکه هرکدام کجا کمک می‌کند و کجا زیاده‌روی است"
+      },
+      "en": {
+        "title": "The SOLID principles",
+        "why": "Five common defaults — and where each helps rather than overshoots"
+      },
+      "entries": [
+        "solid",
+        "single-responsibility",
+        "open-closed",
+        "liskov-substitution",
+        "interface-segregation"
+      ]
+    },
+    {
+      "id": "wiring",
+      "fa": {
+        "title": "سیم‌کشی",
+        "why": "قرارداد را نوشتی؛ حالا چه کسی تصمیم می‌گیرد کدام پیاده‌سازی وصل شود"
+      },
+      "en": {
+        "title": "Wiring it up",
+        "why": "The contract exists; now who decides which implementation gets plugged in"
+      },
+      "entries": [
+        "dependency-injection",
+        "composition-root",
+        "testability"
+      ]
+    },
+    {
+      "id": "first-style",
+      "fa": {
+        "title": "اولین سبک",
+        "why": "لایه‌بندی، و دو چیزی که بدون آن‌ها هیچ سبکی توضیح‌دادنی نیست"
+      },
+      "en": {
+        "title": "The first style",
+        "why": "Layering, and the two things without which no style can be explained"
+      },
+      "entries": [
+        "layered-architecture",
+        "use-case",
+        "business-rule"
+      ]
+    },
+    {
+      "id": "boundaries",
+      "fa": {
+        "title": "سبک‌های مرزمحور",
+        "why": "سه سبکی که همه یک حرف می‌زنند: هسته نباید بیرون را بشناسد"
+      },
+      "en": {
+        "title": "Boundary-driven styles",
+        "why": "Three styles making one argument: the core must not know the outside"
+      },
+      "entries": [
+        "port",
+        "adapter",
+        "hexagonal-architecture",
+        "dependency-rule",
+        "clean-architecture",
+        "onion-architecture"
+      ]
+    }
+  ]
+}
