@@ -245,6 +245,27 @@
         "choreography",
         "orchestration"
       ]
+    },
+    {
+      "id": "events",
+      "fa": {
+        "title": "رویدادمحور",
+        "why": "وقتی رویداد ستون فقرات معماری می‌شود، قرارداد جای کد را می‌گیرد"
+      },
+      "en": {
+        "title": "Event-driven",
+        "why": "Once events carry the architecture, the contract takes over from the code"
+      },
+      "entries": [
+        "event-driven-architecture",
+        "producer-consumer",
+        "event-contract",
+        "event-envelope",
+        "schema-versioning",
+        "event-chaining",
+        "cqrs",
+        "event-sourcing"
+      ]
     }
   ]
 }

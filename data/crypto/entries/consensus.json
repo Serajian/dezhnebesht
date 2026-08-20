@@ -667,7 +667,8 @@
       "ethereum",
       "scalability",
       "solana",
-      "account-model"
+      "account-model",
+      "event-sourcing"
     ],
     "svg": [
       {
