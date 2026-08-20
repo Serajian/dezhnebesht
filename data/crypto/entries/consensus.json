@@ -60,7 +60,8 @@
       "gas",
       "node",
       "mempool",
-      "account-model"
+      "account-model",
+      "idempotency"
     ],
     "fa": {
       "title": "نانس",
@@ -291,7 +292,8 @@
       "genesis",
       "bft",
       "bitcoin",
-      "scalability"
+      "scalability",
+      "ordering"
     ],
     "svg": [
       {
@@ -710,7 +712,8 @@
       "miner",
       "genesis",
       "bft",
-      "scalability"
+      "scalability",
+      "ordering"
     ],
     "svg": [
       {

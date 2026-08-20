@@ -194,6 +194,31 @@
         "queue",
         "pub-sub"
       ]
+    },
+    {
+      "id": "failure",
+      "fa": {
+        "title": "شکست توزیع‌شده",
+        "why": "روی شبکه، «نمی‌دانم» هم یک نتیجه است — و همه‌چیز از همین‌جا می‌آید"
+      },
+      "en": {
+        "title": "Distributed failure",
+        "why": "Over a network, \"I don't know\" is a third outcome — and everything follows from it"
+      },
+      "entries": [
+        "distributed-system",
+        "timeout",
+        "retry",
+        "transient-failure",
+        "exponential-backoff",
+        "circuit-breaker",
+        "backpressure",
+        "idempotency",
+        "idempotency-key",
+        "at-least-once-delivery",
+        "dead-letter-queue",
+        "ordering"
+      ]
     }
   ]
 }

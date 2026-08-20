@@ -4,5 +4,6 @@
   { "id": "styles",        "file": "styles.json",        "fa": "سبک‌های معماری",  "en": "Architectural Styles" },
   { "id": "domain",        "file": "domain.json",        "fa": "دامنه و DDD",    "en": "Domain & DDD" },
   { "id": "communication", "file": "communication.json", "fa": "ارتباط و رویداد", "en": "Communication & Events" },
+  { "id": "distributed",   "file": "distributed.json",   "fa": "سیستم توزیع‌شده", "en": "Distributed Systems" },
   { "id": "decisions",     "file": "decisions.json",     "fa": "تصمیم و کیفیت",  "en": "Decisions & Quality" }
 ]
