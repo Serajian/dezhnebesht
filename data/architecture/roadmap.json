@@ -171,6 +171,29 @@
         "backend-for-frontend",
         "strangler-fig"
       ]
+    },
+    {
+      "id": "talking",
+      "fa": {
+        "title": "حرف زدن سرویس‌ها",
+        "why": "دو سرویس چطور به هم خبر می‌دهند — و هر انتخاب چه چیزی را جفت می‌کند"
+      },
+      "en": {
+        "title": "Services talking",
+        "why": "How two services reach each other — and what each choice couples"
+      },
+      "entries": [
+        "synchronous-communication",
+        "asynchronous-communication",
+        "rest",
+        "grpc",
+        "command",
+        "event",
+        "domain-event",
+        "message-broker",
+        "queue",
+        "pub-sub"
+      ]
     }
   ]
 }
