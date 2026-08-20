@@ -150,6 +150,27 @@
         "ubiquitous-language",
         "domain-driven-design"
       ]
+    },
+    {
+      "id": "size",
+      "fa": {
+        "title": "اندازهٔ سیستم",
+        "why": "یک واحد استقرار یا چند تا — و اینکه هزینهٔ واقعی این انتخاب کجاست"
+      },
+      "en": {
+        "title": "The size of the system",
+        "why": "One deployable or many — and where that choice actually costs"
+      },
+      "entries": [
+        "monolith",
+        "big-ball-of-mud",
+        "modular-monolith",
+        "microservices",
+        "conways-law",
+        "api-gateway",
+        "backend-for-frontend",
+        "strangler-fig"
+      ]
     }
   ]
 }
