@@ -101,7 +101,7 @@ data/
 
 | شناسه | فارسی | دسته |
 |---|---|---|
-| `solid` | سالید | principles |
+| `solid` | اصول SOLID | principles |
 | `single-responsibility` | اصل مسئولیت واحد | principles |
 | `open-closed` | اصل باز/بسته | principles |
 | `liskov-substitution` | اصل جایگزینی لیسکوف | principles |
