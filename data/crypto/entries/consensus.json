@@ -359,7 +359,8 @@
       "genesis",
       "bft",
       "scalability",
-      "replication"
+      "replication",
+      "peer-to-peer"
     ],
     "svg": [
       {
@@ -859,7 +860,8 @@
       "ethereum",
       "scalability",
       "solana",
-      "cardano"
+      "cardano",
+      "peer-to-peer"
     ],
     "svg": [
       {

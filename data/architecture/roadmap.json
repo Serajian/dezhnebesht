@@ -266,6 +266,28 @@
         "cqrs",
         "event-sourcing"
       ]
+    },
+    {
+      "id": "other-styles",
+      "fa": {
+        "title": "سبک‌های دیگر",
+        "why": "بقیهٔ نقشه: سبک‌هایی که هرکدام یک مسئلهٔ خاص را هدف گرفته‌اند"
+      },
+      "en": {
+        "title": "The other styles",
+        "why": "The rest of the map: styles each aimed at one particular problem"
+      },
+      "entries": [
+        "vertical-slice-architecture",
+        "screaming-architecture",
+        "pipes-and-filters",
+        "soa",
+        "serverless",
+        "actor-model",
+        "peer-to-peer",
+        "data-mesh",
+        "service-mesh"
+      ]
     }
   ]
 }
