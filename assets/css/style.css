@@ -580,6 +580,28 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
   font-weight: 700;
   color: var(--text-secondary);
 }
+
+/* سرتیتر موضوع درون فهرست. زیر ۱۰۲۴px تنها جایی است که نام موضوع دیده
+   می‌شود، چون رِیل آنجا وجود ندارد؛ از آن نقطه به بالا کنار می‌رود تا
+   دو بار گفته نشود (بلوک ۱۰۲۴px پایین‌تر). */
+.topic-head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin: 1.75rem 0 0.75rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.topic-head:first-child { margin-block-start: 0; }
+
+/* از ۱۰۲۴px به بالا رِیل نام موضوع را نشان می‌دهد، پس این سرتیتر حشو
+   است. این بلوک باید بعد از قاعده‌ی پایه بیاید، نه در بلوک ۱۰۲۴px
+   بالاتر: هر دو هم‌ویژگی‌اند و ترتیب منبع تعیین می‌کند کدام می‌برد —
+   اولین بار همان‌جا گذاشته شد و سرتیتر روی دسکتاپ هم دیده می‌شد. */
+@media (min-width: 1024px) {
+  .topic-head { display: none; }
+}
 .count {
   font-size: var(--fs-caption);
   font-weight: 600;

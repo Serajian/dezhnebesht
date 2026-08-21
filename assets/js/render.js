@@ -136,8 +136,12 @@ function categoryGroup(topicId, category, inCategory, lang, { filtered, storedGr
 }
 
 /**
- * موضوع ← دسته ← مدخل، بدون سرتیتر موضوع: آن مسئولیت حالا رِیل است
- * (railTopics پایین‌تر). تطبیق دسته روی «موضوع و شناسه» با هم انجام
+ * موضوع ← دسته ← مدخل. سرتیتر موضوع اینجا ساخته می‌شود ولی از ۱۰۲۴px
+ * به بالا با CSS کنار می‌رود، چون آنجا رِیل هویت موضوع را نشان می‌دهد.
+ * این تقسیم قبلاً شرطی نبود — مسئولیت یک‌سره به رِیل سپرده شده بود، و
+ * رِیل زیر ۱۰۲۴px اصلاً وجود ندارد. نتیجه‌اش روی موبایل نُه دسته‌ی
+ * پشت‌سرهم بود بدون هیچ نشانی از اینکه کدام‌شان به کدام موضوع تعلق دارد.
+ * تطبیق دسته روی «موضوع و شناسه» با هم انجام
  * می‌شود، نه فقط شناسه — دو موضوع می‌توانند هر دو دسته‌ای به نام basics
  * داشته باشند. entries از قبل فیلترشده (جستجو/هشتگ/موضوع) به اینجا
  * می‌رسد، پس یک دسته‌ی خالی از این فهرست اصلاً رندر نمی‌شود — نه
@@ -148,6 +152,17 @@ function renderTopical(entries, categories, topics, lang, groupOptions) {
   for (const topic of topics) {
     const inTopic = entries.filter((entry) => entry.topic === topic.id);
     if (inTopic.length === 0) continue;
+    // شمارنده همان چیزی را می‌شمرد که زیرش رندر می‌شود، نه کلِ موضوع —
+    // برخلاف رِیل، این سرتیتر برچسبِ همین فهرست است و اگر جستجو فعال
+    // باشد باید تعداد نتیجه‌ها را بگوید، نه عددی که با صفحه نمی‌خواند.
+    wrap.append(
+      el(
+        'h2',
+        { class: 'topic-head' },
+        el('span', {}, topic[lang] ?? topic.fa),
+        el('span', { class: 'count' }, String(inTopic.length)),
+      ),
+    );
     const topicCategories = categories.filter((category) => category.topic === topic.id);
     for (const category of topicCategories) {
       const inCategory = inTopic.filter((entry) => entry.category === category.id);
