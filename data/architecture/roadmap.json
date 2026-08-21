@@ -288,6 +288,32 @@
         "data-mesh",
         "service-mesh"
       ]
+    },
+    {
+      "id": "deciding",
+      "fa": {
+        "title": "تصمیم و کیفیت",
+        "why": "معماری یعنی انتخاب — و انتخاب یعنی نوشتن آنچه از دست می‌دهی"
+      },
+      "en": {
+        "title": "Deciding, and quality",
+        "why": "Architecture is choosing — and choosing means writing down what you give up"
+      },
+      "entries": [
+        "non-functional-requirements",
+        "availability",
+        "trade-off",
+        "vertical-scaling",
+        "horizontal-scaling",
+        "stateless",
+        "bottleneck",
+        "cache",
+        "observability",
+        "technical-debt",
+        "evolutionary-architecture",
+        "c4-model",
+        "adr"
+      ]
     }
   ]
 }

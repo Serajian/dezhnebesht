@@ -961,7 +961,9 @@
       "bitcoin",
       "consensus",
       "solana",
-      "algorand"
+      "algorand",
+      "horizontal-scaling",
+      "vertical-scaling"
     ],
     "svg": [
       {

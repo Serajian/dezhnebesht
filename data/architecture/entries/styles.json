@@ -796,7 +796,8 @@
     "related": [
       "event-driven-architecture",
       "microservices",
-      "component"
+      "component",
+      "stateless"
     ],
     "svg": [
       {
@@ -946,7 +947,8 @@
     "related": [
       "microservices",
       "api-gateway",
-      "circuit-breaker"
+      "circuit-breaker",
+      "observability"
     ],
     "svg": [
       {
