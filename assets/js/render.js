@@ -149,20 +149,26 @@ function categoryGroup(topicId, category, inCategory, lang, { filtered, storedGr
  */
 function renderTopical(entries, categories, topics, lang, groupOptions) {
   const wrap = el('div', { class: 'index-list' });
-  for (const topic of topics) {
+  // سرتیتر موضوع فقط وقتی معنی دارد که چیزی را از چیز دیگری جدا کند.
+  // در نمای فیلترشده — یا وقتی جستجو فقط از یک موضوع نتیجه آورده —
+  // تنها یک بخش هست و سرتیتر همان چیزی را می‌گوید که نوار موضوع بالای
+  // آن گفته. برچسبی که تنها بخش را نام می‌برد نویز است، نه ساختار.
+  const shown = topics.filter((topic) => entries.some((entry) => entry.topic === topic.id));
+  for (const topic of shown) {
     const inTopic = entries.filter((entry) => entry.topic === topic.id);
-    if (inTopic.length === 0) continue;
     // شمارنده همان چیزی را می‌شمرد که زیرش رندر می‌شود، نه کلِ موضوع —
     // برخلاف رِیل، این سرتیتر برچسبِ همین فهرست است و اگر جستجو فعال
     // باشد باید تعداد نتیجه‌ها را بگوید، نه عددی که با صفحه نمی‌خواند.
-    wrap.append(
-      el(
-        'h2',
-        { class: 'topic-head' },
-        el('span', {}, topic[lang] ?? topic.fa),
-        el('span', { class: 'count' }, String(inTopic.length)),
-      ),
-    );
+    if (shown.length > 1) {
+      wrap.append(
+        el(
+          'h2',
+          { class: 'topic-head' },
+          el('span', {}, topic[lang] ?? topic.fa),
+          el('span', { class: 'count' }, String(inTopic.length)),
+        ),
+      );
+    }
     const topicCategories = categories.filter((category) => category.topic === topic.id);
     for (const category of topicCategories) {
       const inCategory = inTopic.filter((entry) => entry.category === category.id);
@@ -289,12 +295,55 @@ function tagBanner(tag) {
   );
 }
 
+/**
+ * ناوبری موضوع برای عرض‌هایی که رِیل در آن‌ها نیست. رِیل زیر ۱۰۲۴px
+ * وجود ندارد و تنها جایی بود که لینک موضوع داشت — در حالی که مسیر
+ * #/topic/<id> از breadcrumb هر مدخل قابل رسیدن است. یعنی خواننده‌ی
+ * موبایل می‌توانست در حالت فیلترشده بیفتد و هیچ راهی برای برگشت یا
+ * عوض کردن موضوع نبیند؛ بن‌بست، نه فقط کمبود.
+ *
+ * «همه» اولین گزینه است چون تنها راه بیرون آمدن از فیلتر است و باید
+ * پیدا کردنش نیازی به فکر نداشته باشد. شمارنده‌ها مثل رِیل از کلِ داده
+ * می‌آیند، نه از نتیجه‌ی جستجوی جاری — این نوار ناوبری پایدار است.
+ */
+function topicBar(topics, activeTopicId, topicTotals, lang) {
+  const chip = (href, label, count, isActive) =>
+    el(
+      'a',
+      {
+        class: isActive ? 'topic-chip is-active' : 'topic-chip',
+        href,
+        'aria-current': isActive ? 'true' : null,
+      },
+      el('span', {}, label),
+      count === null ? null : el('span', { class: 'topic-chip-count' }, String(count)),
+    );
+
+  return el(
+    'nav',
+    { class: 'topic-bar', 'aria-label': t('rail.label') },
+    chip('#/', t('topic.all'), null, !activeTopicId),
+    ...topics.map((topic) =>
+      chip(
+        `#/topic/${encodeURIComponent(topic.id)}`,
+        topic[lang] ?? topic.fa,
+        topicTotals.get(topic.id) ?? 0,
+        topic.id === activeTopicId,
+      ),
+    ),
+  );
+}
+
 export function renderIndex(entries, categories, {
   lang,
   view,
   tag,
   topics = [],
   activeTopicId = '',
+  // رِیل و نوار دو سؤال متفاوت می‌پرسند: رِیل می‌پرسد «کدام موضوع را
+  // نشان بدهم» و برای مسیر خالی هم جواب دارد (اولین موضوع)، ولی نوار
+  // می‌پرسد «آیا فیلتری فعال است» — و آنجا مسیر خالی یعنی «همه».
+  routeTopicId = '',
   filtered = false,
   topicTotals = new Map(),
   categoryTotals = new Map(),
@@ -302,6 +351,8 @@ export function renderIndex(entries, categories, {
   roadmaps = new Map(),
 }) {
   const column = el('div', { class: 'column' });
+
+  if (topics.length > 1) column.append(topicBar(topics, routeTopicId, topicTotals, lang));
 
   if (tag) column.append(tagBanner(tag));
 

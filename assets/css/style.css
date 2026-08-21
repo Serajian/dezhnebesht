@@ -595,12 +595,47 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 }
 .topic-head:first-child { margin-block-start: 0; }
 
+/* نوار موضوع: ناوبری موضوع برای عرض‌هایی که رِیل در آن‌ها نیست. بدون
+   این، مسیر #/topic/<id> — که از breadcrumb هر مدخل قابل رسیدن است —
+   روی موبایل بن‌بست بود: یک موضوع دیده می‌شد و هیچ لینکی برای برگشت. */
+.topic-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block-end: 1.25rem;
+}
+.topic-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  padding: 0.4375rem 0.8125rem;
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-1);
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  text-decoration: none;
+}
+.topic-chip:hover { background: var(--bg-press); }
+.topic-chip.is-active {
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+.topic-chip-count {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+.topic-chip.is-active .topic-chip-count { color: var(--accent); }
+
 /* از ۱۰۲۴px به بالا رِیل نام موضوع را نشان می‌دهد، پس این سرتیتر حشو
    است. این بلوک باید بعد از قاعده‌ی پایه بیاید، نه در بلوک ۱۰۲۴px
    بالاتر: هر دو هم‌ویژگی‌اند و ترتیب منبع تعیین می‌کند کدام می‌برد —
    اولین بار همان‌جا گذاشته شد و سرتیتر روی دسکتاپ هم دیده می‌شد. */
 @media (min-width: 1024px) {
   .topic-head { display: none; }
+  .topic-bar { display: none; }
 }
 .count {
   font-size: var(--fs-caption);

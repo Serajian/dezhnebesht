@@ -238,6 +238,7 @@ function render() {
       tag: state.route.tag,
       topics: state.topics,
       activeTopicId: resolveActiveTopicId(state.topics, state.route.topic),
+      routeTopicId: activeTopic,
       filtered,
       topicTotals: state.topicTotals,
       categoryTotals: state.categoryTotals,
