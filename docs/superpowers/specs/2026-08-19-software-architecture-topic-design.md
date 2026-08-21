@@ -155,7 +155,7 @@ data/
 
 | شناسه | فارسی | دسته |
 |---|---|---|
-| `monolith` | یکپارچه | styles |
+| `monolith` | مونولیت | styles |
 | `big-ball-of-mud` | گلولهٔ گِل بزرگ | styles |
 | `modular-monolith` | مونولیت ماژولار | styles |
 | `microservices` | میکروسرویس | styles |
