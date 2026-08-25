@@ -40,7 +40,8 @@
   {
     "id": "task",
     "tags": [
-      "service"
+      "service",
+      "scheduling"
     ],
     "related": [
       "service",
