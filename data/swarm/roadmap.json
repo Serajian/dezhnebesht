@@ -1,0 +1,16 @@
+{
+  "stages": [
+    {
+      "id": "cluster-basics",
+      "fa": {
+        "title": "کلاستر چیست",
+        "why": "پیش از هر Service و Task: سوارم اصلاً چه چیزی را از چند ماشین می‌سازد"
+      },
+      "en": {
+        "title": "What a cluster is",
+        "why": "Before any service or task: what Swarm actually makes out of several machines"
+      },
+      "entries": ["swarm", "swarm-node", "manager-node", "worker-node", "control-plane", "data-plane"]
+    }
+  ]
+}
