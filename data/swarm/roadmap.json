@@ -35,6 +35,18 @@
         "why": "A service is a wish and a task is its fulfilment; nothing else is predictable until those two come apart"
       },
       "entries": ["service", "task", "replica", "service-spec", "stack", "stack-file", "replicated-service", "global-service"]
+    },
+    {
+      "id": "the-contract",
+      "fa": {
+        "title": "قرارداد سوارم",
+        "why": "تنها ایده‌ای که اگر بگیری بقیهٔ رفتار سوارم قابل حدس می‌شود"
+      },
+      "en": {
+        "title": "Swarm's contract",
+        "why": "The one idea that, once you have it, makes the rest of Swarm's behaviour guessable"
+      },
+      "entries": ["desired-state", "reconciliation", "self-healing"]
     }
   ]
 }
