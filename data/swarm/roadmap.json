@@ -47,6 +47,18 @@
         "why": "The one idea that, once you have it, makes the rest of Swarm's behaviour guessable"
       },
       "entries": ["desired-state", "reconciliation", "self-healing"]
+    },
+    {
+      "id": "where-it-runs",
+      "fa": {
+        "title": "کجا اجرا شود",
+        "why": "تصمیم جای‌گذاری، همان تصمیمی است که تحمل خرابی واقعی را می‌سازد یا از بین می‌برد"
+      },
+      "en": {
+        "title": "Where it runs",
+        "why": "Placement is the decision that either builds real fault tolerance or quietly destroys it"
+      },
+      "entries": ["scheduler", "node-label", "placement-constraint", "placement-preference", "resource-reservation", "resource-limit", "node-availability"]
     }
   ]
 }
