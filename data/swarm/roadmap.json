@@ -23,6 +23,18 @@
         "why": "The control plane is just a name until you see how it decides — and when it cannot"
       },
       "entries": ["join-token", "swarm-tls", "raft", "quorum", "control-plane-ha"]
+    },
+    {
+      "id": "unit-of-work",
+      "fa": {
+        "title": "واحد کار",
+        "why": "سرویس یک آرزوست و تسک تحقق آن؛ تا این دو از هم جدا نشوند هیچ رفتاری قابل پیش‌بینی نیست"
+      },
+      "en": {
+        "title": "The unit of work",
+        "why": "A service is a wish and a task is its fulfilment; nothing else is predictable until those two come apart"
+      },
+      "entries": ["service", "task", "replica", "service-spec", "stack", "stack-file", "replicated-service", "global-service"]
     }
   ]
 }
