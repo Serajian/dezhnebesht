@@ -118,7 +118,7 @@
 
 ### مدخل‌ها
 
-**`swarm`** — سوارم / Swarm · tags: `cluster` `node` · related: `swarm-node`، `manager-node`، `control-plane`، `orchestration`
+**`swarm`** — سوارم / Swarm · tags: `cluster` `node` · related: `swarm-node`، `manager-node`، `control-plane`، `data-plane`
 بدنه: سوارم حالتی از خودِ موتور داکر است که چند ماشین را به یک کلاستر منطقی تبدیل می‌کند و وضعیت مطلوب را روی آن نگه می‌دارد. مثال بد: سه VPS در سه کشور که روی هرکدام جدا `docker compose up` زده شده — هیچ‌کس نمی‌داند چه چیزی کجا اجرا می‌شود، افتادن یکی یعنی افتادن آن بخش سرویس، و بالا آوردن دوباره‌اش کار دستی است. مکانیزم: سوارم سرور جدا یا باینری جدا نیست؛ همان `dockerd` است با یک حالت اضافه، و کلاستر از خود گره‌ها ساخته می‌شود. جدول: قبل و بعد از سوارم برای پنج کار روزمره (بالا آوردن، شمردن نمونه‌ها، جایگزینی گرهٔ افتاده، انتشار پورت، به‌روزرسانی نسخه). ابهامی که صریح رفع می‌شود: «Docker Swarm» امروز یعنی swarm mode داخل موتور داکر، نه آن پروژهٔ جدای پیش از نسخهٔ ۱.۱۲ که اسم مشابهی داشت.
 دیاگرام: سه ماشین مستقل در برابر همان سه ماشین به‌عنوان یک کلاستر · **جدول تصمیم**: چه چیزی را سوارم می‌داند و چه چیزی را نمی‌داند.
 مثال: `docker swarm init` و بعد خروجی `docker node ls` با سه سطر.
@@ -1176,10 +1176,9 @@ chain exists to make that ignorance explicit rather than surprising."
 **Files:**
 - Modify: `data/swarm/entries/boundaries.json` (چهار مدخل اضافه، جمع ۶ — کامل)
 - Modify: `data/swarm/roadmap.json`
-- Modify: `data/architecture/entries/communication.json` (فقط `related` مدخل `orchestration`)
 
 **Interfaces:**
-- Consumes: `routing-mesh`، `reverse-proxy`، `scaling`، `swarm-monitoring`، `distributed-storage`، `database-ha`، `swarm`، `desired-state`، `control-plane`
+- Consumes: `routing-mesh`، `reverse-proxy`، `scaling`، `swarm-monitoring`، `distributed-storage`، `database-ha`، `swarm`، `desired-state`، `control-plane`، `microservices`
 - Produces: `geo-routing`، `autoscaling`، `what-swarm-does-not-do`، `swarm-vs-kubernetes`
 
 ### مدخل‌ها
@@ -1199,7 +1198,7 @@ chain exists to make that ignorance explicit rather than surprising."
 دیاگرام: **جدول هشت‌سطری مسئولیت** · دایرهٔ کوچک سوارم داخل دایرهٔ بزرگ‌ترِ آنچه یک استقرار واقعی لازم دارد.
 مثال: فهرست هشت‌تایی به‌شکل کامنت انگلیسی کنار نام ابزار متداول هر ردیف.
 
-**`swarm-vs-kubernetes`** — سوارم در برابر کوبرنتیز / Swarm vs Kubernetes · tags: `boundary` `operations` · related: `what-swarm-does-not-do`، `orchestration`، `swarm`، `microservices`
+**`swarm-vs-kubernetes`** — سوارم در برابر کوبرنتیز / Swarm vs Kubernetes · tags: `boundary` `operations` · related: `what-swarm-does-not-do`، `control-plane`، `swarm`، `microservices`
 بدنه: مقایسه‌ای که دربارهٔ **تفاوت مدل‌ها** است نه فهرست قابلیت‌ها — چون فهرست قابلیت‌ها ظرف یک سال کهنه می‌شود و تفاوت مدل نمی‌شود. مکانیزم: سه تفاوت بنیادی — واحد پایه (تسک در برابر پاد)، سطح توسعه‌پذیری (سوارم بسته و ثابت، کوبرنتیز با API قابل گسترش و اپراتورها)، و هزینهٔ ورود (چند دستور در برابر یک صفحهٔ کنترل که خودش نگهداری می‌خواهد). جدول: **پنج معیار تصمیم** با ستون «اگر این برایت صدق می‌کند کدام را انتخاب کن» — تعداد گره، تعداد آدمی که کلاستر را نگه می‌دارد، نیاز به توسعه‌پذیری، بودجهٔ عملیاتی، و بلوغ تیم. مثال بد: انتخاب کوبرنتیز برای سه ماشین و دو نفر، یا انتخاب سوارم وقتی چیزی می‌خواهی که فقط با اپراتور ساخته می‌شود. جملهٔ پایانی موضوع: مرز درست، تعداد چیزهایی است که تیم می‌تواند هم‌زمان بفهمد.
 دیاگرام: **جدول پنج معیار تصمیم** · دو مدل کنار هم با واحد پایهٔ متفاوت.
 مثال: همان سرویس، یک بار به‌شکل `stack.yml` سوارم و یک بار به‌شکل تعریف کوبرنتیز، برای نشان دادن تفاوت اندازه و مفاهیم.
@@ -1221,19 +1220,15 @@ chain exists to make that ignorance explicit rather than surprising."
 }
 ```
 
-### پل دوطرفه
-
-- `data/architecture/entries/communication.json` → مدخل `orchestration`: `swarm` و `swarm-vs-kubernetes` به `related` اضافه شوند.
-
 - [ ] **Step 1: چهار مدخل را به `boundaries.json` اضافه کن**
 - [ ] **Step 2: `node --test` → باید قرمز شود** با «geo-routing, autoscaling, what-swarm-does-not-do, swarm-vs-kubernetes»
-- [ ] **Step 3: مرحلهٔ `the-boundaries` را به `roadmap.json` اضافه کن و پل بالا را ببند**
+- [ ] **Step 3: مرحلهٔ `the-boundaries` را به `roadmap.json` اضافه کن**
 - [ ] **Step 4: `node --test` → باید سبز شود**
 - [ ] **Step 5: `node serve.js` و `#/self-test` → همه صفر؛ نقشهٔ راه هر سه موضوع در هر دو زبان باز شود**
 - [ ] **Step 6: کامیت**
 
 ```bash
-git add data/swarm data/architecture
+git add data/swarm
 git commit -m "feat: draw the edge of what Swarm is for
 
 Eight things it deliberately does not do, and a comparison with

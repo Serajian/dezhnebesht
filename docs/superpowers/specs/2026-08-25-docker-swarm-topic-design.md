@@ -257,7 +257,7 @@ data/
 
 | مدخل سوارم | مدخل‌های موضوع دیگر |
 |---|---|
-| `swarm` | `orchestration`، `microservices` |
+| `swarm` | `microservices`، `monolith` |
 | `raft` | `leader-election`، `consensus` (کریپتو)، `strong-consistency` |
 | `quorum` | `bft` (کریپتو)، `availability` |
 | `distributed-storage` | `replication`، `partitioning` |
@@ -268,7 +268,7 @@ data/
 | `scaling` | `horizontal-scaling`، `stateless` |
 | `stateful-service` | `stateless` |
 | `rolling-update` | `availability` |
-| `swarm-vs-kubernetes` | `orchestration`، `microservices` |
+| `swarm-vs-kubernetes` | `microservices`، `modular-monolith` |
 
 سمت موضوع‌های دیگر **فقط فیلد `related` ویرایش می‌شود**؛ به بدنه، مثال یا SVG هیچ مدخل موجودی دست زده نمی‌شود. هر پل در همان فازی بسته می‌شود که مدخل سوارمِ آن ساخته می‌شود، تا `related` هیچ‌وقت به شناسهٔ ناموجود اشاره نکند.
 
