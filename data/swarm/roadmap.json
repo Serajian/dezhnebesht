@@ -11,6 +11,18 @@
         "why": "Before any service or task: what Swarm actually makes out of several machines"
       },
       "entries": ["swarm", "swarm-node", "manager-node", "worker-node", "control-plane", "data-plane"]
+    },
+    {
+      "id": "staying-up",
+      "fa": {
+        "title": "کلاستری که سرِ پا می‌ماند",
+        "why": "صفحهٔ کنترل بدون Raft فقط یک اسم است؛ اینجا معلوم می‌شود چطور تصمیم می‌گیرد و کِی نمی‌تواند"
+      },
+      "en": {
+        "title": "A cluster that stays up",
+        "why": "The control plane is just a name until you see how it decides — and when it cannot"
+      },
+      "entries": ["join-token", "swarm-tls", "raft", "quorum", "control-plane-ha"]
     }
   ]
 }

@@ -555,7 +555,8 @@
       "distributed-system",
       "bft",
       "consensus",
-      "validator"
+      "validator",
+      "raft"
     ],
     "svg": [
       {
