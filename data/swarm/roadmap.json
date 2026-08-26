@@ -59,6 +59,18 @@
         "why": "Placement is the decision that either builds real fault tolerance or quietly destroys it"
       },
       "entries": ["scheduler", "node-label", "placement-constraint", "placement-preference", "resource-reservation", "resource-limit", "node-availability"]
+    },
+    {
+      "id": "how-traffic-arrives",
+      "fa": {
+        "title": "ترافیک چطور می‌رسد",
+        "why": "بدون شبکهٔ روپوش و آی‌پی مجازی، Routing Mesh جادو می‌ماند و اولین مسئلهٔ شبکه غیرقابل عیب‌یابی است"
+      },
+      "en": {
+        "title": "How traffic arrives",
+        "why": "Without the overlay and the virtual IP underneath it, the routing mesh is magic and the first network problem is undebuggable"
+      },
+      "entries": ["overlay-network", "gossip", "service-discovery", "virtual-ip", "dns-round-robin", "ingress-network", "published-port", "routing-mesh", "host-mode-publish", "reverse-proxy"]
     }
   ]
 }
