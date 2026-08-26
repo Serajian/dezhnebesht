@@ -71,6 +71,18 @@
         "why": "Without the overlay and the virtual IP underneath it, the routing mesh is magic and the first network problem is undebuggable"
       },
       "entries": ["overlay-network", "gossip", "service-discovery", "virtual-ip", "dns-round-robin", "ingress-network", "published-port", "routing-mesh", "host-mode-publish", "reverse-proxy"]
+    },
+    {
+      "id": "where-data-lives",
+      "fa": {
+        "title": "داده کجا می‌ماند",
+        "why": "همهٔ راحتی‌های سوارم روی فرضِ قابل‌تعویض بودن تسک ساخته شده‌اند؛ داده همان چیزی است که این فرض را می‌شکند"
+      },
+      "en": {
+        "title": "Where the data lives",
+        "why": "Every convenience in Swarm assumes tasks are interchangeable; data is what breaks that assumption"
+      },
+      "entries": ["local-volume", "volume-driver", "stateful-service", "distributed-storage", "database-ha"]
     }
   ]
 }
