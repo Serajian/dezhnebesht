@@ -83,6 +83,18 @@
         "why": "Every convenience in Swarm assumes tasks are interchangeable; data is what breaks that assumption"
       },
       "entries": ["local-volume", "volume-driver", "stateful-service", "distributed-storage", "database-ha"]
+    },
+    {
+      "id": "not-in-git",
+      "fa": {
+        "title": "چیزهایی که نباید در گیت باشند",
+        "why": "راز و پیکربندی تنها جاهایی‌اند که سوارم برای فایل‌ها مکانیزم اختصاصی دارد، و هر دو تغییرناپذیرند"
+      },
+      "en": {
+        "title": "The things that must not be in Git",
+        "why": "Secrets and configs are the only files Swarm has a dedicated mechanism for, and both are immutable"
+      },
+      "entries": ["secret", "config-object", "secret-rotation"]
     }
   ]
 }
