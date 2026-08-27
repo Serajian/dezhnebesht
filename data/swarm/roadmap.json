@@ -143,6 +143,18 @@
         "why": "One file, two consumers with different capabilities — and what a stack ignores, it ignores silently"
       },
       "entries": ["stack-deploy", "compose-vs-stack", "multi-stack", "deploy-configuration"]
+    },
+    {
+      "id": "automating-it",
+      "fa": {
+        "title": "خودکار کردنش",
+        "why": "هیچ حلقه‌ای از حلقهٔ بعدی خبر ندارد؛ همهٔ سوءتفاهم‌های CI/CD در سوارم از فراموش کردن همین می‌آیند"
+      },
+      "en": {
+        "title": "Automating it",
+        "why": "No link in the chain knows about the next one, and every CI/CD misunderstanding on Swarm comes from forgetting that"
+      },
+      "entries": ["ci-cd-pipeline", "ssh-deploy", "gitops", "delivery-chain"]
     }
   ]
 }
