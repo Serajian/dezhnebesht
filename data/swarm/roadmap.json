@@ -107,6 +107,18 @@
         "why": "A rolling update without a health check is just a gradual outage"
       },
       "entries": ["scaling", "healthcheck", "restart-policy", "rolling-update", "update-config", "rollback", "zero-downtime-deploy"]
+    },
+    {
+      "id": "when-it-breaks",
+      "fa": {
+        "title": "وقتی چیزی می‌شکند",
+        "why": "خواندن CURRENT STATE اولین مهارت عیب‌یابی است؛ «بالا نیامد و خطایی هم نداد» بدون آن جواب ندارد"
+      },
+      "en": {
+        "title": "When something breaks",
+        "why": "Reading CURRENT STATE is the first debugging skill; without it, \"it never came up and gave no error\" has no answer"
+      },
+      "entries": ["node-failure", "task-state", "pending-task", "swarm-cli", "service-logs", "swarm-monitoring", "swarm-backup", "quorum-loss-recovery"]
     }
   ]
 }

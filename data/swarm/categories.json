@@ -4,6 +4,7 @@
   { "id": "network", "file": "network.json", "fa": "شبکه", "en": "Networking" },
   { "id": "state", "file": "state.json", "fa": "داده و راز", "en": "Data & Secrets" },
   { "id": "lifecycle", "file": "lifecycle.json", "fa": "تغییر و سلامت", "en": "Change & Health" },
+  { "id": "operations", "file": "operations.json", "fa": "عملیات", "en": "Operations" },
   { "id": "delivery", "file": "delivery.json", "fa": "تحویل", "en": "Delivery & CI/CD" },
   { "id": "boundaries", "file": "boundaries.json", "fa": "مرزهای سوارم", "en": "What Swarm Is Not" }
 ]
