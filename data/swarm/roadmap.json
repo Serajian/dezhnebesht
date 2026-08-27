@@ -131,6 +131,18 @@
         "why": "A registry never decides which version runs, and understanding that is half of understanding CI/CD on Swarm"
       },
       "entries": ["dockerfile", "registry", "image-tag", "image-pull"]
+    },
+    {
+      "id": "image-to-cluster",
+      "fa": {
+        "title": "از ایمیج تا کلاستر",
+        "why": "یک فایل و دو مصرف‌کننده با قابلیت‌های متفاوت؛ آنچه Stack نادیده می‌گیرد بی‌صدا نادیده گرفته می‌شود"
+      },
+      "en": {
+        "title": "From image to cluster",
+        "why": "One file, two consumers with different capabilities — and what a stack ignores, it ignores silently"
+      },
+      "entries": ["stack-deploy", "compose-vs-stack", "multi-stack", "deploy-configuration"]
     }
   ]
 }
