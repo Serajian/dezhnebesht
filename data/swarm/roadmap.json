@@ -119,6 +119,18 @@
         "why": "Reading CURRENT STATE is the first debugging skill; without it, \"it never came up and gave no error\" has no answer"
       },
       "entries": ["node-failure", "task-state", "pending-task", "swarm-cli", "service-logs", "swarm-monitoring", "swarm-backup", "quorum-loss-recovery"]
+    },
+    {
+      "id": "code-to-image",
+      "fa": {
+        "title": "از کد تا ایمیج",
+        "why": "رجیستری تصمیم نمی‌گیرد چه نسخه‌ای اجرا شود؛ فهمیدن این، نصفِ فهمیدن CI/CD با سوارم است"
+      },
+      "en": {
+        "title": "From code to image",
+        "why": "A registry never decides which version runs, and understanding that is half of understanding CI/CD on Swarm"
+      },
+      "entries": ["dockerfile", "registry", "image-tag", "image-pull"]
     }
   ]
 }
