@@ -185,7 +185,8 @@
       "retry",
       "timeout",
       "exponential-backoff",
-      "distributed-system"
+      "distributed-system",
+      "healthcheck"
     ],
     "svg": [
       {

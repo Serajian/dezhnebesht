@@ -95,6 +95,18 @@
         "why": "Secrets and configs are the only files Swarm has a dedicated mechanism for, and both are immutable"
       },
       "entries": ["secret", "config-object", "secret-rotation"]
+    },
+    {
+      "id": "changing-safely",
+      "fa": {
+        "title": "عوض کردن بدون قطعی",
+        "why": "به‌روزرسانی چرخشی بدون بررسی سلامت، فقط قطعیِ تدریجی است"
+      },
+      "en": {
+        "title": "Changing it without an outage",
+        "why": "A rolling update without a health check is just a gradual outage"
+      },
+      "entries": ["scaling", "healthcheck", "restart-policy", "rolling-update", "update-config", "rollback", "zero-downtime-deploy"]
     }
   ]
 }
