@@ -155,6 +155,18 @@
         "why": "No link in the chain knows about the next one, and every CI/CD misunderstanding on Swarm comes from forgetting that"
       },
       "entries": ["ci-cd-pipeline", "ssh-deploy", "gitops", "delivery-chain"]
+    },
+    {
+      "id": "the-boundaries",
+      "fa": {
+        "title": "مرزها",
+        "why": "فهرست کارهایی که سوارم نمی‌کند، سریع‌تر از فهرست کارهایش تو را به تصمیم درست می‌رساند"
+      },
+      "en": {
+        "title": "The boundaries",
+        "why": "The list of what Swarm does not do gets you to the right decision faster than the list of what it does"
+      },
+      "entries": ["geo-routing", "autoscaling", "what-swarm-does-not-do", "swarm-vs-kubernetes"]
     }
   ]
 }
