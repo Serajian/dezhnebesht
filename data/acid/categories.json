@@ -2,5 +2,6 @@
   { "id": "basics", "file": "basics.json", "fa": "مبانی تراکنش", "en": "Transaction Basics" },
   { "id": "atomic", "file": "atomic.json", "fa": "اتمی بودن", "en": "Atomicity" },
   { "id": "consistent", "file": "consistent.json", "fa": "سازگاری", "en": "Consistency" },
+  { "id": "anomalies", "file": "anomalies.json", "fa": "ناهنجاری‌ها", "en": "Anomalies" },
   { "id": "durable", "file": "durable.json", "fa": "پایداری", "en": "Durability" }
 ]

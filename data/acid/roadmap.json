@@ -47,6 +47,18 @@
         "why": "The database guarantees the other three; this one the application keeps"
       },
       "entries": ["integrity-constraint", "acid-consistency", "deferred-constraint", "acid-c-vs-cap-c"]
+    },
+    {
+      "id": "two-at-once",
+      "fa": {
+        "title": "وقتی دو نفر همزمان",
+        "why": "تا وقتی یک تراکنش در سیستم بود، جداسازی مجانی بود و اسمی لازم نداشت"
+      },
+      "en": {
+        "title": "When two run at once",
+        "why": "With one transaction in the system, isolation was free and needed no name"
+      },
+      "entries": ["isolation", "dirty-read", "non-repeatable-read", "phantom-read"]
     }
   ]
 }
