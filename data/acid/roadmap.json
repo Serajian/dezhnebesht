@@ -59,6 +59,18 @@
         "why": "With one transaction in the system, isolation was free and needed no name"
       },
       "entries": ["isolation", "dirty-read", "non-repeatable-read", "phantom-read"]
+    },
+    {
+      "id": "unnamed-anomalies",
+      "fa": {
+        "title": "دوتایی که استاندارد نامشان را نبرد",
+        "why": "و همین دوتا هستند که در عمل می‌زنند"
+      },
+      "en": {
+        "title": "The two the standard never named",
+        "why": "And these are the two that actually bite"
+      },
+      "entries": ["lost-update", "write-skew"]
     }
   ]
 }
