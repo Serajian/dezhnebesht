@@ -1,4 +1,5 @@
 [
   { "id": "basics", "file": "basics.json", "fa": "مبانی تراکنش", "en": "Transaction Basics" },
-  { "id": "atomic", "file": "atomic.json", "fa": "اتمی بودن", "en": "Atomicity" }
+  { "id": "atomic", "file": "atomic.json", "fa": "اتمی بودن", "en": "Atomicity" },
+  { "id": "durable", "file": "durable.json", "fa": "پایداری", "en": "Durability" }
 ]

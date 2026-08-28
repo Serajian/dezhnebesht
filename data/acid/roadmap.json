@@ -23,6 +23,18 @@
         "why": "The first letter, and the only one most people think is the whole story"
       },
       "entries": ["atomicity", "transaction-rollback", "savepoint"]
+    },
+    {
+      "id": "the-log",
+      "fa": {
+        "title": "لاگ: چگونه",
+        "why": "«همه یا هیچ» تا وقتی مکانیزمش را نبینی یک شعار است — و همان مکانیزم بعداً پایداری را هم می‌دهد"
+      },
+      "en": {
+        "title": "The log: how",
+        "why": "\"All or nothing\" is a slogan until you see the mechanism — and the same mechanism delivers durability later"
+      },
+      "entries": ["wal", "undo-log", "non-transactional-effect"]
     }
   ]
 }
