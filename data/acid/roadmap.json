@@ -11,6 +11,18 @@
         "why": "Before the four letters: the unit of work they are guarantees about"
       },
       "entries": ["db-transaction", "transaction-boundary", "autocommit", "acid"]
+    },
+    {
+      "id": "all-or-nothing",
+      "fa": {
+        "title": "همه یا هیچ",
+        "why": "اولین حرف، و تنها حرفی که بیشتر مردم فکر می‌کنند تمام ماجراست"
+      },
+      "en": {
+        "title": "All or nothing",
+        "why": "The first letter, and the only one most people think is the whole story"
+      },
+      "entries": ["atomicity", "transaction-rollback", "savepoint"]
     }
   ]
 }
