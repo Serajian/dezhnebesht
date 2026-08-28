@@ -4,11 +4,16 @@
 </p>
 
 <p align="center">
-  <a href="https://serajian.github.io/dezhnebesht/"><b>سایت زنده</b></a>
+  <a href="https://learn.mohsenserajian.ir/"><b>سایت زنده</b></a>
   &nbsp;·&nbsp;
-  <a href="https://serajian.github.io/dezhnebesht/#/t/blockchain">یک مدخل نمونه</a>
+  <a href="https://learn.mohsenserajian.ir/#/t/blockchain">یک مدخل نمونه</a>
   &nbsp;·&nbsp;
-  <a href="https://serajian.github.io/dezhnebesht/#/self-test">خودآزمایی</a>
+  <a href="https://learn.mohsenserajian.ir/#/self-test">خودآزمایی</a>
+</p>
+
+<p align="center">
+  <sub>همین سایت روی GitHub Pages هم منتشر می‌شود:
+  <a href="https://serajian.github.io/dezhnebesht/">serajian.github.io/dezhnebesht</a></sub>
 </p>
 
 ---
@@ -17,11 +22,11 @@
 
 چیزی می‌خوانی، به زبان خودت توضیحش می‌دهی، و یک مدخل می‌شود. کاری که این پروژه می‌کند این است که **بقیه‌اش را خودش بسازد**: فهرست، جستجوی زنده، دسته‌بندی، فیلتر هشتگ و لینک‌های میان مدخل‌ها، همه در زمان لود از خود داده ساخته می‌شوند.
 
-دوزبانه است (فارسی/انگلیسی) و روی GitHub Pages منتشر می‌شود. نام از `diz ī nibišt` پهلوی می‌آید — «دژِ نوشته‌ها»، آرشیوی که در روایت ساسانی نسخه‌ای از اوستا در آن نگهداری می‌شد.
+دوزبانه است (فارسی/انگلیسی) و روی [learn.mohsenserajian.ir](https://learn.mohsenserajian.ir/) بالاست؛ همان محتوا روی GitHub Pages هم منتشر می‌شود. نام از `diz ī nibišt` پهلوی می‌آید — «دژِ نوشته‌ها»، آرشیوی که در روایت ساسانی نسخه‌ای از اوستا در آن نگهداری می‌شد.
 
 </div>
 
-> **English** — A personal, dependency-free bilingual encyclopedia. Add a JSON object to a category file and the index, live search, categories, hashtag filters and cross-links all derive themselves. No framework, no npm, no build step; the site is plain ES modules served straight from GitHub Pages.
+> **English** — A personal, dependency-free bilingual encyclopedia. Add a JSON object to a category file and the index, live search, categories, hashtag filters and cross-links all derive themselves. No framework, no npm, no build step; the site is plain ES modules, served from any static host. Live at [learn.mohsenserajian.ir](https://learn.mohsenserajian.ir/), mirrored on GitHub Pages.
 
 <div dir="rtl">
 
@@ -67,6 +72,17 @@ node serve.js
 ```
 
 سپس `http://localhost:8000`. نه نصبی لازم است، نه build.
+
+### با Docker
+
+`Dockerfile` ریشه همین `serve.js` را داخل کانتینر اجرا می‌کند:
+
+```bash
+docker build -t dezhnebesht .
+docker run --rm -p 8000:8000 dezhnebesht
+```
+
+چون پروژه مرحلهٔ build ندارد، ایمیج فقط Node است به‌اضافهٔ همان فایل‌هایی که سرو می‌شوند: `COPY`ها به‌جای کپی کل درخت، صریحاً `index.html` و `assets/` و `data/` را می‌برند، پس `test/` و `docs/` هرگز وارد ایمیج نمی‌شوند. پورت با متغیر `PORT` عوض می‌شود.
 
 ## قبل از انتشار
 
@@ -115,7 +131,7 @@ docs/superpowers/     سند طراحی و پلن پیاده‌سازی
 
 ## محدودیت‌ها
 
-بدون فریم‌ورک، بدون npm، بدون مرحلهٔ build. بدون میزبان خارجی — نه CDN، نه فونت آنلاین، نه تصویر ریموت. دیاگرام‌ها SVG درون‌خطی‌اند و همه‌ی مسیرها نسبی، چون سایت زیر `/dezhnebesht/` سرو می‌شود.
+بدون فریم‌ورک، بدون npm، بدون مرحلهٔ build. بدون میزبان خارجی — نه CDN، نه فونت آنلاین، نه تصویر ریموت. دیاگرام‌ها SVG درون‌خطی‌اند و همه‌ی مسیرها نسبی، چون سایت هم روی ریشهٔ دامنه سرو می‌شود و هم زیر `/dezhnebesht/`.
 
 ## مشارکت
 
