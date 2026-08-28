@@ -41,6 +41,7 @@ Before publishing, open `#/self-test` — it renders every entry in both languag
 - An inline SVG inside an entry needs `direction="ltr"` on its root when it contains Latin or hex strings. The entry body is RTL and the SVG inherits it, which reorders and clips those strings.
 - Write formulas in plain `<code>` with normal spaces. `render.js` turns the spaces of any inline `<code>` up to 32 characters into non-breaking ones, so `p − y` never splits across a line, while a 64-character hex key still wraps instead of overflowing. CSS cannot tell those two apart — it does not see length — so this is a render-time rule, not something an entry has to encode with invisible characters.
 - Entry prose may use `<table>` for genuinely tabular content. Only horizontal rules are drawn; the table scrolls inside itself so the page body never scrolls horizontally.
+- Before writing entries, read `docs/entry-conventions.md`. It is the set of rules learned while writing the 78 Docker Swarm entries — which Persian renderings are already taken and must not be re-coined, how «مدخل ‹عنوان›» may and may not be used, what CLI output has to look like to be honest, and the traps in proofing a diagram. Each rule there cost a review round.
 
 ## Architecture
 

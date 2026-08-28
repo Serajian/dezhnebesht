@@ -462,7 +462,8 @@
     "related": [
       "microservices",
       "boundary",
-      "adapter"
+      "adapter",
+      "reverse-proxy"
     ],
     "svg": [
       {
@@ -949,7 +950,8 @@
       "microservices",
       "api-gateway",
       "circuit-breaker",
-      "observability"
+      "observability",
+      "service-discovery"
     ],
     "svg": [
       {

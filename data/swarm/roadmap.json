@@ -1,0 +1,172 @@
+{
+  "stages": [
+    {
+      "id": "cluster-basics",
+      "fa": {
+        "title": "کلاستر چیست",
+        "why": "پیش از هر Service و Task: سوارم اصلاً چه چیزی را از چند ماشین می‌سازد"
+      },
+      "en": {
+        "title": "What a cluster is",
+        "why": "Before any service or task: what Swarm actually makes out of several machines"
+      },
+      "entries": ["swarm", "swarm-node", "manager-node", "worker-node", "control-plane", "data-plane"]
+    },
+    {
+      "id": "staying-up",
+      "fa": {
+        "title": "کلاستری که سرِ پا می‌ماند",
+        "why": "صفحهٔ کنترل بدون Raft فقط یک اسم است؛ اینجا معلوم می‌شود چطور تصمیم می‌گیرد و کِی نمی‌تواند"
+      },
+      "en": {
+        "title": "A cluster that stays up",
+        "why": "The control plane is just a name until you see how it decides — and when it cannot"
+      },
+      "entries": ["join-token", "swarm-tls", "raft", "quorum", "control-plane-ha"]
+    },
+    {
+      "id": "unit-of-work",
+      "fa": {
+        "title": "واحد کار",
+        "why": "سرویس یک آرزوست و تسک تحقق آن؛ تا این دو از هم جدا نشوند هیچ رفتاری قابل پیش‌بینی نیست"
+      },
+      "en": {
+        "title": "The unit of work",
+        "why": "A service is a wish and a task is its fulfilment; nothing else is predictable until those two come apart"
+      },
+      "entries": ["service", "task", "replica", "service-spec", "stack", "stack-file", "replicated-service", "global-service"]
+    },
+    {
+      "id": "the-contract",
+      "fa": {
+        "title": "قرارداد سوارم",
+        "why": "تنها ایده‌ای که اگر بگیری بقیهٔ رفتار سوارم قابل حدس می‌شود"
+      },
+      "en": {
+        "title": "Swarm's contract",
+        "why": "The one idea that, once you have it, makes the rest of Swarm's behaviour guessable"
+      },
+      "entries": ["desired-state", "reconciliation", "self-healing"]
+    },
+    {
+      "id": "where-it-runs",
+      "fa": {
+        "title": "کجا اجرا شود",
+        "why": "تصمیم جای‌گذاری، همان تصمیمی است که تحمل خرابی واقعی را می‌سازد یا از بین می‌برد"
+      },
+      "en": {
+        "title": "Where it runs",
+        "why": "Placement is the decision that either builds real fault tolerance or quietly destroys it"
+      },
+      "entries": ["scheduler", "node-label", "placement-constraint", "placement-preference", "resource-reservation", "resource-limit", "node-availability"]
+    },
+    {
+      "id": "how-traffic-arrives",
+      "fa": {
+        "title": "ترافیک چطور می‌رسد",
+        "why": "بدون شبکهٔ روپوش و آی‌پی مجازی، Routing Mesh جادو می‌ماند و اولین مسئلهٔ شبکه غیرقابل عیب‌یابی است"
+      },
+      "en": {
+        "title": "How traffic arrives",
+        "why": "Without the overlay and the virtual IP underneath it, the routing mesh is magic and the first network problem is undebuggable"
+      },
+      "entries": ["overlay-network", "gossip", "service-discovery", "virtual-ip", "dns-round-robin", "ingress-network", "published-port", "routing-mesh", "host-mode-publish", "reverse-proxy"]
+    },
+    {
+      "id": "where-data-lives",
+      "fa": {
+        "title": "داده کجا می‌ماند",
+        "why": "همهٔ راحتی‌های سوارم روی فرضِ قابل‌تعویض بودن تسک ساخته شده‌اند؛ داده همان چیزی است که این فرض را می‌شکند"
+      },
+      "en": {
+        "title": "Where the data lives",
+        "why": "Every convenience in Swarm assumes tasks are interchangeable; data is what breaks that assumption"
+      },
+      "entries": ["local-volume", "volume-driver", "stateful-service", "distributed-storage", "database-ha"]
+    },
+    {
+      "id": "not-in-git",
+      "fa": {
+        "title": "چیزهایی که نباید در گیت باشند",
+        "why": "راز و پیکربندی تنها جاهایی‌اند که سوارم برای فایل‌ها مکانیزم اختصاصی دارد، و هر دو تغییرناپذیرند"
+      },
+      "en": {
+        "title": "The things that must not be in Git",
+        "why": "Secrets and configs are the only files Swarm has a dedicated mechanism for, and both are immutable"
+      },
+      "entries": ["secret", "config-object", "secret-rotation"]
+    },
+    {
+      "id": "changing-safely",
+      "fa": {
+        "title": "عوض کردن بدون قطعی",
+        "why": "به‌روزرسانی چرخشی بدون بررسی سلامت، فقط قطعیِ تدریجی است"
+      },
+      "en": {
+        "title": "Changing it without an outage",
+        "why": "A rolling update without a health check is just a gradual outage"
+      },
+      "entries": ["scaling", "healthcheck", "restart-policy", "rolling-update", "update-config", "rollback", "zero-downtime-deploy"]
+    },
+    {
+      "id": "when-it-breaks",
+      "fa": {
+        "title": "وقتی چیزی می‌شکند",
+        "why": "خواندن CURRENT STATE اولین مهارت عیب‌یابی است؛ «بالا نیامد و خطایی هم نداد» بدون آن جواب ندارد"
+      },
+      "en": {
+        "title": "When something breaks",
+        "why": "Reading CURRENT STATE is the first debugging skill; without it, \"it never came up and gave no error\" has no answer"
+      },
+      "entries": ["node-failure", "task-state", "pending-task", "swarm-cli", "service-logs", "swarm-monitoring", "swarm-backup", "quorum-loss-recovery"]
+    },
+    {
+      "id": "code-to-image",
+      "fa": {
+        "title": "از کد تا ایمیج",
+        "why": "رجیستری تصمیم نمی‌گیرد چه نسخه‌ای اجرا شود؛ فهمیدن این، نصفِ فهمیدن CI/CD با سوارم است"
+      },
+      "en": {
+        "title": "From code to image",
+        "why": "A registry never decides which version runs, and understanding that is half of understanding CI/CD on Swarm"
+      },
+      "entries": ["dockerfile", "registry", "image-tag", "image-pull"]
+    },
+    {
+      "id": "image-to-cluster",
+      "fa": {
+        "title": "از ایمیج تا کلاستر",
+        "why": "یک فایل و دو مصرف‌کننده با قابلیت‌های متفاوت؛ آنچه Stack نادیده می‌گیرد بی‌صدا نادیده گرفته می‌شود"
+      },
+      "en": {
+        "title": "From image to cluster",
+        "why": "One file, two consumers with different capabilities — and what a stack ignores, it ignores silently"
+      },
+      "entries": ["stack-deploy", "compose-vs-stack", "multi-stack", "deploy-configuration"]
+    },
+    {
+      "id": "automating-it",
+      "fa": {
+        "title": "خودکار کردنش",
+        "why": "هیچ حلقه‌ای از حلقهٔ بعدی خبر ندارد؛ همهٔ سوءتفاهم‌های CI/CD در سوارم از فراموش کردن همین می‌آیند"
+      },
+      "en": {
+        "title": "Automating it",
+        "why": "No link in the chain knows about the next one, and every CI/CD misunderstanding on Swarm comes from forgetting that"
+      },
+      "entries": ["ci-cd-pipeline", "ssh-deploy", "gitops", "delivery-chain"]
+    },
+    {
+      "id": "the-boundaries",
+      "fa": {
+        "title": "مرزها",
+        "why": "فهرست کارهایی که سوارم نمی‌کند، سریع‌تر از فهرست کارهایش تو را به تصمیم درست می‌رساند"
+      },
+      "en": {
+        "title": "The boundaries",
+        "why": "The list of what Swarm does not do gets you to the right decision faster than the list of what it does"
+      },
+      "entries": ["geo-routing", "autoscaling", "what-swarm-does-not-do", "swarm-vs-kubernetes"]
+    }
+  ]
+}

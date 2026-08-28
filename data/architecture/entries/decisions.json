@@ -81,7 +81,8 @@
     "related": [
       "non-functional-requirements",
       "circuit-breaker",
-      "distributed-system"
+      "distributed-system",
+      "database-ha"
     ],
     "svg": [
       {

@@ -524,7 +524,8 @@
       "cardano",
       "algorand",
       "eventual-consistency",
-      "leader-election"
+      "leader-election",
+      "raft"
     ],
     "svg": [
       {
@@ -811,7 +812,8 @@
       "fork",
       "cosmos",
       "algorand",
-      "leader-election"
+      "leader-election",
+      "quorum"
     ],
     "svg": [
       {
