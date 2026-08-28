@@ -1,5 +1,6 @@
 [
   { "id": "crypto", "fa": "کریپتو و بلاکچین", "en": "Crypto & Blockchain" },
   { "id": "architecture", "fa": "معماری نرم‌افزار", "en": "Software Architecture" },
-  { "id": "swarm", "fa": "داکر سوارم", "en": "Docker Swarm" }
+  { "id": "swarm", "fa": "داکر سوارم", "en": "Docker Swarm" },
+  { "id": "acid", "fa": "ACID", "en": "ACID" }
 ]

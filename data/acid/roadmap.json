@@ -1,0 +1,16 @@
+{
+  "stages": [
+    {
+      "id": "what-a-transaction-is",
+      "fa": {
+        "title": "تراکنش چیست",
+        "why": "پیش از چهار حرف: آن واحد کاری که قرار است این چهار ضمانت دربارهٔ آن حرف بزنند"
+      },
+      "en": {
+        "title": "What a transaction is",
+        "why": "Before the four letters: the unit of work they are guarantees about"
+      },
+      "entries": ["db-transaction", "transaction-boundary", "autocommit", "acid"]
+    }
+  ]
+}
