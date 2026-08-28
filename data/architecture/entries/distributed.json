@@ -371,7 +371,8 @@
     ],
     "related": [
       "distributed-system",
-      "ordering"
+      "ordering",
+      "acid-c-vs-cap-c"
     ],
     "svg": [
       {

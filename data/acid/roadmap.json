@@ -35,6 +35,18 @@
         "why": "\"All or nothing\" is a slogan until you see the mechanism — and the same mechanism delivers durability later"
       },
       "entries": ["wal", "undo-log", "non-transactional-effect"]
+    },
+    {
+      "id": "the-odd-letter",
+      "fa": {
+        "title": "حرفی که جنس دیگری دارد",
+        "why": "سه حرف دیگر را پایگاه داده تضمین می‌کند؛ این یکی را برنامه نگه می‌دارد"
+      },
+      "en": {
+        "title": "The odd letter out",
+        "why": "The database guarantees the other three; this one the application keeps"
+      },
+      "entries": ["integrity-constraint", "acid-consistency", "deferred-constraint", "acid-c-vs-cap-c"]
     }
   ]
 }
