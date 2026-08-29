@@ -71,6 +71,18 @@
         "why": "And these are the two that actually bite"
       },
       "entries": ["lost-update", "write-skew"]
+    },
+    {
+      "id": "levels-as-written",
+      "fa": {
+        "title": "چهار سطح، همان‌طور که نوشته‌اند",
+        "why": "استاندارد یک نردبان تمیز می‌دهد. اول باید همان را دانست"
+      },
+      "en": {
+        "title": "Four levels, as written down",
+        "why": "The standard gives a tidy ladder. Learn that first"
+      },
+      "entries": ["isolation-level", "read-uncommitted", "read-committed", "repeatable-read", "serializable"]
     }
   ]
 }
