@@ -107,6 +107,18 @@
         "why": "Two things no tutorial mentions and everyone who has run a system has seen"
       },
       "entries": ["deadlock", "long-transaction"]
+    },
+    {
+      "id": "after-the-power-returns",
+      "fa": {
+        "title": "بعد از برگشتن برق",
+        "why": "همان لاگ مرحلهٔ سه، این بار برای ضمانت دوم"
+      },
+      "en": {
+        "title": "After the power comes back",
+        "why": "The same log from stage three, this time for the second guarantee"
+      },
+      "entries": ["durability", "fsync", "checkpoint", "crash-recovery"]
     }
   ]
 }
