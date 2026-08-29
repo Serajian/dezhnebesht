@@ -4,5 +4,6 @@
   { "id": "consistent", "file": "consistent.json", "fa": "سازگاری", "en": "Consistency" },
   { "id": "anomalies", "file": "anomalies.json", "fa": "ناهنجاری‌ها", "en": "Anomalies" },
   { "id": "levels", "file": "levels.json", "fa": "سطوح و هم‌روندی", "en": "Levels & Concurrency" },
-  { "id": "durable", "file": "durable.json", "fa": "پایداری", "en": "Durability" }
+  { "id": "durable", "file": "durable.json", "fa": "پایداری", "en": "Durability" },
+  { "id": "limits", "file": "limits.json", "fa": "مرزها", "en": "Limits" }
 ]
