@@ -83,6 +83,18 @@
         "why": "The standard gives a tidy ladder. Learn that first"
       },
       "entries": ["isolation-level", "read-uncommitted", "read-committed", "repeatable-read", "serializable"]
+    },
+    {
+      "id": "levels-as-they-are",
+      "fa": {
+        "title": "چهار سطح، همان‌طور که هستند",
+        "why": "همان آزمایش، همان نام سطح، دو موتور — و دو نتیجهٔ متضاد"
+      },
+      "en": {
+        "title": "Four levels, as they actually are",
+        "why": "The same experiment, the same level name, two engines — and opposite outcomes"
+      },
+      "entries": ["mvcc", "isolation-in-practice", "select-for-update"]
     }
   ]
 }
