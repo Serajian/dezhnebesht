@@ -353,27 +353,40 @@ def selftest():
     base = set(run(load(), verbose=False))
     saved = dict(CAPTURES)
 
+    failures = []
+
+    def fail(msg):
+        """Record a broken canary instead of aborting on it.
+
+        Aborting on the first failure hides every canary after it — including
+        the negative one, whose whole job is to prove the matcher does not flag
+        everything. That is how the ACID topic's final wave shipped a self-test
+        that exited 1 with two of four canaries never run.
+        """
+        failures.append(msg)
+        print(f"  CANARY FAILURE: {msg}")
+
     def must_fire(name, mutate, kind):
         globals()["CAPTURES"] = dict(saved)
         d = copy.deepcopy(load())
         if not mutate(d):
-            raise SystemExit(f"CANARY {name}: needle absent — the check is untested")
+            return fail(f"{name}: needle absent — the check is untested")
         new = [f for f in run(d, verbose=False) if f not in base]
         hit = [f for f in new if kind in f]
         globals()["CAPTURES"] = dict(saved)
         if not hit:
-            raise SystemExit(f"CANARY {name}: no NEW {kind!r} finding — no teeth. got {new}")
+            return fail(f"{name}: no NEW {kind!r} finding — no teeth. got {new}")
         print(f"  canary {name}: fired -> {hit[0][:130]}")
 
     def must_not_fire(name, mutate):
         globals()["CAPTURES"] = dict(saved)
         d = copy.deepcopy(load())
         if not mutate(d):
-            raise SystemExit(f"CANARY {name}: needle absent — the check is untested")
+            return fail(f"{name}: needle absent — the check is untested")
         new = [f for f in run(d, verbose=False) if f not in base]
         globals()["CAPTURES"] = dict(saved)
         if new:
-            raise SystemExit(f"CANARY {name}: flagged a benign edit: {new[0][:170]}")
+            return fail(f"{name}: flagged a benign edit: {new[0][:170]}")
         print(f"  canary {name}: correctly silent")
 
     # D1: an undeclared fa ordinal, the shape stage 9 shipped eleven of
@@ -471,7 +484,11 @@ def selftest():
     must_fire("the `ok <pkg> <elapsed>` trailer removed", m_no_trailer, "not what `go test` prints")
     must_fire("a year in `base` with no provenance row", m_unsourced_number, "not allowlisted")
     must_not_fire("a rewording that touches no position, count or number", m_benign)
-    print("canaries behaved.\n")
+    if failures:
+        raise SystemExit(
+            f"{len(failures)} of 10 canaries failed — every check they cover is "
+            f"untested, so a clean FINDINGS count means nothing until they are fixed.")
+    print("canaries behaved (10 of 10).\n")
 
 
 if __name__ == "__main__":

@@ -254,86 +254,94 @@ def run(entries, verbose=True):
 
 
 def selftest():
+    """Prove every check has teeth, WITHOUT quoting a line of shipped prose.
+
+    The first version of this self-test injected each defect by `.replace()`-ing
+    a long quotation of the live entry text. That coupling failed exactly the way
+    the rule in docs/entry-conventions.md says it fails: the final fix wave
+    rewrote «دو ماندگاری» to «دو پایداری» in `acid-outside-the-database`, canary 2's
+    needle went absent, and because the harness aborted on the first failure the
+    subhead canary and — worse — the NEGATIVE canary never ran at all.
+
+    Two structural fixes, and both are the point rather than tidying:
+
+    1. A canary INJECTS its defect by appending a paragraph. It reads nothing out
+       of the entry, so no author can silently turn it into a no-op. What each
+       canary asserts is that its own payload came back flagged.
+    2. A failing canary is RECORDED, not raised. One broken canary must never be
+       able to hide the ones after it — least of all the negative canary, whose
+       whole job is to prove the matcher does not flag everything.
+    """
     import copy
     entries = load_all()
     base = set(run(entries, verbose=False))
+    failures = []
 
-    def get(d, eid):
-        return next(e for e in d if e["id"] == eid)
+    def fail(msg):
+        failures.append(msg)
+        print(f"  CANARY FAILURE: {msg}")
 
-    def must_fire(name, mutate, kind):
+    def inject(d, eid, html):
+        """Append `html` to an entry's Persian body and confirm it landed.
+
+        Appending cannot silently match nothing, which is the whole reason this
+        is an append and not a replace.
+        """
+        e = next(x for x in d if x["id"] == eid)
+        e["fa"]["body"] = e["fa"]["body"] + html
+        return html in e["fa"]["body"]
+
+    def must_fire(name, eid, payload, kind):
         d = copy.deepcopy(entries)
-        if not mutate(d):
-            raise SystemExit(f"CANARY {name}: needle absent — the check is untested")
+        if not inject(d, eid, payload):
+            return fail(f"{name}: payload did not land in {eid} — the check is untested")
         new = [f for f in run(d, verbose=False) if f not in base]
         hit = [f for f in new if kind in f]
         if not hit:
-            raise SystemExit(f"CANARY {name}: no NEW {kind!r} finding — no teeth")
+            return fail(f"{name}: no NEW {kind!r} finding — no teeth")
         print(f"  canary {name}: fired\n      {hit[0].splitlines()[0]}")
 
-    def must_not_fire(name, mutate):
+    def must_not_fire(name, eid, payload):
         d = copy.deepcopy(entries)
-        if not mutate(d):
-            raise SystemExit(f"CANARY {name}: needle absent — the check is untested")
+        if not inject(d, eid, payload):
+            return fail(f"{name}: payload did not land in {eid} — the check is untested")
         new = [f for f in run(d, verbose=False) if f not in base]
         if new:
-            raise SystemExit(f"CANARY {name}: flagged a benign edit: {new[0][:200]}")
+            return fail(f"{name}: flagged a benign paragraph: {new[0][:200]}")
         print(f"  canary {name}: correctly silent")
 
-    # 1: the exact 13-token run review found, restored
-    def m_saga(d):
-        e = get(d, "acid-outside-the-database")
-        cur = "مدخل الگوی ساگا معاملهٔ دیگری را جلو می‌گذارد"
-        if cur not in e["fa"]["body"]:
-            return False
-        i = e["fa"]["body"].index("<p>" + cur)
-        j = e["fa"]["body"].index("</p>", i) + 4
-        e["fa"]["body"] = (e["fa"]["body"][:i]
-                           + "<p>مدخل الگوی ساگا معاملهٔ دیگر را شرح می‌دهد: هیچ‌وقت مسدود "
-                             "نمی‌شود و در عوض جداسازی را رها می‌کند؛ حالت میانی دیدنی می‌ماند "
-                             "و بازگشت با جبران انجام می‌شود، نه با بازگرداندن.</p>"
-                           + e["fa"]["body"][j:])
-        return True
+    # 1: the 13-token run stage 11 lifted out of two-phase-commit while
+    #    attributing it to saga — the finding a blanket citation exemption hid.
+    P_SAGA = ("<p>مدخل الگوی ساگا معاملهٔ دیگر را شرح می‌دهد: هیچ‌وقت مسدود نمی‌شود و در عوض "
+              "جداسازی را رها می‌کند؛ حالت میانی دیدنی می‌ماند و بازگشت با جبران انجام می‌شود، "
+              "نه با بازگرداندن.</p>")
 
-    # 2: the 8-token run against distributed-transaction, restored
-    def m_durable(d):
-        e = get(d, "acid-outside-the-database")
-        cur = "آن‌طرف مرز هم موتوری هست که همین کار را می‌کند"
-        if cur not in e["fa"]["body"]:
-            return False
-        e["fa"]["body"] = e["fa"]["body"].replace(
-            "<p>" + cur + " و ضمانتش را هم به همان اندازه جدی می‌گیرد. دو ماندگاری، هرکدام "
-            "کامل، هرکدام بی‌خبر از دیگری.",
-            "<p>هر انبار تغییر خودش را ماندگار می‌کند، بی‌آنکه چیزی دربارهٔ دیگری بداند.", 1)
-        return "هر انبار تغییر خودش را ماندگار" in e["fa"]["body"]
+    # 2: the run against distributed-transaction's «هر طرف تغییر خودش را ماندگار
+    #    می‌کند، بی‌آنکه چیزی دربارهٔ طرف دیگر بداند».
+    P_DURABLE = "<p>هر انبار تغییر خودش را ماندگار می‌کند، بی‌آنکه چیزی دربارهٔ دیگری بداند.</p>"
 
-    # 3: the subhead opening shared with non-repeatable-read and acid-consistency
-    def m_subhead(d):
-        e = get(d, "base")
-        cur = "<p><strong>و منشأ این سرنام چیزی می‌گوید که بعداً گم شد.</strong></p>"
-        if cur not in e["fa"]["body"]:
-            return False
-        e["fa"]["body"] = e["fa"]["body"].replace(
-            cur, "<p><strong>و جایی که این سرنام از آن آمده، چیزی می‌گوید که بعداً گم "
-                 "شد.</strong></p>", 1)
-        return True
+    # 3: a standalone bold subhead whose four-token opening two closed entries
+    #    already use.
+    P_SUBHEAD = ("<p><strong>و جایی که این سرنام از آن آمده، چیزی می‌گوید که بعداً گم "
+                 "شد.</strong></p>")
 
-    # negative: a reworded sentence that shares nothing long with the corpus
-    def m_benign(d):
-        e = get(d, "base")
-        old = "و تقریباً همیشه بد نقل می‌شود"
-        if old not in e["fa"]["body"]:
-            return False
-        e["fa"]["body"] = e["fa"]["body"].replace(old, "و تقریباً همیشه غلط نقل می‌شود", 1)
-        return True
+    # negative: an ordinary new paragraph that shares no long run with anything.
+    # A matcher that returned everything would flag this one too.
+    P_BENIGN = "<p>این بند فقط برای آزمودنِ همین جاروب افزوده شده و جای دیگری معنایی ندارد.</p>"
 
     print("run-sweep self-test:")
-    must_fire("the 13-token run lifted from two-phase-commit", m_saga, "OLD-VS-NEW RUN")
-    must_fire("the 8-token run against distributed-transaction", m_durable, "OLD-VS-NEW RUN")
-    must_fire("the four-token subhead opening shared with two closed entries", m_subhead,
-              "SUBHEAD OPENING")
-    must_not_fire("a rewording that shares no long run", m_benign)
-    print("run-sweep canaries behaved.\n")
+    must_fire("the 13-token run lifted from two-phase-commit",
+              "acid-outside-the-database", P_SAGA, "OLD-VS-NEW RUN")
+    must_fire("the run against distributed-transaction",
+              "acid-outside-the-database", P_DURABLE, "OLD-VS-NEW RUN")
+    must_fire("the four-token subhead opening shared with two closed entries",
+              "base", P_SUBHEAD, "SUBHEAD OPENING")
+    must_not_fire("an ordinary new paragraph", "base", P_BENIGN)
+    if failures:
+        raise SystemExit(
+            f"{len(failures)} of 4 canaries failed — every check they cover is untested, "
+            f"so this script's FINDINGS count means nothing until they are fixed.")
+    print("run-sweep canaries behaved (4 of 4).\n")
 
 
 if __name__ == "__main__":

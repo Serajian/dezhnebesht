@@ -477,18 +477,37 @@ The four that recurred, by shape:
   paragraph that lifted from `two-phase-commit` attributed it to `saga`, so a
   blanket "it's attributed, skip it" exemption would have hidden it.
 
-So, three requirements on any checker written for a later topic:
+So, five requirements on any checker written for a later topic. The first two
+were learned three times each; the last two were learned by the fix wave that
+wrote this section, in the very commit that wrote it.
 
-1. **Every canary throws when its needle is absent.** A canary that becomes a
-   no-op because the fix changed the string it patched turns `FINDINGS: 0` into
-   a lie. This has happened twice.
+1. **A canary whose needle is absent is a FAILURE, never a pass.** A canary that
+   becomes a no-op because a later edit changed the string it patched turns
+   `FINDINGS: 0` into a lie.
 2. **Every checker gets a NEGATIVE canary.** A matcher that returns everything
    passes every positive test. Plant a case that must stay silent.
 3. **Validate against a case it should FAIL, before you trust a clean run** —
    and recalibrate *before* fixing, not after. Stage 8 recalibrated its
    threshold first and found twenty repeats where the review had named four.
+4. **Never key a canary to a quotation of shipped prose.** `runsweep11`'s
+   canaries injected their defect by `.replace()`-ing a long quotation of the
+   live entry text. This wave then reworded one of those quotations — «دو
+   ماندگاری» → «دو پایداری», three sections up — and the canary's needle went
+   absent. A canary must inject its defect **structurally** (append a
+   paragraph), so that no author can silently disarm it. Third instance of
+   rule 1, and the first one this file was open for.
+5. **A failing canary must not abort the ones after it.** That same failure
+   raised `SystemExit`, so the subhead canary and — worse — the *negative*
+   canary never ran at all. Collect failures, report them all, exit non-zero at
+   the end. One broken canary must never be able to hide the checker's proof
+   that it does not flag everything.
 
-`tools/acid/` holds the three checkers this topic ended with, with their
+And the discipline that would have caught it: **re-run every self-test after
+the last content edit, not before.** This wave ran all three selftests when it
+copied the checkers in, then edited two entries, then re-ran only the plain
+mode. The plain mode was green and meaningless.
+
+`tools/acid/` holds the four checkers this topic ended with, with their
 canaries, and `tools/README.md` says what has to be re-pointed to reuse them.
 They are in the repository and not in a scratchpad **because the Swarm topic's
 `svgsheet.py` was written in a scratchpad and is gone.**
@@ -574,8 +593,8 @@ extraction is twenty lines and is in the test.
 - **`short` and `title` take NO HTML.** `render.js` passes them to `el()` as
   text children, so a `<span dir="ltr">` prints as literal markup on the index
   card. Bare Latin is correct there; the `dir="ltr"` rule applies to `body` and
-  `example` only. Thirteen of the site's shorts carry bare Latin and none
-  carries a tag.
+  `example` only. Sixteen Persian `short`s carry bare Latin, and no `title` or
+  `short` on the site, in either language, carries a tag.
 - **Category `en` names keep a literal `&`** («Levels & Concurrency»), same
   reason: `&amp;` would render as five characters.
 - **Append to `data/<topic>/roadmap.json` textually.** Round-tripping it
@@ -584,9 +603,18 @@ extraction is twenty lines and is in the test.
 - **Insert a new category at its spec position, do not append** — the Swarm
   rule above, restated because the ACID plan told two separate stages to append
   and both would have put a later category ahead of an earlier one.
-- **Cross-topic citations are legal and carry no topic prefix.** Ids are unique
-  site-wide, so «مدخل تکثیر» from an ACID entry resolves to the architecture
-  entry and the roadmap guard accepts it.
+- **Cross-topic citations are legal, carry no topic prefix — and are checked by
+  nothing.** «مدخل تکثیر» from an ACID entry reads correctly, because ids and
+  titles are unique site-wide. But `test/roadmap-order.test.mjs` builds its
+  `titleToId` map **per topic**, from that topic's own entries, so a title
+  belonging to another topic matches nothing: the citation declares no
+  prerequisite and is never validated. The guard does not "accept" it; it
+  cannot see it. So spell a cross-topic title by hand against the target
+  entry's `fa.title`, and expect no test to tell you if you get it wrong.
+  (This bullet said the opposite in the commit that introduced it. It was
+  wrong, and it was wrong one paragraph below the section explaining that the
+  guard only fails on citations pointing forward — which is the same blind
+  spot seen from the other side.)
 
 ## Two measured facts from PostgreSQL 18.6 worth not re-deriving
 

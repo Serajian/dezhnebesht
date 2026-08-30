@@ -8,16 +8,37 @@
 2. Cross-checks every numeral that appears in prose against the blocks of the
    same entry (Persian digits folded to ASCII), with an explicit allowlist.
 3. Refuses a raw "<" inside a captured block (it would parse as a tag).
-4. Refuses a <pre> block whose content is not byte-identical to the capture
-   files it was built from.
+
+It does NOT check a block against its capture file. `check11.py` does that,
+against `blocks11/`; this script never reads `blocks5/`. An earlier version of
+this docstring claimed a fourth, byte-identity check that is not in the file —
+which is the same class of untruth as a canary that has stopped firing, so it
+is written out here rather than quietly deleted.
+
+Standalone at HEAD this script reports 16 findings and still exits 0 — `run()`
+prints findings, it does not set an exit code. All 16 belong to `lost-update`
+and `write-skew`, the two stage-6 entries appended to `anomalies.json` after
+this script was written: `ALLOWED` below covers only the four stage-5 entries,
+so their «۱۸٫۶», «۱۰» and «۲۰» have no row. Nothing clears them — `check11.py`
+extends `ALLOWED` for its OWN entries and loads only `limits.json`, so it never
+sees this file. Treat the 16 as a known, unowned gap, not as a clean run.
 
 Run with --selftest to prove each check has teeth: the script mutates the
-data in memory in ways each check MUST catch, and throws if one does not.
+data in memory in ways each check MUST catch. A canary that cannot be applied,
+or that fires nothing, is RECORDED and the run still continues to the next one
+— aborting on the first failure hides every canary after it.
 """
 import json, os, re, sys, unicodedata
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 PATH = os.path.join(REPO, "data/acid/entries/anomalies.json")
+# Retained evidence, not an input: nothing in this file or in check11.py reads
+# it. `blocks5/` is stage 5's capture set — 24 of its 30 files are still
+# verbatim <pre> blocks in anomalies.json, 5 (`nrr_*`) are fragments that the
+# stage-5 re-capture absorbed into one continuous session, and `iso_b2` was
+# superseded outright. It is kept because it is the only surviving provenance
+# for those transcripts, and it is NOT wired up because a mixed set like that
+# can only be made to pass by tuning the check to it.
 BLOCKS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "blocks5")
 
 FA = "۰۱۲۳۴۵۶۷۸۹"
@@ -257,13 +278,26 @@ def selftest():
 
     base = set(run(load(), verbose=False))
 
+    failures = []
+
+    def fail(msg):
+        """Record a broken canary instead of aborting on it.
+
+        Aborting on the first failure hides every canary after it — including
+        the negative one, whose whole job is to prove the matcher does not flag
+        everything. That is how the ACID topic's final wave shipped a self-test
+        that exited 1 with two of four canaries never run.
+        """
+        failures.append(msg)
+        print(f"  CANARY FAILURE: {msg}")
+
     def must_fire(name, mutate):
         data = copy.deepcopy(load())
         if not mutate(data):
-            raise SystemExit(f"CANARY {name}: its needle was not found — the check is untested")
+            return fail(f"{name}: its needle was not found — the check is untested")
         new = [f for f in run(data, verbose=False) if f not in base]
         if not new:
-            raise SystemExit(f"CANARY {name}: mutation produced no NEW finding — no teeth")
+            return fail(f"{name}: mutation produced no NEW finding — no teeth")
         print(f"  canary {name}: fired ({len(new)} new) e.g. {new[0][:100]}")
 
     def m_rowcount(d):
@@ -356,7 +390,11 @@ def selftest():
     must_fire("prose number not in any block", m_number)
     must_fire("missing blank line after a result set", m_seam)
     must_fire("raw '<' inside a block", m_rawlt)
-    print("all canaries fired.\n")
+    if failures:
+        raise SystemExit(
+            f"{len(failures)} of 7 canaries failed — every check they cover is "
+            f"untested, so a clean FINDINGS count means nothing until they are fixed.")
+    print("all 7 canaries fired.\n")
 
 
 if __name__ == "__main__":
