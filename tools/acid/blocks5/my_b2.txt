@@ -1,0 +1,8 @@
+mysql> SELECT CONNECTION_ID(), bal FROM account WHERE name = 'ali';
++-----------------+------+
+| CONNECTION_ID() | bal  |
++-----------------+------+
+|              14 |  999 |
++-----------------+------+
+1 row in set (0.00 sec)
+

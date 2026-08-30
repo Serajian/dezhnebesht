@@ -1,0 +1,9 @@
+postgres=*# SELECT name, bal FROM account WHERE bal >= 300 ORDER BY name;
+ name | bal 
+------+-----
+ ali  | 420
+ reza | 310
+(2 rows)
+
+postgres=*# COMMIT;
+COMMIT

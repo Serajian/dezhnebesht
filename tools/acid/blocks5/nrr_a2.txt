@@ -1,0 +1,6 @@
+postgres=*# SELECT bal FROM account WHERE name = 'ali';
+ bal 
+-----
+ 250
+(1 row)
+

@@ -1,0 +1,136 @@
+{
+  "stages": [
+    {
+      "id": "what-a-transaction-is",
+      "fa": {
+        "title": "تراکنش چیست",
+        "why": "پیش از چهار حرف: آن واحد کاری که قرار است این چهار ضمانت دربارهٔ آن حرف بزنند"
+      },
+      "en": {
+        "title": "What a transaction is",
+        "why": "Before the four letters: the unit of work they are guarantees about"
+      },
+      "entries": ["db-transaction", "transaction-boundary", "autocommit", "acid"]
+    },
+    {
+      "id": "all-or-nothing",
+      "fa": {
+        "title": "همه یا هیچ",
+        "why": "اولین حرف، و تنها حرفی که بیشتر مردم فکر می‌کنند تمام ماجراست"
+      },
+      "en": {
+        "title": "All or nothing",
+        "why": "The first letter, and the only one most people think is the whole story"
+      },
+      "entries": ["atomicity", "transaction-rollback", "savepoint"]
+    },
+    {
+      "id": "the-log",
+      "fa": {
+        "title": "لاگ: چگونه",
+        "why": "«همه یا هیچ» تا وقتی مکانیزمش را نبینی یک شعار است — و همان مکانیزم بعداً پایداری را هم می‌دهد"
+      },
+      "en": {
+        "title": "The log: how",
+        "why": "\"All or nothing\" is a slogan until you see the mechanism — and the same mechanism delivers durability later"
+      },
+      "entries": ["wal", "undo-log", "non-transactional-effect"]
+    },
+    {
+      "id": "the-odd-letter",
+      "fa": {
+        "title": "حرفی که جنس دیگری دارد",
+        "why": "سه حرف دیگر را پایگاه داده تضمین می‌کند؛ این یکی را برنامه نگه می‌دارد"
+      },
+      "en": {
+        "title": "The odd letter out",
+        "why": "The database guarantees the other three; this one the application keeps"
+      },
+      "entries": ["integrity-constraint", "acid-consistency", "deferred-constraint", "acid-c-vs-cap-c"]
+    },
+    {
+      "id": "two-at-once",
+      "fa": {
+        "title": "وقتی دو نفر همزمان",
+        "why": "تا وقتی یک تراکنش در سیستم بود، جداسازی مجانی بود و اسمی لازم نداشت"
+      },
+      "en": {
+        "title": "When two run at once",
+        "why": "With one transaction in the system, isolation was free and needed no name"
+      },
+      "entries": ["isolation", "dirty-read", "non-repeatable-read", "phantom-read"]
+    },
+    {
+      "id": "unnamed-anomalies",
+      "fa": {
+        "title": "دوتایی که استاندارد نامشان را نبرد",
+        "why": "و همین دوتا هستند که در عمل می‌زنند"
+      },
+      "en": {
+        "title": "The two the standard never named",
+        "why": "And these are the two that actually bite"
+      },
+      "entries": ["lost-update", "write-skew"]
+    },
+    {
+      "id": "levels-as-written",
+      "fa": {
+        "title": "چهار سطح، همان‌طور که نوشته‌اند",
+        "why": "استاندارد یک نردبان تمیز می‌دهد. اول باید همان را دانست"
+      },
+      "en": {
+        "title": "Four levels, as written down",
+        "why": "The standard gives a tidy ladder. Learn that first"
+      },
+      "entries": ["isolation-level", "read-uncommitted", "read-committed", "repeatable-read", "serializable"]
+    },
+    {
+      "id": "levels-as-they-are",
+      "fa": {
+        "title": "چهار سطح، همان‌طور که هستند",
+        "why": "همان آزمایش، همان نام سطح، دو موتور — و دو نتیجهٔ متضاد"
+      },
+      "en": {
+        "title": "Four levels, as they actually are",
+        "why": "The same experiment, the same level name, two engines — and opposite outcomes"
+      },
+      "entries": ["mvcc", "isolation-in-practice", "select-for-update"]
+    },
+    {
+      "id": "what-bites-in-production",
+      "fa": {
+        "title": "آنچه در تولید می‌زند",
+        "why": "دو چیزی که هیچ جزوه‌ای نمی‌گوید و هر کسی که سیستمی را نگه داشته دیده"
+      },
+      "en": {
+        "title": "What bites in production",
+        "why": "Two things no tutorial mentions and everyone who has run a system has seen"
+      },
+      "entries": ["deadlock", "long-transaction"]
+    },
+    {
+      "id": "after-the-power-returns",
+      "fa": {
+        "title": "بعد از برگشتن برق",
+        "why": "همان لاگ مرحلهٔ سه، این بار برای ضمانت دوم"
+      },
+      "en": {
+        "title": "After the power comes back",
+        "why": "The same log from stage three, this time for the second guarantee"
+      },
+      "entries": ["durability", "fsync", "checkpoint", "crash-recovery"]
+    },
+    {
+      "id": "where-acid-ends",
+      "fa": {
+        "title": "مرزها",
+        "why": "چهار ضمانت هیچ‌کدام از مرز فرایند رد نمی‌شوند — و از آن‌جا موضوع دیگری شروع می‌شود"
+      },
+      "en": {
+        "title": "Where ACID ends",
+        "why": "None of the four guarantees crosses the process boundary — and another topic starts there"
+      },
+      "entries": ["acid-outside-the-database", "base"]
+    }
+  ]
+}

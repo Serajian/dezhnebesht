@@ -1,0 +1,12 @@
+postgres=# SELECT pg_backend_pid();
+ pg_backend_pid 
+----------------
+            126
+(1 row)
+
+postgres=# SHOW default_transaction_isolation;
+ default_transaction_isolation 
+-------------------------------
+ read committed
+(1 row)
+

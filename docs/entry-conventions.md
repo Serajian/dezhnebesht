@@ -96,16 +96,23 @@ and stage 2 uses توکن.
 The browser pane reports `innerWidth === 0` and drops scroll events, so the
 site's own entry page cannot be scrolled to a diagram. Two things still work:
 `getBBox()` (text is really being laid out and measured) and `screenshot`.
-So render one diagram per page and shoot it:
+So render one diagram per page and shoot it. The technique, not a command —
+the Swarm topic's `svgsheet.py` lived in a session scratchpad and no longer
+exists, which is the reason this paragraph now describes the tool instead of
+invoking it. **Write yours under `tools/` and commit it**, next to
+`tools/acid/`; a proofing script kept in a scratchpad is a script the next
+topic will re-derive.
 
-```
-python3 .superpowers/sdd/2026-08-25-docker-swarm-topic/tools/svgsheet.py \
-    data/swarm/entries/<file>.json                # lists every diagram with an index
-python3 .../svgsheet.py data/swarm/entries/<file>.json 18 > /tmp/d.html
-```
+Twenty lines do it: read an entries JSON, take one entry's `svg` string by
+index, and emit a standalone HTML page holding that one SVG, with
+`assets/css/style.css` linked and the entry's own `dir` on the wrapper.
+Linking the real stylesheet is not decoration — see the font-stack rule below;
+a proofing page on a fallback face invents findings and erases real ones. Give
+the script an index-less mode that just lists every diagram in the file with
+its index, so shooting the fifth one does not mean counting braces.
 
 Serve the directory holding the html on a spare port (`python3 -m http.server
-8010`), navigate the browser pane to it, and screenshot. One diagram fills the
+8030`), navigate the browser pane to it, and screenshot. One diagram fills the
 800×450 frame. Stage 1 and stage 2's tables and matrices were proofed this way
 and render correctly — Persian digits, RTL columns, highlighted rows and all.
 
@@ -389,3 +396,232 @@ cost a fix round.
 - `docker secret` has four subcommands — create, inspect, ls, rm — and `inspect`
   returns only id, version, two timestamps, name and labels. No expiry, no
   policy, no access record.
+
+---
+
+# آنچه موضوع «اسید» افزود — what the ACID topic added
+
+The rules above came out of 78 Swarm entries. What follows came out of 36 ACID
+entries over eleven stages, and it is here for the same reason: the execution
+ledger those stages were tracked in lives in a git-ignored directory and is
+deleted when the session ends. Everything worth keeping had to move into a
+tracked file, and this is the tracked file.
+
+## «پایداری» is Durability — and ماندگاری was already on the site
+
+The ACID topic titled its D entry **«پایداری»** and its plan justified that as
+"first fixed by this topic". It was justified by grepping the *word*, which
+found only «پایداری قرارداد» and looked clear. But the **concept** was already
+rendered **«ماندگاری»** elsewhere:
+
+- `architecture/distributed-transaction` — twice as the guarantee noun, one of
+  those inside an enumeration of exactly the ACID guarantees
+  («ماندگاری: وقتی گفت انجام شد، انجام شده …»), plus once in its second SVG
+  («ماندگاری پس از تعهد»).
+- `crypto/scalability` — «در دسترس بودن با ماندگاری یکی نیست», in the body and
+  again in its third SVG.
+- `swarm/raft` — «ماندگاریِ یک نوشتن به دیسکِ رهبر گره نخورده».
+- `architecture/orchestration` — «ماندگاری و تلاش دوباره را برایت می‌نویسد».
+
+This is exactly the failure the *grep the CONCEPT* rule above names, and the
+same shape as ژتون/توکن, توزیع‌کنندهٔ بار/متعادل‌کنندهٔ بار and
+مغز شکافته/مغز دوپاره. It was caught only in the final whole-branch review.
+
+**Ruling, on the «ایمیج»/«تصویر» precedent: «پایداری» is Durability, the ACID
+letter D.** Reversing it now is expensive and would not be an improvement —
+the `durability` entry's *title* is what `test/roadmap-order.test.mjs` keys
+citations on, and this branch correctly forbade editing another topic's body
+text. So the four surviving ماندگاری uses go on a **sweep list**, to be settled
+the next time one of those topics is opened, not by a drive-by edit now.
+
+Two things this ruling does **not** touch:
+
+- **ماندگار as an ordinary adjective is fine and stays.** «حافظهٔ ماندگار»
+  (durable storage) appears throughout the ACID topic itself and is not the
+  letter D; so is «تصمیم زودهنگام و ماندگار». The ruling is about the *noun
+  naming the guarantee* and its adjective in an ACID enumeration.
+- The plan's vocabulary table still records the wrong justification. Plans are
+  historical documents; the correction lives here, not in a retro-edit.
+
+Fixed inside the ACID topic itself, since it is this branch's own text: two
+instances — `acid-outside-the-database`'s «دو ماندگاری» → «دو پایداری», and
+`isolation`'s «چقدر ماندگار؟» → «چقدر پایدار؟» (parallel with `acid` and
+`acid-consistency`, which already say «اتمی … جدا … پایدار»).
+
+## The canary rule, generalised — ten checker blind spots in eleven stages
+
+The file already carries two instances ("a canary that stops firing is worse
+than no canary"; "check per glyph, not per text run"). The ACID topic found
+**ten** more, so the general form is worth stating: **a checker that silently
+skips a class of input reports success on work it never examined.** Every one
+of the ten reported a clean run over something it was not looking at.
+
+The four that recurred, by shape:
+
+- **A gate that excludes most of the corpus.** Stage 4's padding checker keyed
+  on `'+' in line` and skipped every single-column table. Stage 7's convergence
+  checker inspected only bold subheads and first-paragraph openings. Stage 10's
+  lead-in check was gated to the band around a `<pre>`, so two body-to-body
+  pairs were invisible — and the six planted canaries could not have caught it,
+  because every one of them plants its needle inside the band.
+- **The direction you are not thinking about.** New-vs-corpus, new-vs-new and
+  old-vs-new are **three different sweeps**. Stage 9 shipped three verbatim
+  lead-ins shared between its own two new entries because it only ever compared
+  against the corpus. Stage 10 closed new-vs-new; nobody applied the same fix
+  old-vs-new, and stage 11 then lifted a 13-token run out of `two-phase-commit`.
+- **A regex that runs past its own boundary.** `<p><strong>(.*?)</strong></p>`
+  with `re.S` matches across paragraphs, so the checker reported clean while
+  examining almost nothing. Anchor the matcher, and check the anchor.
+- **An exemption that hides the worst finding.** Stage 11's attribution check
+  had to test the run against **the entry the run actually collides with**: the
+  paragraph that lifted from `two-phase-commit` attributed it to `saga`, so a
+  blanket "it's attributed, skip it" exemption would have hidden it.
+
+So, five requirements on any checker written for a later topic. The first two
+were learned three times each; the last two were learned by the fix wave that
+wrote this section, in the very commit that wrote it.
+
+1. **A canary whose needle is absent is a FAILURE, never a pass.** A canary that
+   becomes a no-op because a later edit changed the string it patched turns
+   `FINDINGS: 0` into a lie.
+2. **Every checker gets a NEGATIVE canary.** A matcher that returns everything
+   passes every positive test. Plant a case that must stay silent.
+3. **Validate against a case it should FAIL, before you trust a clean run** —
+   and recalibrate *before* fixing, not after. Stage 8 recalibrated its
+   threshold first and found twenty repeats where the review had named four.
+4. **Never key a canary to a quotation of shipped prose.** `runsweep11`'s
+   canaries injected their defect by `.replace()`-ing a long quotation of the
+   live entry text. This wave then reworded one of those quotations — «دو
+   ماندگاری» → «دو پایداری», three sections up — and the canary's needle went
+   absent. A canary must inject its defect **structurally** (append a
+   paragraph), so that no author can silently disarm it. Third instance of
+   rule 1, and the first one this file was open for.
+5. **A failing canary must not abort the ones after it.** That same failure
+   raised `SystemExit`, so the subhead canary and — worse — the *negative*
+   canary never ran at all. Collect failures, report them all, exit non-zero at
+   the end. One broken canary must never be able to hide the checker's proof
+   that it does not flag everything.
+
+And the discipline that would have caught it: **re-run every self-test after
+the last content edit, not before.** This wave ran all three selftests when it
+copied the checkers in, then edited two entries, then re-ran only the plain
+mode. The plain mode was green and meaningless.
+
+`tools/acid/` holds the four checkers this topic ended with, with their
+canaries, and `tools/README.md` says what has to be re-pointed to reuse them.
+They are in the repository and not in a scratchpad **because the Swarm topic's
+`svgsheet.py` was written in a scratchpad and is gone.**
+
+## The single highest-yield check in this project: prose against its own blocks
+
+Seven consecutive stages shipped a defect where the prose points back at the
+entry's **own** example and describes it wrongly — a count of blocks that is
+off by one, "the first block prints three settings" when that `<pre>` holds two
+result sets, "every count carries a pid" when the last does not, "the order of
+the statements is the same word for word" when this stage added statements, a
+sentence that reverses `psql`'s printed order. Stage 7's self-audit found
+eleven, stage 8's found ten by reading alone with every automated layer silent.
+
+The transcripts get byte-verified; the sentences *about* them do not. So before
+reporting done, walk every positional and count claim in both languages against
+the block it describes. It is the cheapest check in the project and the one
+that keeps paying.
+
+Related and unsolved: **subheads are checked for repetition but never for
+truth.** Stage 8 shipped «همان پنج بلوک» as a false subhead past both the
+manual pass and every checker; stage 9 added a canary for that exact shape.
+
+## Fix rounds introduce claims too
+
+Four stages running, the *fix*, not the draft, was the risk:
+
+- stage 8's rewrite said a process "has been sitting idle since 00:51:47.551" —
+  `pg_stat_activity` reports state at query time, not continuously;
+- stage 9's replacement said "the three blocks overlap in time" — two of them
+  do not;
+- stage 10's said "this experiment had touched neither before these blocks" —
+  false for InnoDB, whose dial an earlier capture run had already set;
+- stage 11's earlier fix moved a citation mid-sentence to break an opening
+  echo, which stripped the attribution and left four bare verbatim lifts;
+- and the final review found the stage-11 fix round had traded one
+  self-contradiction about 2PC and the letter A for another.
+
+**Re-audit every sentence a fix round writes against the thing it describes,
+exactly as if it were new prose.** It is new prose.
+
+## Removing a citation silently removes a prerequisite
+
+`test/roadmap-order.test.mjs` only fails on a citation pointing **forward**. If
+you delete a «مدخل ‹عنوان›» while rewording, you may have deleted a real
+prerequisite edge and **nothing will tell you** — the suite stays green.
+
+So when a citation has to be reworded, prefer a form that **keeps** it. The
+ACID topic's own breach of the "«مدخل X» names a document" rule was fixed this
+way in six places, using a meta-noun that makes the entry the document again:
+
+- «ناهنجاریِ مدخل به‌روزرسانی گم‌شده هیچ‌کدام یکی از آن سه نیست»
+- «آنچه مدخل به‌روزرسانی گم‌شده اندازه گرفت روی همین سطح بود»
+- «هر سه مدخل خودشان را دارند: مدخل خواندن کثیف، …»
+
+If you must drop one, diff the extracted citation sets before and after — the
+extraction is twenty lines and is in the test.
+
+## Capture harness rules, each of which cost a re-capture
+
+- **`psql` needs a pty.** `docker exec -i` hands it a pipe and no prompts print
+  at all, so a house-style transcript is impossible. Drive it through a pty.
+- **A splice is visible and a recorder that `rstrip`s hides it.** Stage 5 built
+  a block labelled «از اول تا آخر» from three captures spliced together; the
+  recorder's `rstrip` ate the blank lines `psql` prints between result sets, and
+  the review found the seam. The fix is structural, not cosmetic: **one session
+  is one continuous capture**, so a seam cannot exist in a block that claims to
+  be continuous.
+- **A transcript claiming two sessions needs in-band proof of two sessions.**
+  Stage 5's MySQL block was byte-identical to a single-session replay, which
+  means it proved nothing. `pg_backend_pid()`, `CONNECTION_ID()`,
+  `pg_blocking_pids()` naming the other process, unbroken prompt stars, or a
+  wait whose duration only overlap explains. The strongest on the site is the
+  deadlock `DETAIL`, because the *server* names both processes in a line no
+  single session could fabricate.
+- **Inherit no container.** The probe container is left with dirty state;
+  recreate it. And a stray background capture script writing to the same
+  database corrupts a run silently — the scratchpad-is-shared hazard covers
+  ports above, but it covers processes too.
+
+## Data-file mechanics that are not obvious
+
+- **`short` and `title` take NO HTML.** `render.js` passes them to `el()` as
+  text children, so a `<span dir="ltr">` prints as literal markup on the index
+  card. Bare Latin is correct there; the `dir="ltr"` rule applies to `body` and
+  `example` only. Sixteen Persian `short`s carry bare Latin, and no `title` or
+  `short` on the site, in either language, carries a tag.
+- **Category `en` names keep a literal `&`** («Levels & Concurrency»), same
+  reason: `&amp;` would render as five characters.
+- **Append to `data/<topic>/roadmap.json` textually.** Round-tripping it
+  through `json.dump(indent=2)` reflows every stage's one-line `entries` array
+  and turns a 12-line append into a 48-line diff.
+- **Insert a new category at its spec position, do not append** — the Swarm
+  rule above, restated because the ACID plan told two separate stages to append
+  and both would have put a later category ahead of an earlier one.
+- **Cross-topic citations are legal, carry no topic prefix — and are checked by
+  nothing.** «مدخل تکثیر» from an ACID entry reads correctly, because ids and
+  titles are unique site-wide. But `test/roadmap-order.test.mjs` builds its
+  `titleToId` map **per topic**, from that topic's own entries, so a title
+  belonging to another topic matches nothing: the citation declares no
+  prerequisite and is never validated. The guard does not "accept" it; it
+  cannot see it. So spell a cross-topic title by hand against the target
+  entry's `fa.title`, and expect no test to tell you if you get it wrong.
+  (This bullet said the opposite in the commit that introduced it. It was
+  wrong, and it was wrong one paragraph below the section explaining that the
+  guard only fails on citations pointing forward — which is the same blind
+  spot seen from the other side.)
+
+## Two measured facts from PostgreSQL 18.6 worth not re-deriving
+
+- `pg_constraint` lists a `NOT NULL` as a real row (`contype='n'`), so a table
+  with a primary key and one `NOT NULL` has **two** constraint rows, not one.
+  Writing "one constraint, the primary key" is a false claim about your own
+  block.
+- There is no `autocommit` server parameter — `SHOW autocommit` errors with
+  `unrecognized configuration parameter`. Autocommit is a *client* concept;
+  in `psql` it is `\echo :AUTOCOMMIT`.

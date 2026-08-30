@@ -1,0 +1,22 @@
+mysql> SELECT CONNECTION_ID();
++-----------------+
+| CONNECTION_ID() |
++-----------------+
+|              14 |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> START TRANSACTION;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT @@transaction_isolation;
++-------------------------+
+| @@transaction_isolation |
++-------------------------+
+| READ-UNCOMMITTED        |
++-------------------------+
+1 row in set (0.01 sec)
+

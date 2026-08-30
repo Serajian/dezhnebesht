@@ -1,0 +1,7 @@
+postgres=*# SELECT bal FROM account WHERE name = 'sara';
+ bal 
+-----
+(0 rows)
+
+postgres=*# COMMIT;
+COMMIT

@@ -410,7 +410,8 @@
       "distributed-transaction",
       "event",
       "message-broker",
-      "at-least-once-delivery"
+      "at-least-once-delivery",
+      "non-transactional-effect"
     ],
     "svg": [
       {

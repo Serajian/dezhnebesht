@@ -260,7 +260,8 @@
       "retry",
       "distributed-system",
       "command",
-      "nonce"
+      "nonce",
+      "non-transactional-effect"
     ],
     "svg": [
       {
@@ -371,7 +372,8 @@
     ],
     "related": [
       "distributed-system",
-      "ordering"
+      "ordering",
+      "acid-c-vs-cap-c"
     ],
     "svg": [
       {
@@ -632,7 +634,9 @@
       "cap-theorem",
       "distributed-system",
       "microservices",
-      "aggregate"
+      "aggregate",
+      "db-transaction",
+      "acid"
     ],
     "svg": [
       {
@@ -669,7 +673,8 @@
     "related": [
       "distributed-transaction",
       "cap-theorem",
-      "leader-election"
+      "leader-election",
+      "db-transaction"
     ],
     "svg": [
       {

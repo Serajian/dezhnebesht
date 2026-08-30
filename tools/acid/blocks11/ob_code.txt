@@ -1,0 +1,20 @@
+// Write puts both numbers inside one boundary, which is all one lock is here:
+// the reader arrives before the two writes or after them, and the writer
+// cannot wait for it — a reader that cannot get in cannot answer.
+func (j *Joint) Write(mid chan<- struct{}) {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	j.orders++
+	mid <- struct{}{} // the reader is woken here and still cannot get in
+	j.payments++
+}
+
+// Write commits to each store in turn, with no lock over the pair. Here the
+// writer CAN wait for the reader, and that is the whole difference: nothing
+// is keeping the reader out.
+func (s *Split) Write(mid chan<- struct{}, seen <-chan struct{}) {
+	s.orders.inc()
+	mid <- struct{}{}
+	<-seen
+	s.payments.inc()
+}
