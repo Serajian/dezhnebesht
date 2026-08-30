@@ -9,7 +9,9 @@
       "transaction-rollback",
       "savepoint",
       "db-transaction",
-      "acid"
+      "acid",
+      "undo-log",
+      "wal"
     ],
     "fa": {
       "title": "اتمی بودن",

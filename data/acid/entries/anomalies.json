@@ -10,7 +10,9 @@
       "acid",
       "distributed-transaction",
       "two-phase-commit",
-      "saga"
+      "saga",
+      "isolation-level",
+      "mvcc"
     ],
     "fa": {
       "title": "جداسازی",
@@ -115,7 +117,8 @@
       "non-repeatable-read",
       "dirty-read",
       "db-transaction",
-      "acid"
+      "acid",
+      "select-for-update"
     ],
     "fa": {
       "title": "به‌روزرسانی گم‌شده",

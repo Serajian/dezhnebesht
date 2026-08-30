@@ -119,6 +119,18 @@
         "why": "The same log from stage three, this time for the second guarantee"
       },
       "entries": ["durability", "fsync", "checkpoint", "crash-recovery"]
+    },
+    {
+      "id": "where-acid-ends",
+      "fa": {
+        "title": "مرزها",
+        "why": "چهار ضمانت هیچ‌کدام از مرز فرایند رد نمی‌شوند — و از آن‌جا موضوع دیگری شروع می‌شود"
+      },
+      "en": {
+        "title": "Where ACID ends",
+        "why": "None of the four guarantees crosses the process boundary — and another topic starts there"
+      },
+      "entries": ["acid-outside-the-database", "base"]
     }
   ]
 }

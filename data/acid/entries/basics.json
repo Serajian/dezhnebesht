@@ -9,7 +9,9 @@
       "transaction-boundary",
       "autocommit",
       "acid",
-      "transaction"
+      "transaction",
+      "atomicity",
+      "isolation"
     ],
     "fa": {
       "title": "تراکنش پایگاه داده",
@@ -81,7 +83,11 @@
     "related": [
       "db-transaction",
       "transaction-boundary",
-      "autocommit"
+      "autocommit",
+      "atomicity",
+      "acid-consistency",
+      "isolation",
+      "durability"
     ],
     "fa": {
       "title": "ACID",
