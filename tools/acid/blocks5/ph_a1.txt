@@ -1,0 +1,9 @@
+postgres=# BEGIN;
+BEGIN
+postgres=*# SELECT name, bal FROM account WHERE bal >= 300 ORDER BY name;
+ name | bal 
+------+-----
+ ali  | 400
+ reza | 310
+(2 rows)
+

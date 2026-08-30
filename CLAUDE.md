@@ -31,6 +31,8 @@ Pass no path argument. `node --test test/` fails on Node 22 with `MODULE_NOT_FOU
 
 Before publishing, open `#/self-test` — it renders every entry in both languages and reports validation errors, render failures, entries missing an English translation, and entries that are not on their topic's roadmap.
 
+`tools/` holds the content-proofing scripts — block fidelity, prose-vs-its-own-blocks, anti-convergence. They are not part of the site and `node --test` does not run them; each takes `--selftest`, and a clean run means nothing until the selftest passes. `tools/README.md` says what has to be re-pointed to reuse them for a new topic. Write new ones there and commit them: the Docker Swarm topic's proofing tool was written in a session scratchpad and is gone.
+
 ## Constraints
 
 - No framework, no npm packages, no build step. Plain HTML/CSS/JS with ES modules.

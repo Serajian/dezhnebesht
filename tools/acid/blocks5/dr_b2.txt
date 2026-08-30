@@ -1,0 +1,6 @@
+postgres=*# SELECT ctid, xmin, name, bal FROM account WHERE name = 'ali';
+ ctid  | xmin | name | bal 
+-------+------+------+-----
+ (0,1) |  769 | ali  | 400
+(1 row)
+

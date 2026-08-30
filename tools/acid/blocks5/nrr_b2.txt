@@ -1,0 +1,6 @@
+postgres=# BEGIN;
+BEGIN
+postgres=*# DELETE FROM account WHERE name = 'sara';
+DELETE 1
+postgres=*# COMMIT;
+COMMIT

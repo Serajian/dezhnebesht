@@ -1,0 +1,16 @@
+postgres=# BEGIN;
+BEGIN
+postgres=*# SELECT pg_current_xact_id();
+ pg_current_xact_id 
+--------------------
+                770
+(1 row)
+
+postgres=*# UPDATE account SET bal = 999 WHERE name = 'ali';
+UPDATE 1
+postgres=*# SELECT ctid, xmin, name, bal FROM account WHERE name = 'ali';
+ ctid  | xmin | name | bal 
+-------+------+------+-----
+ (0,3) |  770 | ali  | 999
+(1 row)
+

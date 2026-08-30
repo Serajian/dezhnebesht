@@ -1,0 +1,6 @@
+postgres=# BEGIN;
+BEGIN
+postgres=*# UPDATE account SET bal = 420 WHERE name = 'ali';
+UPDATE 1
+postgres=*# COMMIT;
+COMMIT

@@ -1,0 +1,5 @@
+postgres=# \timing on
+Timing is on.
+postgres=# UPDATE account SET bal = bal + 50 WHERE name = 'sara';
+UPDATE 1
+Time: 6.769 ms

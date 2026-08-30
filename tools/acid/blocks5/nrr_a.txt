@@ -1,0 +1,40 @@
+postgres=# SELECT conname, contype, pg_get_constraintdef(oid) FROM pg_constraint WHERE conrelid = 'account'::regclass;
+        conname        | contype | pg_get_constraintdef 
+-----------------------+---------+----------------------
+ account_name_not_null | n       | NOT NULL name
+ account_pkey          | p       | PRIMARY KEY (name)
+(2 rows)
+
+postgres=# BEGIN;
+BEGIN
+postgres=*# SHOW transaction_isolation;
+ transaction_isolation 
+-----------------------
+ read committed
+(1 row)
+
+postgres=*# SELECT bal FROM account WHERE name = 'ali';
+ bal 
+-----
+ 400
+(1 row)
+
+postgres=*# SELECT bal FROM account WHERE name = 'sara';
+ bal 
+-----
+ 270
+(1 row)
+
+postgres=*# SELECT bal FROM account WHERE name = 'ali';
+ bal 
+-----
+ 250
+(1 row)
+
+postgres=*# SELECT bal FROM account WHERE name = 'sara';
+ bal 
+-----
+(0 rows)
+
+postgres=*# COMMIT;
+COMMIT

@@ -1,0 +1,4 @@
+postgres=# BEGIN;
+BEGIN
+postgres=*# UPDATE account SET bal = bal - 100 WHERE name = 'ali';
+UPDATE 1

@@ -1,0 +1,11 @@
+postgres=# UPDATE account SET bal = bal - 10 WHERE name = 'ali';
+UPDATE 1
+Time: 9613.943 ms (00:09.614)
+postgres=# SELECT name, bal FROM account ORDER BY name;
+ name | bal 
+------+-----
+ ali  | 290
+ sara | 320
+(2 rows)
+
+Time: 1.832 ms

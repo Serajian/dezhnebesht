@@ -1,0 +1,6 @@
+postgres=# BEGIN;
+BEGIN
+postgres=*# INSERT INTO account VALUES ('mina', 900);
+INSERT 0 1
+postgres=*# COMMIT;
+COMMIT

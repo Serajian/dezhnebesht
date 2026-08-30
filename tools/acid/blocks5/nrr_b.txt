@@ -1,0 +1,12 @@
+postgres=# BEGIN;
+BEGIN
+postgres=*# UPDATE account SET bal = 250 WHERE name = 'ali';
+UPDATE 1
+postgres=*# COMMIT;
+COMMIT
+postgres=# BEGIN;
+BEGIN
+postgres=*# DELETE FROM account WHERE name = 'sara';
+DELETE 1
+postgres=*# COMMIT;
+COMMIT
