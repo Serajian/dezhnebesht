@@ -8,6 +8,7 @@ import {
   serializeProgress,
   stageProgress,
   nextUnreadId,
+  nextInRoadmap,
   entriesMissingFromRoadmap,
   pruneRoadmap,
 } from '../assets/js/roadmap.js';
@@ -110,6 +111,19 @@ test('nextUnreadId اولین مدخل تیک‌نخورده را می‌دهد'
   assert.equal(nextUnreadId(roadmap, new Set(['bit'])), 'byte');
   assert.equal(nextUnreadId(roadmap, new Set(['bit', 'byte'])), 'hex');
   assert.equal(nextUnreadId(roadmap, new Set(['bit', 'byte', 'hex'])), null);
+});
+
+test('nextInRoadmap مدخل بعدی مسیر را می‌دهد، از مرز مرحله هم رد می‌شود', () => {
+  const roadmap = { stages: [{ entries: ['bit', 'byte'] }, { entries: ['hex'] }] };
+  assert.equal(nextInRoadmap(roadmap, 'bit'), 'byte');
+  assert.equal(nextInRoadmap(roadmap, 'byte'), 'hex');
+});
+
+test('nextInRoadmap برای آخرین مدخل، مدخل بیرون از نقشه و نقشه‌ی خراب null می‌دهد', () => {
+  const roadmap = { stages: [{ entries: ['bit', 'byte'] }, { entries: ['hex'] }] };
+  assert.equal(nextInRoadmap(roadmap, 'hex'), null);
+  assert.equal(nextInRoadmap(roadmap, 'nope'), null);
+  assert.equal(nextInRoadmap(null, 'bit'), null);
 });
 
 test('entriesMissingFromRoadmap مدخل‌های جامانده را می‌دهد', () => {

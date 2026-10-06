@@ -458,7 +458,44 @@ export function renderBreadcrumb({ lang, topic, category, current }) {
   return el('nav', { class: 'chrome-breadcrumb', 'aria-label': t('nav.breadcrumb') }, children);
 }
 
-export function renderEntry(entry, { lang, categories, entriesById, topics = [] }) {
+/**
+ * نوار ته مدخل: «خواندم» همان تیک نقشه‌ی راه است، و لینک به مدخل بعدی
+ * مسیر تا خواننده بدون برگشتن به نقشه جلو برود. فقط برای مدخلی که در
+ * نقشه‌ی موضوعش هست؛ progress = null یعنی هیچ نواری.
+ */
+function entryProgress(entry, { read, next, topicId }, lang) {
+  const button = el(
+    'button',
+    { class: 'mark-read', type: 'button', 'data-entry-id': entry.id, 'aria-pressed': String(read) },
+    el('span', {
+      class: 'mark-read-icon',
+      'aria-hidden': 'true',
+      html: '<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path class="mark-read-check" d="M6.2 10.3 8.8 12.8 13.9 7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    }),
+    el('span', {}, t(read ? 'entry.markedRead' : 'entry.markRead')),
+  );
+
+  let link;
+  if (next) {
+    const content = localized(next, lang);
+    link = el(
+      'a',
+      { class: 'next-step', href: `#/t/${encodeURIComponent(next.id)}` },
+      el('span', { class: 'next-label' }, t('entry.nextInPath')),
+      el('span', { class: 'next-title', ...contentDirAttrs(content) }, content.title),
+    );
+  } else {
+    link = el(
+      'a',
+      { class: 'next-step', href: `#/roadmap/${encodeURIComponent(topicId)}` },
+      el('span', { class: 'next-label' }, t('entry.pathEnd')),
+      el('span', { class: 'next-title' }, t('entry.backToRoadmap')),
+    );
+  }
+  return el('section', { class: 'entry-progress' }, button, link);
+}
+
+export function renderEntry(entry, { lang, categories, entriesById, topics = [], progress = null }) {
   const content = localized(entry, lang);
   const related = (entry.related ?? []).map((id) => entriesById.get(id)).filter(Boolean);
   const sections = onThisPageSections({
@@ -548,6 +585,8 @@ export function renderEntry(entry, { lang, categories, entriesById, topics = [] 
       ),
     );
   }
+
+  if (progress) contentWrap.append(entryProgress(entry, progress, lang));
 
   const column = el('div', { class: 'column' });
   if (content.untranslated) column.append(el('p', { class: 'notice' }, t('entry.untranslated')));
