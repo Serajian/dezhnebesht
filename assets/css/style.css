@@ -257,6 +257,62 @@ body {
 .chrome-icon-btn:active { transform: scale(0.92); background: var(--bg-press); }
 @media (prefers-reduced-motion: reduce) { .chrome-icon-btn:active { transform: none; } }
 
+/* ---------- Chrome: پنل «ذخیره‌ی پیشرفت با ایمیل» ---------- */
+/* .chrome-icon-btn خودش display دارد و [hidden] را می‌پوشاند؛ دکمه تا
+   وقتی سرور API ندارد (GitHub Pages) نباید دیده شود. */
+.chrome-account[hidden],
+.account-panel[hidden],
+.account-form[hidden],
+.account-signed[hidden] { display: none; }
+.account { position: relative; flex: none; }
+.account-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  inset-inline-end: 0;
+  z-index: 20;
+  width: min(18rem, calc(100vw - 2rem));
+  padding: 1rem;
+  border-radius: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--separator);
+  box-shadow: var(--shadow-2);
+  color: var(--text);
+  font-size: 0.9375rem;
+}
+.account-form, .account-signed { display: flex; flex-direction: column; gap: 0.5rem; }
+.account-label, .account-signed-label { font-weight: 600; }
+.account-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--separator);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+.account-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.account-hint { color: var(--text-secondary); font-size: 0.8125rem; line-height: 1.6; }
+.account-error { color: var(--danger); font-size: 0.8125rem; }
+.account-error:empty { display: none; }
+.account-signed-email { color: var(--text-secondary); overflow-wrap: anywhere; text-align: left; }
+.account-submit, .account-signout {
+  align-self: stretch;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: background var(--dur-fast) var(--ease);
+}
+.account-submit { background: var(--accent); color: #fff; }
+.account-submit:hover { filter: brightness(1.08); }
+.account-signout { background: var(--bg-press); color: var(--text); }
+.account-signout:hover { background: var(--accent-tint); }
+/* در عرض باریک دکمه به لبه‌ی شروعِ هدر می‌رود؛ پنل باید از همان لبه به
+   داخل صفحه باز شود، وگرنه از کنار صفحه بیرون می‌زند. */
+@media (max-width: 44rem) {
+  .account-panel { inset-inline-end: auto; inset-inline-start: 0; }
+}
+
 /* آیکون تم: انتخاب خورشید/ماه فقط با CSS، بر مبنای پوسته‌ی مؤثر —
    پیش‌فرض سیستم، مگر بازنویسی صریح برنده شود */
 .chrome-theme .icon-moon { display: none; }

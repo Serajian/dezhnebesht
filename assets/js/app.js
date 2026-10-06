@@ -5,6 +5,7 @@ import * as router from './router.js';
 import * as view from './render.js';
 import { resolveActiveTopicId, parseGroupState } from './groups.js';
 import { progressKey, parseProgress, serializeProgress } from './roadmap.js';
+import { initAccount, pushTopic, refreshLabels } from './account.js';
 
 const VIEW_KEY = 'glossary:index-view';
 const THEME_KEY = 'glossary:theme';
@@ -279,6 +280,7 @@ function renderChrome() {
   dom.themeToggle.setAttribute('aria-label', i18n.t('theme.toggleLabel'));
   dom.langToggle.title = i18n.t('lang.switch');
   dom.langToggle.setAttribute('aria-label', i18n.t('lang.switchLabel'));
+  refreshLabels();
   dom.search.placeholder = i18n.t('search.placeholder');
   dom.search.setAttribute('aria-label', i18n.t('search.ariaLabel'));
   for (const button of dom.viewToggle.querySelectorAll('button')) {
@@ -489,6 +491,7 @@ dom.main.addEventListener('click', (event) => {
     if (readSet.has(id)) readSet.delete(id);
     else readSet.add(id);
     saveProgress(topicId, readSet);
+    pushTopic(topicId);
     render();
     refocus(`.node[data-entry-id="${CSS.escape(id)}"]`);
     return;
@@ -499,6 +502,7 @@ dom.main.addEventListener('click', (event) => {
     // برگشت‌ناپذیر است، پس تأیید می‌گیرد.
     if (!window.confirm(i18n.t('roadmap.resetConfirm'))) return;
     saveProgress(state.roadmapTopicId, new Set());
+    pushTopic(state.roadmapTopicId);
     render();
     refocus('.roadmap-reset');
     return;
@@ -595,6 +599,17 @@ async function init() {
     refresh();
     playEnter();
     window.scrollTo(0, 0); // فقط موقع تغییر مسیر، نه با هر کلید جستجو
+  });
+
+  // بدون await: بارگذاری سایت منتظر سرور نمی‌ماند، و بدون سرور (GitHub
+  // Pages) این فقط دکمه را پنهان نگه می‌دارد.
+  initAccount({
+    root: document.getElementById('account'),
+    getLocal: () => Object.fromEntries(
+      [...state.roadmaps.keys()].map((topicId) => [topicId, [...readProgress(topicId)]]),
+    ),
+    setLocal: (topicId, ids) => saveProgress(topicId, new Set(ids)),
+    onMerged: () => render(),
   });
 }
 
