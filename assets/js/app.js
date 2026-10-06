@@ -4,7 +4,7 @@ import { filterEntries } from './search.js';
 import * as router from './router.js';
 import * as view from './render.js';
 import { resolveActiveTopicId, parseGroupState } from './groups.js';
-import { progressKey, parseProgress, serializeProgress } from './roadmap.js';
+import { progressKey, parseProgress, serializeProgress, roadmapEntryIds, nextInRoadmap } from './roadmap.js';
 import { initAccount, pushTick, pushReset, refreshLabels } from './account.js';
 
 const VIEW_KEY = 'glossary:index-view';
@@ -82,6 +82,17 @@ function readProgress(topicId) {
   } catch {
     return new Set();
   }
+}
+
+/** نوار ته مدخل فقط برای مدخلی که در نقشه‌ی موضوعش هست؛ وگرنه null. */
+function entryProgressFor(entry) {
+  const roadmap = state.roadmaps.get(entry.topic);
+  if (!roadmap || !roadmapEntryIds(roadmap).includes(entry.id)) return null;
+  return {
+    topicId: entry.topic,
+    read: readProgress(entry.topic).has(entry.id),
+    next: state.entriesById.get(nextInRoadmap(roadmap, entry.id)) ?? null,
+  };
 }
 
 function saveProgress(topicId, readSet) {
@@ -252,7 +263,13 @@ function render() {
     const entry = state.entriesById.get(state.route.id);
     dom.main.append(
       entry
-        ? view.renderEntry(entry, { lang, categories: state.categories, entriesById: state.entriesById, topics: state.topics })
+        ? view.renderEntry(entry, {
+          lang,
+          categories: state.categories,
+          entriesById: state.entriesById,
+          topics: state.topics,
+          progress: entryProgressFor(entry),
+        })
         : view.renderNotFound(state.route.id),
     );
   } else if (isRoadmap) {
@@ -469,6 +486,20 @@ async function shareEntry(button) {
 dom.main.addEventListener('click', (event) => {
   const button = event.target.closest('.share-btn');
   if (button) shareEntry(button);
+
+  // «خواندم» ته مدخل همان تیک نقشه است — همان کلید ذخیره و همان ارسال.
+  const mark = state.route.view === 'entry' && event.target.closest('.mark-read');
+  if (mark) {
+    const entry = state.entriesById.get(mark.dataset.entryId);
+    if (!entry) return;
+    const readSet = readProgress(entry.topic);
+    if (readSet.has(entry.id)) readSet.delete(entry.id);
+    else readSet.add(entry.id);
+    saveProgress(entry.topic, readSet);
+    pushTick(entry.topic, entry.id, readSet.has(entry.id));
+    render();
+    refocus('.mark-read');
+  }
 });
 
 // شنونده‌ی جدا برای نمای نقشه‌ی راه — روی dom.main چون فرزندانش با هر

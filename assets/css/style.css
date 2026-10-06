@@ -883,6 +883,46 @@ details[open] > summary .group-disclosure { transform: rotate(-90deg); }
 .related-title { display: block; font-size: var(--fs-title); font-weight: 600; margin-block-end: 0.1875rem; }
 .related-desc { display: block; font-size: var(--fs-subhead); line-height: 1.5; color: var(--text-secondary); }
 
+/* ---------- نوار ته مدخل: «خواندم» + بعدی در مسیر ---------- */
+.entry-progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  margin-block-start: 2.5rem;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid var(--separator);
+}
+.mark-read {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem 0.5rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid var(--separator);
+  color: var(--text);
+  font-weight: 600;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.mark-read:hover { background: var(--bg-press); }
+.mark-read-icon svg { display: block; width: 20px; height: 20px; }
+.mark-read[aria-pressed="false"] .mark-read-check { opacity: 0; }
+.mark-read[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.mark-read[aria-pressed="true"]:hover { filter: brightness(1.08); }
+.next-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+  text-align: end;
+  color: var(--text);
+  text-decoration: none;
+}
+.next-label { font-size: var(--fs-subhead); color: var(--text-secondary); }
+.next-title { font-weight: 600; color: var(--accent); overflow-wrap: anywhere; }
+.next-step:hover .next-title { text-decoration: underline; }
+
 /* ---------- بنر خطای اعتبارسنجی (data.js) ---------- */
 /* ویژگی دائمی سایت است، نه بخشی از ماکت — طبق CLAUDE.md باید همیشه
    خوانا بماند، حتی وقتی داده خراب است. نشانه‌گذاری از render.js

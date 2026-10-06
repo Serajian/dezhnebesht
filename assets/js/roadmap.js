@@ -113,6 +113,17 @@ export function nextUnreadId(roadmap, readSet) {
 }
 
 /**
+ * مدخلی که در ترتیب مسیر درست بعد از این یکی می‌آید — نه اولین
+ * خوانده‌نشده — تا لینک «بعدی» ته مدخل قابل پیش‌بینی باشد. آخرین مدخل،
+ * مدخل بیرون از نقشه و نقشه‌ی خراب null می‌دهند.
+ */
+export function nextInRoadmap(roadmap, id) {
+  const ids = roadmapEntryIds(roadmap);
+  const index = ids.indexOf(id);
+  return index === -1 ? null : ids[index + 1] ?? null;
+}
+
+/**
  * مدخل‌هایی که در هیچ مرحله‌ای نیستند. این خطا نیست — افزودن مدخل تازه
  * نباید سایت را بشکند — ولی باید در خودآزمایی دیده شود، وگرنه بی‌صدا
  * از مسیر جا می‌ماند.
