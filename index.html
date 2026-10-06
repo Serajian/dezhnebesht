@@ -52,6 +52,28 @@
     </div>
 
     <div class="chrome-end">
+      <div class="account" id="account">
+        <button type="button" class="chrome-icon-btn chrome-account" aria-expanded="false" aria-controls="account-panel" hidden>
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <rect x="2.75" y="4.75" width="14.5" height="10.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M3.4 5.8 10 10.6l6.6-4.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="account-panel" id="account-panel" hidden>
+          <form class="account-form" novalidate>
+            <label class="account-label" for="account-email"></label>
+            <input class="account-input" id="account-email" type="email" dir="ltr" autocomplete="email" inputmode="email" spellcheck="false">
+            <p class="account-hint"></p>
+            <p class="account-error" aria-live="polite"></p>
+            <button type="submit" class="account-submit"></button>
+          </form>
+          <div class="account-signed" hidden>
+            <p class="account-signed-label"></p>
+            <p class="account-signed-email" dir="ltr"></p>
+            <button type="button" class="account-signout"></button>
+          </div>
+        </div>
+      </div>
       <button type="button" class="chrome-icon-btn chrome-theme" id="theme-toggle" aria-label="تغییر پوستهٔ روشن یا تاریک" title="پوستهٔ روشن/تاریک">
         <svg class="icon-sun" viewBox="0 0 20 20" aria-hidden="true">
           <circle cx="10" cy="10" r="3.8" fill="none" stroke="currentColor" stroke-width="1.5"/>
