@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-**دژنبشت (Dezhnebesht)** — "fortress of writings", after the Sasanian archive where a copy of the Avesta was kept. A personal encyclopedia: a static, dependency-free site published on GitHub Pages.
+**دژنبشت (Dezhnebesht)** — "fortress of writings", after the Sasanian archive where a copy of the Avesta was kept. A personal encyclopedia: a static, dependency-free site published on GitHub Pages and on a VPS (Docker, deployed by Dokploy), where a small API also keeps readers' roadmap progress.
 
 Content is split into **topics** (crypto & blockchain is the first); each topic has its own categories and entries. The index lists clickable terms with live search; each term has its own view with definition, explanation, optional example and diagram, hashtags, and links to related terms. Bilingual (Persian / English) with a language switch.
 
@@ -19,7 +19,11 @@ node serve.js                  # dependency-free static server in the repo
 python3 -m http.server 8000    # alternative
 ```
 
-There is no build or install step. Local serving is identical to what GitHub Pages runs.
+There is no build or install step. The static site served locally is identical to what GitHub Pages runs. The one thing GitHub Pages cannot run is the progress API: `serve.js` mounts `/api/` only when `DB_PATH` is set (the Docker image sets it), and without it — locally by default, and always on GitHub Pages — `/api/health` is a 404 and the "save progress with your email" button stays hidden. To try it locally:
+
+```
+DB_PATH=/tmp/progress.db node serve.js
+```
 
 Unit tests cover the pure modules (`validate`, `localized`, `filterEntries`, `normalize`, `parseHash`, the i18n key tables) plus the real data files on disk, using Node's built-in runner — nothing is installed:
 
@@ -56,6 +60,8 @@ An entry's **topic** comes from which directory under `data/` it lives in and it
 Entry `id`s are unique across the **whole site**, not per topic. That is deliberate: `#/t/<id>` never has to carry a topic, `related` can link across topics with no special syntax, and the duplicate-id check stays a plain global check. For an encyclopedia this is a feature — one term, one entry.
 
 Search always spans every topic, even while a topic filter is active. The filter is for browsing; search deliberately escapes it, so you find an entry even when you've forgotten which topic you filed it under.
+
+Roadmap ticks live in `localStorage` first. A reader may type an email to keep a copy on the server and get it back on another device; `assets/js/account.js` merges local and server ticks as a union, so nothing is lost from either side. The email is an identifier only, **deliberately unverified** — the data is a list of entry ids, and anyone who knows an email can read or change its ticks. Don't add verification without revisiting `docs/superpowers/specs/2026-10-06-progress-login-design.md`. The rules for a valid email and a valid request body live once in `assets/js/sync.js`, which both the browser and `server/api.js` import. `server/progress-store.js` is the only file that imports `node:sqlite`, so the static site never loads it.
 
 `data.js` validates on load — duplicate ids, missing required fields, `related` pointing at a nonexistent id — and shows failures in a banner without taking the page down. Broken `related` references are the most common breakage, since entries are added one at a time and often reference terms not yet written.
 
