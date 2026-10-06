@@ -3,7 +3,15 @@ import { readFile } from 'node:fs/promises';
 import { extname, join, normalize, resolve } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname);
-const PORT = Number(process.env.PORT) || 8000;
+// PORT=0 یعنی پورت تصادفی (تست‌ها از آن استفاده می‌کنند)، پس || جایز نیست.
+const PORT = process.env.PORT ? Number(process.env.PORT) : 8000;
+
+// API پیشرفت فقط با DB_PATH ناخالی روشن می‌شود؛ بدون آن node:sqlite هرگز
+// import نمی‌شود و /api/health مثل هر مسیر ناموجود 404 است — همان چیزی که
+// مرورگر از آن می‌فهمد دکمه‌ی ورود را نشان ندهد.
+const api = process.env.DB_PATH
+  ? (await import('./server/api.js')).createApi({ dbPath: process.env.DB_PATH })
+  : null;
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -18,6 +26,11 @@ const TYPES = {
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
+
+  if (api && url.pathname.startsWith('/api/')) {
+    await api.handle(req, res);
+    return;
+  }
 
   let pathname;
   try {
@@ -50,5 +63,5 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`سرو می‌شود روی http://localhost:${PORT}`);
+  console.log(`سرو می‌شود روی http://localhost:${server.address().port}`);
 });
