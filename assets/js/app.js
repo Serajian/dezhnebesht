@@ -5,7 +5,7 @@ import * as router from './router.js';
 import * as view from './render.js';
 import { resolveActiveTopicId, parseGroupState } from './groups.js';
 import { progressKey, parseProgress, serializeProgress } from './roadmap.js';
-import { initAccount, pushTopic, refreshLabels } from './account.js';
+import { initAccount, pushTick, pushReset, refreshLabels } from './account.js';
 
 const VIEW_KEY = 'glossary:index-view';
 const THEME_KEY = 'glossary:theme';
@@ -491,7 +491,7 @@ dom.main.addEventListener('click', (event) => {
     if (readSet.has(id)) readSet.delete(id);
     else readSet.add(id);
     saveProgress(topicId, readSet);
-    pushTopic(topicId);
+    pushTick(topicId, id, readSet.has(id));
     render();
     refocus(`.node[data-entry-id="${CSS.escape(id)}"]`);
     return;
@@ -502,7 +502,7 @@ dom.main.addEventListener('click', (event) => {
     // برگشت‌ناپذیر است، پس تأیید می‌گیرد.
     if (!window.confirm(i18n.t('roadmap.resetConfirm'))) return;
     saveProgress(state.roadmapTopicId, new Set());
-    pushTopic(state.roadmapTopicId);
+    pushReset(state.roadmapTopicId);
     render();
     refocus('.roadmap-reset');
     return;

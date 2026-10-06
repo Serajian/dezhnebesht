@@ -13,7 +13,11 @@ let deps = null;
 let ui = null;
 let available = false;
 let errorShown = false;
-/** topicId → تایمر debounce؛ روی pagehide و خروج فوراً فرستاده می‌شوند. */
+/**
+ * topicId → { timer, add, remove }: تغییرهای جمع‌شده در پنجره‌ی debounce.
+ * تیک به‌صورت تغییر فرستاده می‌شود، نه کل مجموعه، تا تبی که ادغامش کهنه است
+ * تیک‌های دستگاه دیگر را از روی سرور پاک نکند.
+ */
 const pending = new Map();
 
 function currentEmail() {
@@ -33,11 +37,11 @@ function storeEmail(email) {
   }
 }
 
-function send(email, topicId, readIds, keepalive = false) {
+function send(body, keepalive = false) {
   return fetch('/api/progress', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, topicId, readIds }),
+    body: JSON.stringify(body),
     keepalive,
   }).catch(() => {});
 }
@@ -52,7 +56,9 @@ async function syncNow(email) {
     if (currentEmail() !== email) return;
     const merged = mergeProgress(deps.getLocal(), remote);
     for (const [topicId, ids] of Object.entries(merged)) deps.setLocal(topicId, ids);
-    for (const topicId of topicsToPush(merged, remote)) send(email, topicId, merged[topicId]);
+    for (const topicId of topicsToPush(merged, remote)) {
+      send({ email, topicId, readIds: merged[topicId] });
+    }
     deps.onMerged();
   } catch {
     // سرور در دسترس نیست یا پاسخ JSON نبود؛ بارگذاری بعدی دوباره امتحان می‌کند
@@ -60,22 +66,37 @@ async function syncNow(email) {
 }
 
 function sendNow(topicId, keepalive) {
-  clearTimeout(pending.get(topicId));
+  const change = pending.get(topicId);
+  if (!change) return;
+  clearTimeout(change.timer);
   pending.delete(topicId);
   const email = currentEmail();
-  if (!email) return;
-  send(email, topicId, deps.getLocal()[topicId] ?? [], keepalive);
+  if (!email || (change.add.size === 0 && change.remove.size === 0)) return;
+  send({ email, topicId, add: [...change.add], remove: [...change.remove] }, keepalive);
 }
 
 function flushPending(keepalive) {
   for (const topicId of [...pending.keys()]) sendNow(topicId, keepalive);
 }
 
-/** بعد از هر تیک یا «از نو»؛ مقدار را در لحظه‌ی ارسال از localStorage می‌خواند. */
-export function pushTopic(topicId) {
+/** بعد از هر تیک (read: true) یا برداشتن تیک (read: false)؛ با debounce. */
+export function pushTick(topicId, entryId, read) {
   if (!available || !deps || !currentEmail()) return;
-  clearTimeout(pending.get(topicId));
-  pending.set(topicId, setTimeout(() => sendNow(topicId, false), DEBOUNCE_MS));
+  const change = pending.get(topicId) ?? { timer: 0, add: new Set(), remove: new Set() };
+  clearTimeout(change.timer);
+  // تیک و برداشتنِ پشت سر هم یکدیگر را خنثی می‌کنند، پس هر شناسه فقط در یکی است.
+  (read ? change.remove : change.add).delete(entryId);
+  (read ? change.add : change.remove).add(entryId);
+  change.timer = setTimeout(() => sendNow(topicId, false), DEBOUNCE_MS);
+  pending.set(topicId, change);
+}
+
+/** «از نو» عمداً همه را پاک می‌کند، پس جایگزین کامل است و تغییرهای معلق دور ریخته می‌شوند. */
+export function pushReset(topicId) {
+  if (!available || !deps || !currentEmail()) return;
+  clearTimeout(pending.get(topicId)?.timer);
+  pending.delete(topicId);
+  send({ email: currentEmail(), topicId, readIds: [] });
 }
 
 function showState() {

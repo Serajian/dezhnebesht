@@ -9,9 +9,16 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 8000;
 // API پیشرفت فقط با DB_PATH ناخالی روشن می‌شود؛ بدون آن node:sqlite هرگز
 // import نمی‌شود و /api/health مثل هر مسیر ناموجود 404 است — همان چیزی که
 // مرورگر از آن می‌فهمد دکمه‌ی ورود را نشان ندهد.
-const api = process.env.DB_PATH
-  ? (await import('./server/api.js')).createApi({ dbPath: process.env.DB_PATH })
-  : null;
+// اگر دیتابیس باز نشود (مثلاً volume ِ /data با مالک root)، فقط ورود خاموش
+// می‌شود؛ سایت ایستا نباید به خاطر آن بالا نیاید.
+let api = null;
+if (process.env.DB_PATH) {
+  try {
+    api = (await import('./server/api.js')).createApi({ dbPath: process.env.DB_PATH });
+  } catch (error) {
+    console.error(`API پیشرفت خاموش است — ${error.message}`);
+  }
+}
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -25,7 +32,9 @@ const TYPES = {
 };
 
 const server = createServer(async (req, res) => {
-  const url = new URL(req.url, `http://${req.headers.host}`);
+  // میزبان ثابت، نه req.headers.host: هدر Host نامعتبر new URL را می‌ترکاند
+  // و چون این callback async است، کل فرایند می‌مُرد.
+  const url = new URL(req.url, 'http://localhost');
 
   if (api && url.pathname.startsWith('/api/')) {
     await api.handle(req, res);

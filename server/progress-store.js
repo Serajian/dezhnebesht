@@ -17,6 +17,7 @@ export function openStore(dbPath) {
   `);
 
   const selectAll = db.prepare('SELECT topic_id, read_ids FROM progress WHERE email = ?');
+  const selectOne = db.prepare('SELECT read_ids FROM progress WHERE email = ? AND topic_id = ?');
   const upsert = db.prepare(`
     INSERT INTO progress (email, topic_id, read_ids, updated_at) VALUES (?, ?, ?, ?)
     ON CONFLICT(email, topic_id) DO UPDATE SET
@@ -34,6 +35,14 @@ export function openStore(dbPath) {
     },
     put(email, topicId, readIds, now) {
       upsert.run(email, topicId, serializeProgress(new Set(readIds)), now);
+    },
+    /** خواندن و نوشتن پشت سر هم و همگام است، پس بین آن دو درخواست دیگری نمی‌نشیند. */
+    applyDelta(email, topicId, add, remove, now) {
+      const row = selectOne.get(email, topicId);
+      const set = parseProgress(row?.read_ids);
+      for (const id of add) set.add(id);
+      for (const id of remove) set.delete(id);
+      upsert.run(email, topicId, serializeProgress(set), now);
     },
     close() {
       db.close();

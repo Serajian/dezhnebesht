@@ -29,20 +29,38 @@ function isPlainObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
-/** بدنه‌ی PUT؛ ایمیل را خودش normalize و شناسه‌ها را dedupe می‌کند. */
+/** آرایه‌ی شناسه‌ی معتبر، dedupe‌شده؛ هر چیز دیگر null. */
+function validIds(value) {
+  if (!Array.isArray(value) || value.length > MAX_IDS) return null;
+  for (const id of value) {
+    if (typeof id !== 'string' || id.length > MAX_ENTRY_ID) return null;
+  }
+  return [...new Set(value)];
+}
+
+/**
+ * بدنه‌ی PUT در دو شکل: { readIds } جایگزین کامل است (ادغام هنگام ورود و
+ * «از نو»)؛ { add, remove } فقط تغییر است (تیک زدن)، تا تبی که ادغامش کهنه
+ * است تیک‌های دستگاه دیگر را از روی سرور پاک نکند. ایمیل را خودش normalize
+ * و شناسه‌ها را dedupe می‌کند.
+ */
 export function validateProgressBody(body) {
   if (!isPlainObject(body)) return { ok: false };
   const email = normalizeEmail(body.email);
   if (!isValidEmail(email)) return { ok: false };
-  const { topicId, readIds } = body;
+  const { topicId } = body;
   if (typeof topicId !== 'string' || topicId.length === 0 || topicId.length > MAX_TOPIC_ID) {
     return { ok: false };
   }
-  if (!Array.isArray(readIds) || readIds.length > MAX_IDS) return { ok: false };
-  for (const id of readIds) {
-    if (typeof id !== 'string' || id.length > MAX_ENTRY_ID) return { ok: false };
+  if (body.readIds !== undefined) {
+    const readIds = validIds(body.readIds);
+    return readIds ? { ok: true, value: { email, topicId, readIds } } : { ok: false };
   }
-  return { ok: true, value: { email, topicId, readIds: [...new Set(readIds)] } };
+  if (body.add === undefined && body.remove === undefined) return { ok: false };
+  const add = validIds(body.add ?? []);
+  const remove = validIds(body.remove ?? []);
+  if (!add || !remove || add.length + remove.length > MAX_IDS) return { ok: false };
+  return { ok: true, value: { email, topicId, add, remove } };
 }
 
 /** فقط رشته‌ها از یک مقدارِ احتمالاً بی‌شکل؛ هر چیز دیگر یعنی «هیچ». */

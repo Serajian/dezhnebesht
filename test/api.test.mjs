@@ -70,6 +70,19 @@ test('api: PUT دوم جایگزین کامل است', async () => {
   assert.deepEqual(await (await get(main.base, 'r@b.co')).json(), { acid: [] });
 });
 
+test('api: تیک تغییری تیک‌های دستگاه دیگر را پاک نمی‌کند', async () => {
+  // دستگاه الف سه تیک دارد؛ دستگاه ب که ادغامش کهنه است فقط یکی اضافه و یکی برمی‌دارد.
+  await put(main.base, { email: 'd@b.co', topicId: 'acid', readIds: ['a', 'b', 'c'] });
+  assert.equal((await put(main.base, { email: 'd@b.co', topicId: 'acid', add: ['z'], remove: ['b'] })).status, 204);
+  const back = (await (await get(main.base, 'd@b.co')).json()).acid.sort();
+  assert.deepEqual(back, ['a', 'c', 'z']);
+});
+
+test('api: تیک تغییری روی ردیف ناموجود آن را می‌سازد', async () => {
+  await put(main.base, { email: 'n@b.co', topicId: 'swarm', add: ['q'] });
+  assert.deepEqual(await (await get(main.base, 'n@b.co')).json(), { swarm: ['q'] });
+});
+
 test('api: ایمیل با حروف بزرگ همان ردیف را می‌خواند', async () => {
   await put(main.base, { email: 'c@b.co', topicId: 'swarm', readIds: ['n'] });
   const res = await get(main.base, encodeURIComponent(' C@B.CO'));
@@ -147,6 +160,49 @@ test('serve: بدون DB_PATH، /api/health 404 است', async () => {
     assert.notEqual(port, 0);
     const res = await fetch(`http://127.0.0.1:${port}/api/health`);
     assert.equal(res.status, 404);
+  } finally {
+    child.kill();
+  }
+});
+
+/** serve.js را با env داده‌شده بالا می‌آورد و پورتش را از لاگ می‌خواند. */
+async function spawnServe(env) {
+  const child = spawn(process.execPath, ['serve.js'], { cwd: ROOT, env: { ...process.env, PORT: '0', ...env } });
+  const port = await new Promise((done, fail) => {
+    let out = '';
+    child.stdout.on('data', (chunk) => {
+      out += chunk;
+      const match = out.match(/:(\d+)/);
+      if (match) done(Number(match[1]));
+    });
+    child.on('exit', (code) => fail(new Error(`serve.js exited ${code}`)));
+  });
+  return { child, port };
+}
+
+test('serve: دیتابیسی که باز نمی‌شود سایت ایستا را پایین نمی‌آورد', async () => {
+  const { child, port } = await spawnServe({ DB_PATH: '/nonexistent-dir/x.db' });
+  try {
+    assert.equal((await fetch(`http://127.0.0.1:${port}/`)).status, 200);
+    assert.equal((await fetch(`http://127.0.0.1:${port}/api/health`)).status, 404);
+  } finally {
+    child.kill();
+  }
+});
+
+test('serve: هدر Host نامعتبر فرایند را نمی‌کُشد', async () => {
+  const { child, port } = await spawnServe({ DB_PATH: '' });
+  try {
+    const { connect } = await import('node:net');
+    await new Promise((done) => {
+      const socket = connect(port, '127.0.0.1', () => socket.end('GET / HTTP/1.1\r\nHost: a b\r\n\r\n'));
+      socket.on('data', () => {});
+      socket.on('close', done);
+      socket.on('error', done);
+    });
+    await new Promise((r) => setTimeout(r, 200));
+    assert.equal(child.exitCode, null);
+    assert.equal((await fetch(`http://127.0.0.1:${port}/`)).status, 200);
   } finally {
     child.kill();
   }

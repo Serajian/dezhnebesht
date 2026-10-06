@@ -83,8 +83,9 @@ export function createApi({ dbPath, limit = 60, windowMs = 60_000, now = Date.no
     }
     const checked = validateProgressBody(body);
     if (!checked.ok) return send(res, 400, { error: 'invalid body' });
-    const { email, topicId, readIds } = checked.value;
-    store.put(email, topicId, readIds, now());
+    const { email, topicId, readIds, add, remove } = checked.value;
+    if (readIds) store.put(email, topicId, readIds, now());
+    else store.applyDelta(email, topicId, add, remove, now());
     return send(res, 204);
   }
 

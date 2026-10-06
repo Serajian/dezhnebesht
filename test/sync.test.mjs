@@ -107,3 +107,27 @@ test('topicsToPush فقط موضوع‌هایی را می‌دهد که با س�
 test('topicsToPush با پاسخ نامعتبر سرور همه را می‌دهد', () => {
   assert.deepEqual(topicsToPush({ a: ['1'] }, null), ['a']);
 });
+
+test('validateProgressBody بدنه‌ی تغییری add/remove را می‌پذیرد', () => {
+  assert.deepEqual(
+    validateProgressBody({ email: 'a@b.co', topicId: 'acid', add: ['x', 'x'], remove: ['y'] }),
+    { ok: true, value: { email: 'a@b.co', topicId: 'acid', add: ['x'], remove: ['y'] } },
+  );
+  assert.deepEqual(
+    validateProgressBody({ email: 'a@b.co', topicId: 'acid', add: ['x'] }),
+    { ok: true, value: { email: 'a@b.co', topicId: 'acid', add: ['x'], remove: [] } },
+  );
+});
+
+test('validateProgressBody بدنه‌ی تغییری بد را رد می‌کند', () => {
+  const base = { email: 'a@b.co', topicId: 'acid' };
+  for (const bad of [
+    base,
+    { ...base, add: 'x' },
+    { ...base, remove: [1] },
+    { ...base, add: ['x'.repeat(129)] },
+    { ...base, add: Array.from({ length: 3000 }, (_, i) => `a${i}`), remove: Array.from({ length: 2001 }, (_, i) => `r${i}`) },
+  ]) {
+    assert.deepEqual(validateProgressBody(bad), { ok: false }, JSON.stringify(bad).slice(0, 60));
+  }
+});
